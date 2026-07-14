@@ -2,19 +2,9 @@
 
 高保真前端原型项目，用于演示企业考试管理功能的界面设计与交互流程。涵盖集团、下级单位、普通租户三种业务形态。
 
-## 技术栈
+## 预览入口
 
-- 纯原生 **HTML + CSS + JavaScript**，无框架依赖
-- CSS 自定义变量驱动的统一设计系统
-- Flexbox 布局 + iframe 内嵌原型导航
-
-## 快速开始
-
-直接在浏览器中打开 `index.html` 即可浏览所有原型页面。
-
-```bash
-open index.html
-```
+在线预览：[https://parispang666-ops.github.io/exam/](https://parispang666-ops.github.io/exam/)
 
 ## 页面清单
 
@@ -54,21 +44,3 @@ open index.html
 ├── prd-annotation.js           # PRD 标注交互脚本
 └── *.html                      # 各功能原型页面
 ```
-
-## PRD 标注系统
-
-部分页面内嵌 **结构化 PRD 标注**（角标 + 全局抽屉），标注配置以 JSON 形式写入页面底部的 `<script type="application/json" id="prd-annotation-config">` 中。
-
-**标注可见性规则：**
-- `::before` 中的 `content` 为空时，相应角标自动隐藏
-- 打开 iframe 弹窗时自动隐藏抽屉切换按钮
-- `alert` 模态框打开时自动隐藏 PRD 角标和相关 UI
-
-## 设计规范
-
-| 属性 | 值 |
-|------|------|
-| 品牌主色 | `#1570EF` |
-| 字体 | PingFang SC / HarmonyOS Sans SC / Microsoft YaHei |
-| 圆角 | `--radius-xs` ~ `--radius-xl` |
-| 阴影 | `--shadow-sm` / `--shadow-md` / `--shadow-lg` |
