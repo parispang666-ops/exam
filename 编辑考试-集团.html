@@ -2012,6 +2012,14 @@ function viewScopeSelected(type, companyFilter = '') {
       "content": "<div class=\"prd-content-wide\"><p><strong>对应 PRD：6.2 指定用户区域、6.7 人员选择弹窗</strong></p><table class=\"prd-readable-table\"><thead><tr><th>项目</th><th>规则</th></tr></thead><tbody><tr><td>触发动作</td><td>点击\"选择\"按钮打开集团人员选择弹窗。</td></tr><tr><td>选择范围</td><td>支持集团内跨公司选择人员和部门。</td></tr><tr><td>数据通信</td><td>通过 iframe 加载人员选择-集团页面，并传入当前已选人员、部门和查看已选参数。</td></tr><tr><td>确认返回</td><td>确认后回写人员和部门数据，系统自动去重并刷新人数。</td></tr><tr><td>取消关闭</td><td>取消、关闭或遮罩关闭时不更新当前已选结果。</td></tr></tbody></table></div>"
     },
     {
+      "id": "2-1",
+      "title": "批量导入考生",
+      "anchor": {
+        "selector": ".btn-import-batch"
+      },
+      "content": "<div class=\"prd-content-wide\"><p><strong>触发动作：</strong>点击「批量导入」按钮，打开导入弹窗。</p><table class=\"prd-readable-table\"><thead><tr><th>规则项</th><th>说明</th></tr></thead><tbody><tr><td>按钮位置</td><td>位于「选择」按钮右侧，次级按钮样式</td></tr><tr><td>模板下载</td><td>支持下载标准 Excel 模板，包含字段：姓名（必填，最大10字符）、手机号（必填，11位数字以1开头）</td></tr><tr><td>文件上传</td><td>支持 .xls/.xlsx 格式，最大 5M，单次最多 1000 行</td></tr><tr><td>导入结果</td><td>成功后自动合并到已选考生列表；失败时支持下载错误文件（仅含失败记录）</td></tr><tr><td>去重规则</td><td>Excel 内重复及与已选考生重复均自动跳过</td></tr><tr><td>可见条件</td><td>仅在「仅部分人员」模式下显示，「组织内全部人员」模式下隐藏</td></tr></tbody></table></div>"
+    },
+    {
       "id": "3",
       "title": "指定用户",
       "anchor": {
