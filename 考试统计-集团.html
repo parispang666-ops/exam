@@ -1281,9 +1281,9 @@
                 </div>
               </div>
               <div class="view-toolbar">
-                <div class="view-switch" aria-label="部门统计视图切换">
-                  <button class="view-switch-btn active" type="button" id="deptViewDetailBtn" onclick="switchDeptAnalysisView('detail')">部门明细</button>
-                  <button class="view-switch-btn" type="button" id="deptViewCompanyBtn" onclick="switchDeptAnalysisView('company')">公司汇总</button>
+                <div class="view-switch" aria-label="部门统计视图切换" id="deptViewSwitch">
+                  <button class="view-switch-btn active" type="button" id="deptViewCompanyBtn" onclick="switchDeptAnalysisView('company')">公司汇总</button>
+                  <button class="view-switch-btn" type="button" id="deptViewDetailBtn" onclick="switchDeptAnalysisView('detail')">部门明细</button>
                 </div>
                 <button class="btn btn-export" type="button" onclick="showToast('导出部门统计')">导出⌄</button>
               </div>
@@ -1334,7 +1334,24 @@
       candidate: { company: '', dept: '' },
       record: { company: '', dept: '' }
     };
-    let deptAnalysisView = 'detail';
+    let deptAnalysisView = 'company';
+
+    /* 统计部门数据涉及的公司数量，仅当涉及多家公司时才展示视图切换 */
+    function countDeptCompanies() {
+      return deptAnalysisTree.filter(node => node.type === 'company').length;
+    }
+
+    function updateDeptViewSwitchVisibility() {
+      const switchEl = document.getElementById('deptViewSwitch');
+      if (!switchEl) return;
+      const companyCount = countDeptCompanies();
+      if (companyCount <= 1) {
+        switchEl.style.display = 'none';
+        deptAnalysisView = 'detail';
+      } else {
+        switchEl.style.display = '';
+      }
+    }
     const companyBaseMetrics = ['0', '0', '0', '0', '0', '0%', '0%', '0', '100', '0', '0'];
     const deptAnalysisTree = [
       {
@@ -1489,6 +1506,7 @@
     }
 
     function syncDeptAnalysisViewUI() {
+      updateDeptViewSwitchVisibility();
       const detailBtn = document.getElementById('deptViewDetailBtn');
       const companyBtn = document.getElementById('deptViewCompanyBtn');
       const keywordLabel = document.getElementById('deptKeywordLabel');
