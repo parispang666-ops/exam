@@ -1582,7 +1582,7 @@
       const avgScore = own.answerTimes ? Math.round(own.avgScoreNumerator / own.answerTimes) : 0;
       const avgDuration = own.answerTimes ? Math.round(own.avgDurationNumerator / own.answerTimes) : 0;
       const joinRate = own.shouldCount ? Math.round((own.actualCount / own.shouldCount) * 100) : 0;
-      const passRate = own.actualCount ? Math.round((own.passCount / own.actualCount) * 100) : 0;
+      const passRate = own.shouldCount ? Math.round((own.passCount / own.shouldCount) * 100) : 0;
 
       return {
         ...own,
