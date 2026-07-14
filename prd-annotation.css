@@ -1,0 +1,324 @@
+/* ===== PRD 角标锚点定位上下文 ===== */
+.prd-anchor {
+  position: relative;
+}
+
+/* ===== PRD 角标样式 ===== */
+.prd-badge {
+  display: inline-block;
+  vertical-align: top;
+  position: absolute;
+  top: -8px;
+  right: -4px;
+  z-index: 90;
+  background: rgb(250, 173, 20);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 14px;
+  padding: 0px 4px;
+  border-radius: 2px;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  pointer-events: auto;
+}
+.prd-badge:hover {
+  opacity: .85;
+}
+
+/* ===== 浮窗 ===== */
+.prd-annotation-popover {
+  position: fixed;
+  z-index: 11100;
+  width: 450px;
+  max-width: 90vw;
+  max-height: 70vh;
+  background: #FFFFFF;
+  border: 2px solid #1890ff;
+  border-radius: 4px;
+  box-shadow: 0 6px 16px rgba(0, 120, 255, 0.15);
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .15s;
+}
+.prd-annotation-popover.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* 浮窗头部 */
+.prd-annotation-popover .popover-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid #F0F0F0;
+  flex-shrink: 0;
+}
+.prd-annotation-popover .popover-header .popover-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #303847;
+}
+.prd-annotation-popover .popover-header .popover-close {
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 24px;
+  color: #999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 2px;
+}
+.prd-annotation-popover .popover-header .popover-close:hover {
+  color: #333;
+  background: #F5F5F5;
+}
+
+/* 浮窗主体 */
+.prd-annotation-popover .popover-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  font-size: 13px;
+  color: #303847;
+  line-height: 1.6;
+}
+.prd-annotation-popover .popover-body p {
+  margin: 0 0 12px;
+}
+
+/* ===== 浮窗内表格 ===== */
+.prd-readable-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  margin: 8px 0 16px;
+}
+.prd-readable-table th,
+.prd-readable-table td {
+  padding: 6px 10px;
+  border: 1px solid #E8E8E8;
+  text-align: left;
+  vertical-align: top;
+}
+.prd-readable-table th {
+  background: #FAFAFA;
+  font-weight: 600;
+  color: #303847;
+}
+.prd-readable-table td {
+  color: #475467;
+}
+
+.prd-content-wide strong {
+  color: #303847;
+}
+
+/* ===== PRD 抽屉 ===== */
+.prd-drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 11200;
+  background: rgba(0,0,0,.35);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .25s;
+}
+.prd-drawer-backdrop.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.prd-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 600px;
+  max-width: 90vw;
+  z-index: 11201;
+  background: #fff;
+  box-shadow: -4px 0 20px rgba(0,0,0,.12);
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+  transition: transform .25s ease;
+}
+.prd-drawer.open {
+  transform: translateX(0);
+}
+
+.prd-drawer .drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid #E4E7EC;
+  flex-shrink: 0;
+}
+.prd-drawer .drawer-header .drawer-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #303847;
+}
+.prd-drawer .drawer-header .drawer-close {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 20px;
+  color: #999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+}
+.prd-drawer .drawer-header .drawer-close:hover {
+  color: #333;
+  background: #F5F5F5;
+}
+
+.prd-drawer .drawer-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  font-size: 13px;
+  color: #303847;
+  line-height: 1.8;
+}
+.prd-drawer .drawer-body h1,
+.prd-drawer .drawer-body h2,
+.prd-drawer .drawer-body h3,
+.prd-drawer .drawer-body h4 {
+  margin-top: 20px;
+  margin-bottom: 12px;
+}
+.prd-drawer .drawer-body h1 { font-size: 20px; }
+.prd-drawer .drawer-body h2 { font-size: 16px; }
+.prd-drawer .drawer-body h3 { font-size: 14px; }
+.prd-drawer .drawer-body p { margin: 0 0 10px; }
+.prd-drawer .drawer-body table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 10px 0 16px;
+  font-size: 12px;
+}
+.prd-drawer .drawer-body th,
+.prd-drawer .drawer-body td {
+  padding: 6px 10px;
+  border: 1px solid #E4E7EC;
+  text-align: left;
+}
+.prd-drawer .drawer-body th { background: #FAFAFA; }
+.prd-drawer .drawer-body code { background: #F4F4F4; padding: 2px 6px; border-radius: 3px; font-size:12px; }
+.prd-drawer .drawer-body pre { background: #F8F8F8; padding: 12px; overflow-x: auto; border-radius: 4px; font-size:12px; }
+.prd-drawer .drawer-body blockquote {
+  border-left: 3px solid #1890ff;
+  padding: 4px 12px;
+  margin: 10px 0;
+  color: #666;
+  background: #F0F7FF;
+}
+.prd-drawer .drawer-body ul, .prd-drawer .drawer-body ol { padding-left: 24px; }
+.prd-drawer .drawer-body li { margin-bottom: 4px; }
+
+/* ===== 右上角 PRD 抽屉按钮 ===== */
+.prd-drawer-btn-wrap {
+  position: fixed;
+  top: 80px;
+  right: 16px;
+  z-index: 10009;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.prd-drawer-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  background: #1890ff;
+  color: #fff;
+  font-size: 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(24,144,255,.25);
+}
+.prd-drawer-btn:hover { background: #1677CC; }
+
+/* ===== 右下角全局标注开关 ===== */
+.prd-toggle-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 10009;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #307FE2;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(48,127,226,.3);
+  transition: background .15s;
+}
+.prd-toggle-btn:hover { background: #2468C0; }
+.prd-toggle-btn.off { background: #999; }
+.prd-toggle-btn.off:hover { background: #777; }
+
+/* ===== Modal 角标层级 ===== */
+
+/* 弹窗打开时隐藏右上角页面PRD/全局PRD按钮和右下角全局标注开关 */
+body.modal-open .prd-drawer-btn-wrap,
+body.modal-open .prd-toggle-btn {
+  display: none !important;
+}
+
+/* 确保人员选择器弹窗容器不裁剪角标 */
+body.embedded-picker .modal {
+  overflow: visible;
+}
+
+/* 浮窗内的 markdown 渲染 */
+.drawer-body hr {
+  border: none;
+  border-top: 1px solid #E4E7EC;
+  margin: 16px 0;
+}
+
+/* ===== mermaid 流程图渲染 ===== */
+.drawer-body .mermaid {
+  margin: 16px 0;
+  padding: 16px;
+  background: #FAFBFC;
+  border: 1px solid #E4E7EC;
+  border-radius: 6px;
+  overflow-x: auto;
+  text-align: center;
+}
+.drawer-body .mermaid svg {
+  max-width: 100%;
+  height: auto;
+}
+
+/* mermaid 错误回退 */
+.drawer-body .mermaid[data-processed="true"] {
+  background: transparent;
+  border: none;
+  padding: 0;
+}

@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<!-- 整体PRD参考：prd/考试功能-整体PRD.md -->
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>小程序考试列表 - 考试中心</title>
+  <style>
+    :root {
+      --brand: #1677FF;
+      --text: #222B3A;
+      --muted: #7E8797;
+      --light: #A0A8B8;
+      --line: #EEF1F5;
+      --page: #F5F7FA;
+      --card: #FFFFFF;
+      --success: #19C6B7;
+      --danger: #FF5B4D;
+      --warn: #FF7A3D;
+      --font: "PingFang SC", "HarmonyOS Sans SC", "Microsoft YaHei", Arial, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      background: #EDEFF3;
+      color: var(--text);
+      font-family: var(--font);
+      letter-spacing: 0;
+    }
+
+    button,
+    input {
+      font: inherit;
+      letter-spacing: 0;
+    }
+
+    button {
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+    }
+
+    .mini-page {
+      width: 375px;
+      height: 812px;
+      max-height: 100vh;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background: var(--page);
+      box-shadow: 0 0 28px rgba(15, 23, 42, .08);
+    }
+
+    .status-bar {
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 12px;
+      color: #111827;
+      background: #fff;
+      font-size: 20px;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .status-icons {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      color: #111827;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .signal {
+      width: 28px;
+      height: 18px;
+      display: inline-grid;
+      grid-template-columns: repeat(4, 4px);
+      align-items: end;
+      gap: 2px;
+    }
+
+    .signal i {
+      display: block;
+      width: 4px;
+      border-radius: 2px;
+      background: #111827;
+    }
+
+    .signal i:nth-child(1) { height: 6px; }
+    .signal i:nth-child(2) { height: 9px; }
+    .signal i:nth-child(3) { height: 13px; }
+    .signal i:nth-child(4) { height: 17px; }
+
+    .wifi {
+      width: 18px;
+      height: 14px;
+      position: relative;
+    }
+
+    .wifi::before,
+    .wifi::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 2px solid #111827;
+      border-bottom: 0;
+      border-radius: 18px 18px 0 0;
+    }
+
+    .wifi::before {
+      top: 0;
+      width: 18px;
+      height: 10px;
+    }
+
+    .wifi::after {
+      top: 5px;
+      width: 10px;
+      height: 6px;
+    }
+
+    .battery {
+      width: 31px;
+      height: 15px;
+      position: relative;
+      border: 2px solid #111827;
+      border-radius: 2px;
+    }
+
+    .battery::before {
+      content: "";
+      position: absolute;
+      top: 3px;
+      right: -5px;
+      width: 3px;
+      height: 5px;
+      border-radius: 0 2px 2px 0;
+      background: #111827;
+    }
+
+    .battery::after {
+      content: "";
+      position: absolute;
+      inset: 2px;
+      width: 20px;
+      background: #111827;
+    }
+
+    .nav-bar {
+      height: 78px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-bottom: 1px solid var(--line);
+      background: #fff;
+    }
+
+    .back-btn {
+      position: absolute;
+      left: 16px;
+      top: 24px;
+      width: 32px;
+      height: 32px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .back-icon {
+      width: 13px;
+      height: 13px;
+      border-left: 3px solid #1F2937;
+      border-bottom: 3px solid #1F2937;
+      transform: rotate(45deg);
+    }
+
+    .nav-title {
+      margin-top: 8px;
+      color: #2E3543;
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .capsule {
+      position: absolute;
+      top: 19px;
+      right: 14px;
+      width: 108px;
+      height: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      border: 1px solid #EEF1F5;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .9);
+      box-shadow: 0 2px 8px rgba(31, 42, 55, .06);
+    }
+
+    .dot-menu {
+      display: inline-flex;
+      gap: 5px;
+    }
+
+    .dot-menu i {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: #222B3A;
+    }
+
+    .capsule-line {
+      width: 1px;
+      height: 22px;
+      background: #E9EDF3;
+    }
+
+    .circle-icon {
+      width: 18px;
+      height: 18px;
+      border: 3px solid #111827;
+      border-radius: 50%;
+      position: relative;
+    }
+
+    .circle-icon::after {
+      content: "";
+      position: absolute;
+      top: 4px;
+      left: 4px;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: #111827;
+    }
+
+    .tabs {
+      height: 86px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      align-items: center;
+      background: #fff;
+    }
+
+    .tab {
+      height: 100%;
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #8A93A3;
+      font-size: 21px;
+      font-weight: 500;
+    }
+
+    .tab.active {
+      color: var(--brand);
+      font-weight: 700;
+    }
+
+    .tab.active::after {
+      content: "";
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      width: 25px;
+      height: 4px;
+      border-radius: 999px;
+      background: var(--brand);
+      transform: translateX(-50%) rotate(-4deg);
+    }
+
+    .search-row {
+      display: flex;
+      gap: 7px;
+      padding: 0 4px 18px;
+      background: #fff;
+    }
+
+    .search-box {
+      height: 52px;
+      flex: 1 1 auto;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 18px;
+      border-radius: 10px;
+      background: #F4F7FA;
+      color: #B0B7C4;
+      font-size: 17px;
+    }
+
+    .search-icon {
+      width: 18px;
+      height: 18px;
+      position: relative;
+      flex: 0 0 auto;
+      border: 2px solid #778294;
+      border-radius: 50%;
+    }
+
+    .search-icon::after {
+      content: "";
+      position: absolute;
+      right: -6px;
+      bottom: -5px;
+      width: 8px;
+      height: 2px;
+      border-radius: 2px;
+      background: #778294;
+      transform: rotate(45deg);
+    }
+
+    .filter-btn {
+      width: 55px;
+      height: 52px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      background: #F4F7FA;
+    }
+
+    .filter-icon {
+      width: 20px;
+      height: 18px;
+      position: relative;
+    }
+
+    .filter-icon::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border: 3px solid #677286;
+      border-bottom: 0;
+      clip-path: polygon(0 0, 100% 0, 60% 55%, 60% 100%, 40% 100%, 40% 55%);
+    }
+
+    .list {
+      flex: 1 1 auto;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 13px 4px 18px;
+      background: var(--page);
+      overflow-y: auto;
+      scrollbar-width: none;
+    }
+
+    .list::-webkit-scrollbar { display: none; }
+
+    .exam-card {
+      min-height: 169px;
+      display: flex;
+      flex-direction: column;
+      border-radius: 9px;
+      overflow: hidden;
+      background: var(--card);
+      box-shadow: 0 2px 10px rgba(27, 38, 63, .04);
+    }
+
+    .card-meta {
+      height: 45px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      border-bottom: 1px solid var(--line);
+      color: #8892A3;
+      font-size: 18px;
+      font-weight: 500;
+    }
+
+    .duration {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 17px;
+    }
+
+    .clock {
+      width: 15px;
+      height: 15px;
+      position: relative;
+      border: 2px solid #9AA3B3;
+      border-radius: 50%;
+    }
+
+    .clock::before {
+      content: "";
+      position: absolute;
+      left: 6px;
+      top: 3px;
+      width: 2px;
+      height: 5px;
+      background: #9AA3B3;
+      border-radius: 2px;
+    }
+
+    .clock::after {
+      content: "";
+      position: absolute;
+      left: 6px;
+      top: 7px;
+      width: 5px;
+      height: 2px;
+      background: #9AA3B3;
+      border-radius: 2px;
+    }
+
+    .card-body {
+      display: grid;
+      grid-template-columns: 166px minmax(0, 1fr);
+      gap: 16px;
+      padding: 14px 16px 16px;
+    }
+
+    .thumb {
+      height: 108px;
+      position: relative;
+      overflow: hidden;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #DDF5FF 0%, #F1F2FF 55%, #D5ECFF 100%);
+    }
+
+    .thumb::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 83% 28%, rgba(22, 119, 255, .22) 0 22px, transparent 23px),
+        radial-gradient(circle at 76% 72%, rgba(255, 198, 67, .55) 0 9px, transparent 10px),
+        linear-gradient(145deg, transparent 0 54%, rgba(95, 125, 255, .20) 55% 100%);
+    }
+
+    .thumb.math {
+      background: linear-gradient(135deg, #E6F9FF 0%, #C6F7FF 48%, #EEF4FF 100%);
+    }
+
+    .thumb.health {
+      background: linear-gradient(135deg, #E7F7FF 0%, #EBF4FF 52%, #DCEAFF 100%);
+    }
+
+    .thumb-badge {
+      position: absolute;
+      left: 10px;
+      top: 14px;
+      height: 15px;
+      padding: 0 7px;
+      border-radius: 999px;
+      background: #37CDBF;
+      color: #fff;
+      font-size: 8px;
+      line-height: 15px;
+      font-weight: 700;
+    }
+
+    .thumb-title {
+      position: absolute;
+      left: 13px;
+      top: 38px;
+      width: 95px;
+      color: #344054;
+      font-size: 15px;
+      line-height: 18px;
+      font-weight: 800;
+    }
+
+    .thumb-sub {
+      position: absolute;
+      left: 14px;
+      top: 78px;
+      color: #667085;
+      font-size: 7px;
+      line-height: 11px;
+    }
+
+    .thumb-shape {
+      position: absolute;
+      right: 14px;
+      bottom: 14px;
+      width: 44px;
+      height: 44px;
+      transform: rotate(12deg);
+      background: linear-gradient(135deg, #77A8FF, #314DEB);
+      clip-path: polygon(50% 0, 96% 76%, 0 58%);
+      box-shadow: 0 8px 16px rgba(49, 77, 235, .22);
+    }
+
+    .exam-info {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    .exam-title {
+      width: 100%;
+      margin: 0 0 5px;
+      overflow: hidden;
+      color: #232B3A;
+      font-size: 19px;
+      line-height: 28px;
+      font-weight: 800;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .exam-subtitle {
+      margin-bottom: 8px;
+      color: #8D96A5;
+      font-size: 16px;
+      line-height: 23px;
+    }
+
+    .result-row {
+      display: inline-flex;
+      align-items: center;
+      height: 29px;
+      overflow: hidden;
+      border-radius: 3px;
+      font-size: 16px;
+      line-height: 29px;
+      white-space: nowrap;
+    }
+
+    .result-label {
+      height: 29px;
+      padding: 0 7px;
+      color: #fff;
+      font-weight: 700;
+    }
+
+    .result-score {
+      height: 29px;
+      padding: 0 6px;
+      background: #EFFFFD;
+      color: var(--success);
+      border: 1px solid rgba(25, 198, 183, .16);
+      border-left: 0;
+      font-weight: 500;
+    }
+
+    .result-row.pass .result-label { background: var(--success); }
+    .result-row.fail .result-label { background: var(--danger); }
+    .result-row.fail .result-score {
+      background: #FFF5F2;
+      color: var(--danger);
+      border-color: rgba(255, 91, 77, .18);
+    }
+
+    .result-row.pending .result-label {
+      background: var(--warn);
+      padding: 0 9px;
+    }
+
+    .result-row.pending .result-score {
+      background: #FFF7ED;
+      color: var(--warn);
+      border-color: rgba(255, 122, 61, .18);
+    }
+
+    .result-row.upcoming .result-label {
+      background: var(--brand);
+      padding: 0 9px;
+    }
+
+    .result-row.upcoming .result-score {
+      background: #EEF6FF;
+      color: var(--brand);
+      border-color: rgba(22, 119, 255, .16);
+    }
+
+    .empty-state {
+      margin: 38px 12px 0;
+      padding: 46px 16px;
+      border-radius: 8px;
+      background: #fff;
+      color: #999;
+      font-size: 14px;
+      text-align: center;
+    }
+
+  </style>
+  <link rel="stylesheet" href="prd-annotation.css">
+</head>
+<body>
+  <main class="mini-page" aria-label="小程序考试列表">
+    <section class="status-bar" aria-label="状态栏">
+      <span>10:16</span>
+      <span class="status-icons">
+        <span class="signal" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+        <span class="wifi" aria-hidden="true"></span>
+        <span class="battery" aria-hidden="true"></span>
+      </span>
+    </section>
+
+    <header class="nav-bar">
+      <button class="back-btn" type="button" aria-label="返回">
+        <span class="back-icon"></span>
+      </button>
+      <div class="nav-title">考试中心</div>
+      <div class="capsule" aria-label="小程序菜单">
+        <span class="dot-menu"><i></i><i></i><i></i></span>
+        <span class="capsule-line"></span>
+        <span class="circle-icon"></span>
+      </div>
+    </header>
+
+    <nav class="tabs" aria-label="考试状态">
+      <button class="tab active" type="button" data-status="ongoing">进行中</button>
+      <button class="tab" type="button" data-status="upcoming">未开始</button>
+      <button class="tab" type="button" data-status="finished">已结束</button>
+    </nav>
+
+    <section class="search-row" aria-label="搜索筛选">
+      <label class="search-box">
+        <span class="search-icon" aria-hidden="true"></span>
+        <input id="examSearch" type="text" placeholder="搜索" aria-label="搜索" style="width:100%;border:0;outline:0;background:transparent;color:#394150;">
+      </label>
+      <button class="filter-btn" type="button" aria-label="筛选">
+        <span class="filter-icon"></span>
+      </button>
+    </section>
+
+    <section class="list" id="examList" aria-label="考试列表"></section>
+  </main>
+
+  <script>
+    const miniProgramExamList = [
+      {
+        status: 'ongoing',
+        title: '新员工安全生产基础考试',
+        subtitle: '安全生产必修 · 进行中',
+        metaLabel: '结束时间',
+        meta: '07-31 23:59',
+        duration: '30分钟',
+        thumb: 'health',
+        badge: '安全培训',
+        thumbTitle: '安全生产',
+        thumbSub: 'EHS EXAM',
+        resultClass: 'pending',
+        resultLabel: '待考试',
+        resultScore: '剩余17天'
+      },
+      {
+        status: 'ongoing',
+        title: '现场作业风险辨识考试',
+        subtitle: '岗位能力测评 · 进行中',
+        metaLabel: '结束时间',
+        meta: '08-05 18:00',
+        duration: '45分钟',
+        thumb: '',
+        badge: '岗位考试',
+        thumbTitle: '风险辨识',
+        thumbSub: 'RISK TEST',
+        resultClass: 'pending',
+        resultLabel: '未作答',
+        resultScore: '可进入考试'
+      },
+      {
+        status: 'ongoing',
+        title: '消防安全专项考试',
+        subtitle: '专项培训考核 · 进行中',
+        metaLabel: '结束时间',
+        meta: '08-12 20:00',
+        duration: '25分钟',
+        thumb: 'math',
+        badge: '专项考试',
+        thumbTitle: '消防安全',
+        thumbSub: 'FIRE SAFETY',
+        resultClass: 'pending',
+        resultLabel: '待考试',
+        resultScore: '剩余29天'
+      },
+      {
+        status: 'upcoming',
+        title: '设备点检标准化考试',
+        subtitle: '设备管理 · 未开始',
+        metaLabel: '开始时间',
+        meta: '07-20 09:00',
+        duration: '35分钟',
+        thumb: 'math',
+        badge: '设备点检',
+        thumbTitle: '标准点检',
+        thumbSub: 'DEVICE CHECK',
+        resultClass: 'upcoming',
+        resultLabel: '未开始',
+        resultScore: '07-20开考'
+      },
+      {
+        status: 'upcoming',
+        title: '双重预防机制考试',
+        subtitle: '风险管控 · 未开始',
+        metaLabel: '开始时间',
+        meta: '07-25 14:00',
+        duration: '40分钟',
+        thumb: 'health',
+        badge: '预防机制',
+        thumbTitle: '风险分级',
+        thumbSub: 'PREVENTION',
+        resultClass: 'upcoming',
+        resultLabel: '未开始',
+        resultScore: '07-25开考'
+      },
+      {
+        status: 'finished',
+        title: 'EHS合规知识复训',
+        subtitle: '年度复训 · 已结束',
+        metaLabel: '交卷时间',
+        meta: '07-08 16:23',
+        duration: '30分钟',
+        thumb: 'health',
+        badge: '合规复训',
+        thumbTitle: 'EHS合规',
+        thumbSub: 'COMPLIANCE',
+        resultClass: 'pass',
+        resultLabel: '及格',
+        resultScore: '得分86/100'
+      },
+      {
+        status: 'finished',
+        title: '有限空间作业考试',
+        subtitle: '特种作业 · 已结束',
+        metaLabel: '交卷时间',
+        meta: '07-02 10:48',
+        duration: '45分钟',
+        thumb: '',
+        badge: '特种作业',
+        thumbTitle: '有限空间',
+        thumbSub: 'CONFINED SPACE',
+        resultClass: 'fail',
+        resultLabel: '未及格',
+        resultScore: '得分58/100'
+      },
+      {
+        status: 'finished',
+        title: '班组安全晨会考试',
+        subtitle: '班组培训 · 已结束',
+        metaLabel: '交卷时间',
+        meta: '06-28 09:16',
+        duration: '20分钟',
+        thumb: 'math',
+        badge: '班组考试',
+        thumbTitle: '安全晨会',
+        thumbSub: 'TEAM TEST',
+        resultClass: 'pass',
+        resultLabel: '及格',
+        resultScore: '得分94/100'
+      }
+    ];
+
+    const examListEl = document.getElementById('examList');
+    const searchEl = document.getElementById('examSearch');
+    const escapeMap = {
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;'
+    };
+    let currentExamStatus = 'ongoing';
+
+    function escapeHTML(value) {
+      return String(value).replace(/[&<>"']/g, char => escapeMap[char]);
+    }
+
+    function createExamCard(exam) {
+      const thumbClass = ['thumb', exam.thumb].filter(Boolean).join(' ');
+      return `
+        <article class="exam-card">
+          <div class="card-meta">
+            <span>${escapeHTML(exam.metaLabel)} ${escapeHTML(exam.meta)}</span>
+            <span class="duration"><span class="clock"></span>${escapeHTML(exam.duration)}</span>
+          </div>
+          <div class="card-body">
+            <div class="${escapeHTML(thumbClass)}" aria-hidden="true">
+              <span class="thumb-badge">${escapeHTML(exam.badge)}</span>
+              <div class="thumb-title">${escapeHTML(exam.thumbTitle)}</div>
+              <div class="thumb-sub">${escapeHTML(exam.thumbSub)}</div>
+              <span class="thumb-shape"></span>
+            </div>
+            <div class="exam-info">
+              <h3 class="exam-title">${escapeHTML(exam.title)}</h3>
+              <div class="exam-subtitle">${escapeHTML(exam.subtitle)}</div>
+              <div class="result-row ${escapeHTML(exam.resultClass)}">
+                <span class="result-label">${escapeHTML(exam.resultLabel)}</span>
+                <span class="result-score">${escapeHTML(exam.resultScore)}</span>
+              </div>
+            </div>
+          </div>
+        </article>
+      `;
+    }
+
+    function renderExamList() {
+      const keyword = searchEl.value.trim().toLowerCase();
+      const exams = miniProgramExamList.filter(exam => {
+        const matchesStatus = exam.status === currentExamStatus;
+        const searchableText = `${exam.title} ${exam.subtitle} ${exam.badge}`.toLowerCase();
+        return matchesStatus && (!keyword || searchableText.includes(keyword));
+      });
+
+      examListEl.innerHTML = exams.length
+        ? exams.map(createExamCard).join('')
+        : '<div class="empty-state">暂无考试数据</div>';
+    }
+
+    document.querySelectorAll('.tabs .tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.tabs .tab').forEach(item => item.classList.remove('active'));
+        tab.classList.add('active');
+        currentExamStatus = tab.dataset.status;
+        renderExamList();
+      });
+    });
+
+    searchEl.addEventListener('input', renderExamList);
+    renderExamList();
+  </script>
+
+  <script type="application/json" id="prd-annotation-config">
+{
+  "pageTitle": "小程序考试列表",
+  "scope": "with_global",
+  "showPrdActions": true,
+  "pagePrd": "# 小程序考试列表 PRD（产品需求文档）\n\n## 1. 文档范围\n\n本文档描述小程序端（C 端考生视角）\"考试列表\"页面的核心功能，包括本租户内混合考试来源展示（含上级派发考试）和人员调动场景下的考试可见性规则。\n\n小程序端仅面向考生本人，不涉及管理员操作（创建、编辑、删除、发布等）。\n\n> 本页面 PRD 需配合[《考试功能-整体PRD》](./考试功能-整体PRD.md)阅读，全局业务规则、数据模型、角色权限定义和核心流程参见整体 PRD。\n\n## 2. 使用角色\n\n- **考生（员工）**：在小程序端查看本人当前租户下的考试列表。下级单位考生可同时看到本单位自建考试和上级派发考试；集团和独立租户仅看到本单位考试。\n- **系统**：根据考生所属租户类型（集团/下级单位/独立租户）、考试来源（自建/上级下发）及人员调动状态，筛选当前租户下该考生应展示的考试。\n\n## 3. 页面结构\n\n```\n┌─────────────────────────────────┐\n│          状态栏（时间）            │\n├─────────────────────────────────┤\n│  ← 考试中心          ··· ○     │  导航栏\n├─────────────────────────────────┤\n│  进行中  │  未开始  │  已结束    │  状态 Tab\n├─────────────────────────────────┤\n│  🔍 搜索                   筛选  │  搜索栏\n├─────────────────────────────────┤\n│ ┌─────────────────────────────┐ │\n│ │ 结束时间        考试时长    │ │\n│ │─────────────────────────────│ │\n│ │ ┌──────┐  考试名称         │ │  考试卡片\n│ │ │ 缩略图│  考试副标题       │ │\n│ │ │  badge│  [及格] 得分100/100│ │\n│ │ └──────┘                  │ │\n│ └─────────────────────────────┘ │\n│ ┌─────────────────────────────┐ │\n│ │ ...更多考试卡片...          │ │\n│ └─────────────────────────────┘ │\n└─────────────────────────────────┘\n```\n\n## 4. 功能清单\n\n| 模块 | 功能 | 功能描述 |\n|------|------|----------|\n| 考试列表 | 混合考试来源展示 | 下级单位考生同时展示本单位自建考试和上级（集团）派发考试。 |\n| 考试可见性 | 人员调动规则 | 考生调出当前租户后，原租户定向考试自动隐藏；调回后恢复展示。详见第 5 节。 |\n\n## 5. 需求说明\n\n### 5.1 考试来源与展示规则\n\n各租户类型下小程序端考试展示范围：\n\n| 租户类型 | 展示的考试来源 | 说明 |\n|----------|---------------|------|\n| 集团 | 本单位考试 | 展示集团本部为该考生下发的考试（含定向指定人员和部门范围覆盖）。 |\n| 下级单位 | 本单位自建考试 + 上级（集团）下发考试 | 同时展示本级自建考试和集团派发至本单位的考试。上级下发考试与自建考试在列表中混合展示，不做视觉区分。 |\n| 独立租户 | 本单位考试 | 仅展示本租户自建考试。 |\n\n> 小程序端面向考生本人，列表中的考试均为该考生当前租户下应参加的考试。上级派发考试在下级单位考生列表中与自建考试无视觉区分，统一展示。\n\n### 5.2 人员调动场景下的考试可见性\n\n参考规则说明第 3 节「用户考试活动展示规则」：\n\n| 场景 | 规则 |\n|------|------|\n| 正常状态 | 仅当考生当前所属租户 = 考试下发时该考生归属的租户，才在列表中展示。 |\n| A 调动至 B | 原 A 公司定向给该考生、且未作答未过期的考试直接隐藏，不再展示。仅展示当前 B 租户下定向给该考生的考试任务。 |\n| A → B → A（调回） | 考生从 B 调回原 A 公司后，原先在 A 的定向考试重新在列表中恢复展示。 |\n| 个人档案 | 不受租户调动影响，永久留存全部本人参与过的考试记录（含调动前完成的考试），统一在「个人档案」栏目查看。 |\n\n## 6. 交互设计\n\n### 6.1 页面加载\n\n1. 进入页面，请求当前租户下该考生的考试列表。\n2. 列表按考试结束时间正序排列（即将结束的在前）。\n3. 下级单位考生列表同时展示本单位自建考试和上级派发考试；集团和独立租户仅展示本单位考试。\n\n## 7. 数据依赖\n\n### 7.1 考试列表接口\n\n需返回字段：\n\n| 字段 | 类型 | 说明 |\n|------|------|------|\n| 考试ID | string | 唯一标识 |\n| 考试名称 | string | 考试主标题 |\n| 考试来源 | string | 自建 / 上级下发 |\n| 考试状态 | string | 未开始 / 进行中 / 已结束 |\n| 考试开始时间 | datetime | |\n| 考试结束时间 | datetime | |\n| 考试时长 | int | 单位：分钟 |\n\n## 8. 异常处理\n\n| 异常场景 | 处理方式 |\n|----------|----------|\n| 网络请求失败 | 展示加载失败提示，提供「重试」按钮。 |\n| 考试列表为空 | 展示空状态提示文案。 |\n| 人员已调出 | 原租户定向考试自动隐藏，不展示在列表中。 |\n\n## 9. 非功能性需求\n\n| 指标 | 要求 |\n|------|------|\n| 列表加载响应 | ≤ 2s |\n| 适配屏幕 | 375pt 及以上宽度（小程序标准） |\n\n## 10. 验收标准\n\n| 验收项 | 验收标准 |\n|--------|----------|\n| 考试来源（下级单位） | 下级单位考生列表同时展示本单位自建考试和上级派发考试。 |\n| 考试来源（集团/独立租户） | 集团和独立租户考生列表仅展示本单位考试。 |\n| 人员调动-调出 | 考生调出后原租户定向考试隐藏，不再展示。 |\n| 人员调动-调入 | 调入新租户后仅展示当前租户下定向给该考生的考试。 |\n| 人员调动-调回 | 考生调回原公司后，原定向考试恢复展示。 |\n| 个人档案 | 不受租户调动影响，永久留存全部考试记录。 |\n\n## 11. 版本变更记录\n\n| 版本 | 日期 | 变更内容 | 作者 |\n|------|------|----------|------|\n| V1.0 | 2026-07-14 | 初版。定义小程序端核心功能：混合考试来源展示和人员调动可见性规则。 | — |\n\n## 12. 关联文档\n\n- [《考试功能-整体PRD》](./考试功能-整体PRD.md) – 全局业务规则、数据模型、角色权限、核心流程图、用例图\n- [《规则说明》](../规则说明.html) – 集团/下级单位/独立单位规则对照，含小程序端规则\n- [《考试列表-下级单位 PRD》](./考试列表-下级单位.md) – 下级单位管理端考试列表\n- [《考试列表-集团 PRD》](./考试列表-集团.md) – 集团管理端考试列表\n- [《考试列表-普通租户 PRD》](./考试列表-普通租户.md) – 普通租户管理端考试列表\n",
+  "globalPrd": "# 考试功能 — 整体 PRD\n\n## 1. 引言\n\n### 1.1 背景与目标\n\n\"考试功能\"是 EHS+ 企业版中对员工进行安全生产知识评测的核心模块。该模块需要支持三种不同的租户形态：\n\n- **集团（上级单位）**：跨多家子公司的人员管理形态，需要跨公司选择考试对象、查看跨公司统计数据。\n- **下级单位**：处于集团层级下的成员单位，承接上级派发的考试，同时可创建本单位内部考试。\n- **独立租户（普通租户/非集团）**：无上下级层级关系的独立组织，仅管理本租户范围内的考试。\n\n本 PRD 从全局视角定义考试功能在上述三种租户形态下的统一业务规则、数据模型、角色权限和核心流程。各页面的详细交互规格请参见对应的页面 PRD。\n\n### 1.2 用户价值\n\n| 租户类型 | 核心价值 |\n|----------|----------|\n| 集团管理员 | 跨公司统一下发安全知识考试，掌握全集团各子公司的考试进展与成绩分布。 |\n| 下级单位管理员 | 承接集团下发的考试任务，同时自主创建本单位专属考试来满足内部学习需求。 |\n| 普通租户管理员 | 自主管理本组织的考试全生命周期，从创建、发布到统计分析形成完整闭环。 |\n\n### 1.3 功能范围\n\n**包含**：\n\n| 模块 | 说明 |\n|------|------|\n| 考试列表 | 按租户类型展示对应的考试清单，支持新增、编辑、删除、复制、发布（草稿）、管理（统计入口） |\n| 新增考试 | 三步创建考试：基本信息 → 考生范围（人员/部门选择 + 免考） → 考试设置 |\n| 编辑考试 | 修改草稿考试的考生范围，覆盖人员快照 |\n| 考试统计 | 考生分析、考试记录、部门统计三个维度，含人员状态筛选和部门统计在职过滤 |\n| 人员选择 | 按租户数据范围选择考试对象（人员 + 部门） |\n| 发布校验 | 草稿发布前对人员快照与当前人员主数据的差异进行校验与确认 |\n\n**不包含**：\n\n- 试题配置与管理（考试设置步骤中的具体试题选择不属于本次范围）\n- 考生端的考试作答/提交/成绩查看\n- 移动端管理能力\n\n---\n\n## 2. 三种租户形态概览\n\n```\n┌──────────────────────────────────────────────────────────────────┐\n│                        EHS+ 考试功能                              │\n│                                                                   │\n│  ┌──────────────┐    ┌──────────────────┐    ┌───────────────┐   │\n│  │ 集团         │    │  下级单位         │    │ 独立租户      │   │\n│  │ (上级单位)    │───▶│  (子公司/分公司)   │    │ (非集团组织)   │   │\n│  │              │    │                  │    │               │   │\n│  │ • 跨公司选人  │    │ • 承接上级考试    │    │ • 自建考试    │   │\n│  │ • 自建考试    │    │ • 自建本单位考试  │    │ • 本单位数据  │   │\n│  │ • 跨公司统计  │    │ • 本单位统计     │    │ • 本单位统计  │   │\n│  └──────────────┘    └──────────────────┘    └───────────────┘   │\n│                                                                   │\n│  数据范围: 集团全部公司     数据范围: 本单位+下属部门                  │\n│  人员列: 含\"所属公司\"      人员列: 无\"所属公司\"                   无公司概念 │\n│  统计视图: 部门明细/公司汇总 统计视图: 部门明细                     同下级单位 │\n└──────────────────────────────────────────────────────────────────┘\n```\n\n### 2.1 核心差异对照表\n\n| 差异维度 | 集团 | 下级单位 | 独立租户/普通租户 |\n|----------|------|----------|-------------------|\n| 人员数据范围 | 集团内全部公司 | 本单位 + 下属部门 | 本租户内全部人员 |\n| 跨公司选人 | ✅ 支持 | ❌ 不支持 | ❌ 不涉及（无公司概念） |\n| 上级下发考试 | ❌ 不涉及 | ✅ 考试列表展示上级下发 | ❌ 不涉及 |\n| 上级下发考试操作 | — | 仅\"管理\" | — |\n| 人员列表分组 | 按公司分组 | 不分组、平铺展示 | 不分组、平铺展示 |\n| 考生分析/考试记录列表 | 含\"所属公司\"列 | 无\"所属公司\"列 | 无\"所属公司\"列 |\n| 部门筛选方式 | 公司+部门级联 | 部门下拉树 | 部门下拉树 |\n| 统计部门视图 | 部门明细 + 公司汇总 | 部门明细 | 部门明细 |\n| 人员选择器页面 | 人员选择-集团 | 人员选择-下级单位 | 人员选择-下级单位 |\n\n---\n\n## 3. 角色与权限\n\n| 角色 | 租户端 | 可创建考试 | 可选择的考试对象范围 | 可编辑考试 | 可查看统计 | 说明 |\n|------|--------|-----------|---------------------|-----------|-----------|------|\n| 集团管理员 | 集团 | ✅ | 集团全部公司的人员和部门 | ✅ 仅草稿 | ✅ 全集团 | 可跨公司管理考试全生命周期 |\n| 下级单位管理员 | 下级单位 | ✅ 本单位考试 | 本单位 + 下属部门 | ✅ 仅自建草稿 | ✅ 本单位 | 可承接上级下发考试，对其进行管理操作 |\n| 普通租户管理员 | 独立租户 | ✅ | 本租户全量人员 | ✅ 仅草稿 | ✅ 本租户 | 与下级单位类似，但无上下级关系 |\n\n### 3.1 下级单位对上级下发考试的操作权限\n\n| 操作 | 本单位自建考试 | 上级下发考试 |\n|------|:---:|:---:|\n| 查看详情（名称链接） | ✅ | ✅（查看集团版详情） |\n| 管理（进入统计） | ✅ | ✅ |\n| 预览 | ✅ | ❌ |\n| 发布 | ✅ 草稿 | ❌ |\n| 编辑 | ✅ 草稿 | ❌ |\n| 复制 | ✅ | ❌ |\n| 删除 | ✅ | ❌ |\n| 批量删除 | ✅ | ❌ |\n\n---\n\n## 4. 名词解释\n\n| 术语 | 定义 |\n|------|------|\n| **考试** | 一次完整的考试活动，包含基本信息、考生范围、考试设置、题目配置等。 |\n| **考生范围** | 考试的目标对象集合，可通过选择人员（指定用户）或部门范围来定义。 |\n| **指定用户** | 以单个人员为维度选定的考试对象。 |\n| **部门范围** | 以部门为维度选定的考试对象，选择某部门即包含该部门下（可选含下级部门）的全体人员。 |\n| **组织内全部人员** | 考试对象覆盖当前租户范围内的全部人员，无需单独选择。 |\n| **仅部分人员** | 考试对象仅为管理员选择的具体人员或部门范围内的人员。 |\n| **免考人员** | 被排除在考试要求之外的人员或部门，不计入应考人数，不影响参与率和及格率计算。 |\n| **人员快照** | 创建考试或编辑保存时对当时考试对象范围内所有人员的完整记录（含 ID、姓名、所属公司、部门、人员状态），用于发布前人员变更校验。 |\n| **人员状态** | 枚举值：在职（启用）、离职、停用（禁用）。 |\n| **草稿** | 考试创建后尚未发布的初始状态，支持编辑和发布。 |\n| **未开始** | 考试发布后但尚未到达考试开始时间的状态。 |\n| **进行中** | 考试正处于考试时间段内的状态。 |\n| **已结束** | 考试时间已过的状态。 |\n| **上级下发考试** | 由集团或上级单位创建并推送给下级单位的考试，下级单位不可编辑、删除、发布。 |\n| **自建考试** | 当前租户管理员自行创建的考试。 |\n| **公司汇总** | 集团独有的统计视图，以公司为粒度对部门数据进行扁平汇总展示。 |\n| **部门明细** | 以部门树结构展示统计数据的视图。 |\n\n---\n\n## 5. 核心业务流程图\n\n### 5.1 考试全生命周期（通用）\n\n```mermaid\nflowchart TD\n    A[创建考试] --> B[填写基本信息]\n    B --> C[选择考生范围]\n    C --> C1{考试对象模式?}\n    C1 -->|仅部分人员| C2[选择人员/部门 + 配置免考]\n    C1 -->|组织内全部人员| C3[跳过选人]\n    C2 --> D[设置考试参数]\n    C3 --> D\n    D --> E[生成人员快照]\n    E --> F{保存为草稿}\n    F --> G[草稿状态]\n    G --> H{管理员操作?}\n    H -->|编辑| I[编辑考生范围 → 覆盖快照]\n    I --> G\n    H -->|发布| J[执行发布前人员变更校验]\n    J --> K{有人员变更?}\n    K -->|否| L[直接发布]\n    K -->|是| M[展示发布弹窗]\n    M --> N{管理员确认?}\n    N -->|取消| G\n    N -->|确认发布| L\n    L --> O[未开始]\n    O --> P[进行中]\n    P --> Q[已结束]\n    G -->|删除| R[考试删除]\n```\n\n### 5.2 下级单位特殊流程：上级下发考试\n\n```mermaid\nflowchart TD\n    G[集团管理员] -->|创建并下发| S[上级下发考试]\n    S -->|出现在| SU[下级单位考试列表]\n    SU --> SU1{下级单位操作}\n    SU1 -->|点击名称| SU2[查看集团版考试详情]\n    SU1 -->|管理| SU3[进入本单位统计页]\n    SU1 -->|编辑/删除/发布/复制| SU4[❌ 不可操作]\n```\n\n### 5.3 发布前人员变更校验流程\n\n```mermaid\nflowchart TD\n    A[管理员点击发布] --> B[系统获取人员快照]\n    B --> C[获取当前人员主数据]\n    C --> D{比对快照与主数据}\n    D --> E1[已选人员离职/停用 → 移除]\n    D --> E2[部门内人员离职/停用/转出 → 移除]\n    D --> E3[部门内人员转入/启用 → 新增]\n    E1 --> F{总计变更 > 0 ?}\n    E2 --> F\n    E3 --> F\n    F -->|否| G[直接发布，状态变更为未开始]\n    F -->|是| H[展示发布弹窗]\n    H --> I[按分类查看：全部 / 移除 / 新增]\n    I --> J{管理员操作?}\n    J -->|点击发布| G\n    J -->|点击取消 / 关闭 / 遮罩| K[保持草稿，不发布]\n```\n\n---\n\n## 6. 用例图\n\n```mermaid\nflowchart LR\n    subgraph Actors\n        GA[集团管理员]\n        SA[下级单位管理员]\n        NA[普通租户管理员]\n        SYS[系统]\n    end\n\n    subgraph UC[考试功能用例]\n        direction TB\n        UC1((创建考试))\n        UC2((编辑考试))\n        UC3((发布考试))\n        UC4((查看考试列表))\n        UC5((考试统计))\n        UC6((人员选择))\n        UC7((免考配置))\n        UC8((接收上级考试))\n        UC9((发布前校验))\n        UC10((快照管理))\n    end\n\n    GA --> UC1\n    GA --> UC2\n    GA --> UC3\n    GA --> UC4\n    GA --> UC5\n    GA --> UC6\n    GA --> UC7\n    SA --> UC1\n    SA --> UC2\n    SA --> UC3\n    SA --> UC4\n    SA --> UC5\n    SA --> UC6\n    SA --> UC7\n    SA --> UC8\n    NA --> UC1\n    NA --> UC2\n    NA --> UC3\n    NA --> UC4\n    NA --> UC5\n    NA --> UC6\n    NA --> UC7\n    SYS --> UC9\n    SYS --> UC10\n```\n\n---\n\n## 7. 数据模型\n\n### 7.1 核心实体关系图\n\n```mermaid\nerDiagram\n    租户 ||--o{ 考试 : \"拥有\"\n    考试 ||--o{ 人员快照 : \"生成\"\n    考试 ||--o{ 考试记录 : \"产生\"\n    考试 ||--o{ 免考配置 : \"配置\"\n    考试 }o--|| 租户 : \"归属\"\n    考试 }o--|| 考试分类 : \"分类\"\n\n    租户 {\n        string 租户ID PK\n        string 租户名称\n        string 租户类型 \"集团 / 下级单位 / 普通租户\"\n        string 上级租户ID FK \"下级单位时有值\"\n        string 所属公司名称 \"集团/下级单位\"\n    }\n\n    考试 {\n        string 考试ID PK\n        string 所属租户ID FK\n        string 考试名称\n        string 分类ID FK\n        string 来源 \"自建 / 上级下发\"\n        string 状态 \"草稿 / 未开始 / 进行中 / 已结束\"\n        string 范围模式 \"仅部分人员 / 组织内全部人员\"\n        datetime 考试开始时间\n        datetime 考试结束时间\n        datetime 快照生成时间\n        datetime 创建时间\n        datetime 更新时间\n    }\n\n    人员快照 {\n        string 快照ID PK\n        string 考试ID FK\n        string 人员ID\n        string 姓名\n        string 所属公司 \"集团有值，下级单位/普通租户无\"\n        string 部门名称\n        string 部门全路径\n        string 人员状态 \"在职 / 离职 / 停用\"\n        datetime 快照时间\n        string 快照版本 \"创建 / 编辑\"\n    }\n\n    免考配置 {\n        string 免考配置ID PK\n        string 考试ID FK\n        string 免考类型 \"人员 / 部门\"\n        string 免考目标ID\n        string 免考目标名称\n    }\n\n    考试记录 {\n        string 考试记录ID PK\n        string 考试ID FK\n        string 考生ID\n        string 考生姓名\n        string 所属公司\n        string 部门名称\n        string 完成状态 \"已完成 / 未完成\"\n        int 分数\n        bool 是否及格\n        datetime 交卷时间\n    }\n\n    考试分类 {\n        string 分类ID PK\n        string 租户ID FK\n        string 分类名称\n        string 上级分类ID\n        string 来源 \"自建 / 上级下发（下级单位有上级下发分类节点）\"\n    }\n```\n\n### 7.2 关键字段说明\n\n#### 考试来源\n\n| 值 | 含义 | 适用租户 |\n|----|------|---------|\n| 自建 | 当前租户自建考试 | 全部 |\n| 上级下发 | 上级下发考试 | 下级单位 |\n\n#### 考试状态流转\n\n```\n草稿 → 未开始 → 进行中 → 已结束\n  │\n  └── (删除)\n```\n\n#### 人员快照版本\n\n| 值 | 生成时机 | 说明 |\n|----|---------|------|\n| 创建 | 创建考试保存时 | 考试首次创建时生成 |\n| 编辑 | 编辑考试保存时 | 覆盖旧快照，作为发布校验的最新基准 |\n\n---\n\n## 8. 非功能性需求\n\n### 8.1 性能要求\n\n| 指标 | 要求 |\n|------|------|\n| 考试列表查询响应 | ≤ 2s（1000 条以内） |\n| 人员选择器加载 | ≤ 3s（10,000 以内人员数据） |\n| 部门人数重新计算 | ≤ 3s |\n| 发布前人员变更校验 | ≤ 5s（包含三分类校验） |\n| 考试统计查询 | ≤ 3s |\n| 并发支持 | 支持 100+ 管理员同时操作 |\n\n### 8.2 安全性\n\n| 要求 | 说明 |\n|------|------|\n| 数据隔离 | 不同租户数据严格隔离，下级单位不可访问集团或平级单位数据 |\n| 操作权限 | 上级下发考试在下级单位侧仅开放\"管理\"操作，编辑/删除/发布等操作需校验考试来源为自建 |\n| 人员选择范围限制 | 下级单位人员选择器限定本单位及下属部门，不可越权访问平级或上级单位人员 |\n| 快照安全 | 人员快照为只读历史数据，持久化后不可篡改 |\n\n### 8.3 兼容性\n\n| 要求 | 说明 |\n|------|------|\n| 浏览器 | Chrome 90+、Edge 90+、Safari 14+ |\n| 分辨率 | 1366×768 及以上 |\n\n### 8.4 可维护性\n\n| 要求 | 说明 |\n|------|------|\n| 操作日志 | 考试创建、编辑、发布、删除需记录操作日志 |\n| 快照审计 | 快照生成和覆盖保留历史记录，发布校验时可回溯 |\n\n---\n\n## 9. 页面清单与关联 PRD\n\n### 9.1 集团（上级单位）\n\n| 序号 | 页面名称 | 页面 PRD 路径 | 原型文件 |\n|------|---------|--------------|---------|\n| 1 | 考试列表-集团 | `prd/考试列表-集团.md` | `考试列表-集团.html` |\n| 2 | 新增考试-集团 | `prd/新增考试-集团.md` | `新增考试-集团.html` |\n| 3 | 编辑考试-集团 | `prd/编辑考试-集团.md` | `编辑考试-集团.html` |\n| 4 | 考试统计-集团 | `prd/考试统计-集团.md` | `考试统计-集团.html` |\n| 5 | 人员选择-集团 | — | `人员选择-集团.html` |\n\n### 9.2 下级单位\n\n| 序号 | 页面名称 | 页面 PRD 路径 | 原型文件 |\n|------|---------|--------------|---------|\n| 1 | 考试列表-下级单位 | `prd/考试列表-下级单位.md` | `考试列表-下级单位.html` |\n| 2 | 新增考试-下级单位 | `prd/新增考试-下级单位.md` | `新增考试-下级单位.html` |\n| 3 | 编辑考试-下级单位 | `prd/编辑考试-下级单位.md` | `编辑考试-下级单位:独立租户.html` |\n| 4 | 考试统计-下级单位 | `prd/考试统计-下级单位.md` | `考试统计-下级单位:独立租户.html` |\n| 5 | 人员选择-下级单位：本单位 | — | `人员选择-下级单位:本单位.html` |\n| 6 | 人员选择-下级单位 | — | `人员选择-下级单位.html` |\n\n### 9.3 独立租户/普通租户\n\n| 序号 | 页面名称 | 页面 PRD 路径 | 原型文件 |\n|------|---------|--------------|---------|\n| 1 | 考试列表 | `prd/考试列表-普通租户.md` | `考试列表-普通租户.html` |\n| 2 | 新增考试 | —（参考集团/下级新增） | `新增考试-普通租户.html` |\n| 3 | 编辑考试 | —（参考下级编辑，同数据范围） | `编辑考试-下级单位:独立租户.html` |\n| 4 | 考试统计 | —（参考下级统计） | `考试统计-普通租户.html` |\n\n### 9.4 通用页面\n\n| 序号 | 页面名称 | 说明 | 原型文件 |\n|------|---------|------|---------|\n| 1 | 规则说明 | 考试功能入口的规则说明页 | `规则说明.html` |\n\n### 9.5 小程序\n\n| 序号 | 页面名称 | 说明 | 原型文件 |\n|------|---------|------|---------|\n| 1 | 考试列表 | 小程序端考试列表 | `小程序考试列表.html` |\n\n---\n\n## 10. 附录\n\n### 10.1 租户数据范围矩阵\n\n```\n┌────────────────┬──────────────────────┬──────────────────────┬──────────────────┐\n│   能力 \\ 租户   │        集团           │       下级单位         │    独立租户        │\n├────────────────┼──────────────────────┼──────────────────────┼──────────────────┤\n│ 创建考试        │ 集团跨公司            │ 本单位+下属部门        │ 本租户            │\n│ 上级下发考试     │ 不涉及（集团不下发自己） │ ✅ 列表展示+接收       │ ❌ 不涉及          │\n│ 跨公司选人       │ ✅                    │ ❌                    │ ❌ 无公司概念       │\n│ 人员按公司分组    │ ✅                    │ ❌ 平铺标签            │ ❌ 平铺标签        │\n│ 列表含所属公司列  │ ✅ 考生分析/考试记录    │ ❌                    │ ❌                │\n│ 部门筛选          │ 公司+部门级联          │ 部门下拉树            │ 部门下拉树         │\n│ 统计视图          │ 部门明细 + 公司汇总     │ 部门明细              │ 部门明细           │\n│ 人员选择器        │ 人员选择-集团          │ 人员选择-下级单位       │ 人员选择-下级单位    │\n│ 快照含公司字段    │ ✅                    │ ❌                    │ ❌                │\n│ 分类树上级下发节点 │ ❌                    │ ✅                    │ ❌                │\n└────────────────┴──────────────────────┴──────────────────────┴──────────────────┘\n```\n\n### 10.2 页面状态流转\n\n| 当前状态 | 触发操作 | 目标状态 | 前置条件 |\n|----------|---------|---------|----------|\n| — | 创建考试（保存草稿） | 草稿 | 基本信息填写完成 + 考生范围选择（部分人员模式下至少 1 人或 1 部门） |\n| 草稿 | 编辑保存 | 草稿 | 编辑后覆盖人员快照 |\n| 草稿 | 发布（无变更） | 未开始 | 无人员变更 |\n| 草稿 | 发布（有变更→确认） | 未开始 | 管理员在发布弹窗确认 |\n| 草稿 | 删除 | — | — |\n| 未开始 | 到达开始时间 | 进行中 | 系统自动 |\n| 进行中 | 到达结束时间 | 已结束 | 系统自动 |\n\n### 10.3 版本变更记录\n\n| 版本 | 日期 | 变更内容 | 作者 |\n|------|------|----------|------|\n| V1.0 | 2026-07-13 | 初版。统一定义集团/下级单位/独立租户三种形态下考试功能的全局业务规则、数据模型、角色权限、核心流程和页面清单。 | — |\n\n### 10.4 引用标准\n\n- 本 PRD 作为\"总分结构\"中的总纲，各页面详细交互/UI 规格参见对应的页面 PRD。\n- 所有页面 PRD 的编号均以本 PRD 中第 9 节的页面清单为索引。\n- 三种租户的独特规则已在各差异对照表和矩阵中明确标注。\n",
+  "annotations": [],
+  "badges": []
+}
+</script>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script src="prd-annotation.js"></script>
+
+</body>
+</html>

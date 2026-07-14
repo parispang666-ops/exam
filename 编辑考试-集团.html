@@ -1,0 +1,1640 @@
+<!DOCTYPE html>
+<!-- 整体PRD参考：prd/考试功能-整体PRD.md -->
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>编辑考试-人员-集团 - 环慧慧 EHS+</title>
+  <style>
+    :root {
+      --color-brand: #1570EF;
+      --color-brand-hover: #2E90FA;
+      --color-brand-active: #175CD3;
+      --color-danger: #F64C41;
+      --color-success: #00C5C3;
+      --color-warning: #FF8340;
+      --color-text-primary: #444F66;
+      --color-text-secondary: #758095;
+      --color-text-placeholder: #9EA4AE;
+      --color-text-disabled: #B3B9C4;
+      --color-bg-page: #F7F8FA;
+      --color-bg-surface: #FFFFFF;
+      --color-bg-muted: #F7F8F9;
+      --color-brand-light: #EFF8FF;
+      --color-border: #DEDFE3;
+      --color-divider: #E6E7EB;
+      --radius-component: 4px;
+      --font-family-ui: "PingFang SC", "HarmonyOS Sans SC", "Microsoft YaHei", Arial, sans-serif;
+      --shadow-topbar: 0 1px 4px rgba(31, 42, 55, .10);
+      --shadow-brand: 0 1px 5px rgba(21,112,239,.05), 0 4px 2.5px rgba(21,112,239,.08), 0 2px 2px rgba(21,112,239,.25);
+      --focus-ring: 0 0 0 2px #D9E1FF;
+      --color-topbar-bg: #00254A; --color-topbar-text: rgba(255,255,255,0.90); --color-topbar-sub: rgba(255,255,255,0.60);
+      --color-sidebar-bg: #00254A; --color-sidebar-item-bg: #042240; --color-sidebar-active: #007AFF;
+      --sidebar-width-new: 256px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      min-width: 0;
+      overflow: hidden;
+    }
+
+    body {
+      margin: 0;
+      color: var(--color-text-primary);
+      background: var(--color-bg-page);
+      font-family: var(--font-family-ui);
+      font-size: 14px;
+      line-height: 22px;
+      letter-spacing: 0;
+    }
+
+    button, input, textarea { font: inherit; letter-spacing: 0; }
+    button { border: 0; cursor: pointer; }
+    img { display: block; object-fit: contain; }
+
+    .app {
+      height: 100vh;
+      overflow: hidden;
+      background: var(--color-bg-page);
+    }
+
+    /* ==================== 顶部导航栏 ==================== */
+    .menu-topbar { position: fixed; z-index: 30; top: 0; left: 0; width: 100%; height: 64px; display: flex; background: var(--color-topbar-bg); overflow: hidden; }
+    .menu-logo { width: var(--sidebar-width-new); height: 64px; position: relative; display: flex; align-items: center; background: var(--color-topbar-bg); overflow: hidden; flex: 0 0 var(--sidebar-width-new); }
+    .menu-logo::before { content:""; position:absolute; width:236px; height:236px; left:10px; top:-33px; background:var(--color-topbar-bg); box-shadow:0px 4px 10px rgba(0,0,0,0.40) inset; border-radius:9999px; }
+    .menu-logo::after { content:""; position:absolute; width:188px; height:188px; left:34px; top:-9px; background:var(--color-topbar-bg); box-shadow:0px 4px 10px rgba(0,0,0,0.30) inset; border-radius:9999px; }
+    .menu-logo-inner { position:absolute; width:138px; height:138px; left:59px; top:16px; background:#002449; box-shadow:0px 4px 10px rgba(0,0,0,0.20) inset; border-radius:9999px; z-index:0; }
+    .menu-logo-icon { position:absolute; left:28px; top:8px; width:48px; height:48px; z-index:1; }
+    .menu-logo-icon img { width:48px; height:48px; }
+    .menu-logo-main { position:absolute; left:88px; top:16px; z-index:1; font-size:20px; font-family:var(--font-family-ui); font-weight:400; color:var(--color-topbar-text); white-space:nowrap; }
+    .menu-logo-brand { color:rgba(58,184,255,0.90); }
+    .menu-logo-sub { position:absolute; left:87px; top:39px; z-index:1; font-size:12px; font-family:var(--font-family-ui); font-weight:400; color:var(--color-topbar-sub); white-space:nowrap; }
+    .menu-logo-sep { position:absolute; left:148px; top:27px; width:3px; height:3px; border-radius:50%; background:rgba(255,255,255,0.30); }
+    .menu-top-nav { flex:1; min-width:0; height:64px; display:flex; align-items:center; background:var(--color-topbar-bg); }
+    .menu-top-track { height:64px; display:flex; align-items:center; gap:32px; padding:0 16px; }
+    .menu-top-item { height:46px; display:inline-flex; align-items:center; padding:0; border:none; background:transparent; color:white; font-size:14px; font-family:var(--font-family-ui); font-weight:400; cursor:pointer; white-space:nowrap; border-bottom:2px solid transparent; }
+    .menu-top-item.is-active { border-bottom-color:var(--color-sidebar-active); }
+    .menu-top-actions { height:64px; display:flex; align-items:center; padding:0 16px 0 12px; color:var(--color-topbar-text); font-size:12px; font-family:var(--font-family-ui); white-space:nowrap; flex-shrink:0; }
+    .menu-actions-icons { display:flex; align-items:center; gap:16px; margin-right:20px; }
+    .menu-icon-btn { width:24px; height:24px; display:flex; align-items:center; justify-content:center; background:transparent; color:var(--color-topbar-text); opacity:0.85; cursor:pointer; }
+    .menu-icon-btn svg { width:18px; height:18px; }
+    .menu-icon-btn:hover { opacity:1; }
+    .menu-user { display:inline-flex; align-items:center; gap:8px; color:var(--color-topbar-text); font-size:12px; white-space:nowrap; }
+    .menu-user-avatar { width:28px; height:28px; border-radius:50%; background:#3A8BFF; display:flex; align-items:center; justify-content:center; color:#fff; font-size:12px; }
+    .menu-user-meta { height:24px; display:inline-flex; align-items:center; }
+    .menu-user-arrow { width:16px; height:16px; display:flex; align-items:center; justify-content:center; opacity:0.7; }
+    .menu-user-arrow svg { width:12px; height:12px; }
+
+    /* ==================== 侧边导航菜单 ==================== */
+    .menu-shell { position:fixed; z-index:20; top:64px; left:0; width:var(--sidebar-width-new); height:calc(100vh - 64px); display:flex; flex-direction:column; justify-content:flex-start; background:var(--color-sidebar-bg); box-shadow:0px 2px 8px rgba(0,0,0,0.25); }
+    .menu-side-list { display:flex; flex-direction:column; margin:0; padding:0; overflow:hidden auto; scrollbar-width:thin; }
+    .menu-side-list::-webkit-scrollbar { width:3px; }
+    .menu-side-list::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.15); border-radius:50px; }
+    .menu-side-item { width:256px; min-height:52px; display:flex; align-items:center; gap:12px; padding:0 8px 0 24px; border:none; border-radius:0; background:var(--color-sidebar-bg); color:white; font-size:14px; font-family:var(--font-family-ui); font-weight:400; text-align:left; cursor:pointer; transition:background-color 150ms ease; }
+    .menu-side-item:hover { background:rgba(255,255,255,0.06); }
+    .menu-side-item img { width:20px; height:20px; flex:0 0 auto; }
+    .menu-side-item .menu-side-arrow { width:16px; height:16px; flex:0 0 auto; margin-left:auto; margin-right:12px; transition:transform 200ms ease; }
+    .menu-side-item .menu-side-arrow svg { width:12px; height:12px; fill:currentColor; }
+    .menu-side-item.is-expanded .menu-side-arrow { transform:rotate(90deg); }
+    .menu-side-label { flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .menu-sublist { display:none; flex-direction:column; margin:0; padding:0; background:var(--color-sidebar-item-bg); }
+    .menu-sublist.is-open { display:flex; }
+    .menu-side-item.is-expanded { background:rgba(255,255,255,0.08); }
+    .menu-side-child { width:240px; height:36px; display:flex; align-items:center; margin:8px; padding:0 0 0 36px; border:none; border-radius:4px; background:transparent; color:white; font-size:14px; font-family:var(--font-family-ui); font-weight:400; text-align:left; cursor:pointer; transition:background-color 150ms ease; white-space:nowrap; position:relative; }
+    .menu-side-child::before { content:""; position:absolute; left:16px; top:50%; transform:translateY(-50%); width:6px; height:6px; border-radius:50%; background:rgba(255,255,255,0.40); }
+    .menu-side-child:hover { background:rgba(255,255,255,0.08); }
+    .menu-side-child.is-active { background:var(--color-sidebar-active); color:white; }
+    .menu-side-child.is-active::before { background:white; }
+    .menu-collapse { display:none; }
+
+    /* ==================== 面包屑栏 ==================== */
+    .menu-breadcrumb { position:fixed; z-index:9; top:64px; left:var(--sidebar-width-new); right:0; height:50px; display:flex; align-items:center; padding:0 24px; background:white; box-shadow:0px 0px 8px 6px rgba(0,0,0,0.02); }
+    .menu-breadcrumb-path { display:inline-flex; align-items:center; height:34px; gap:8px; }
+    .menu-breadcrumb-tag { display:inline-flex; align-items:center; height:34px; padding:0 12px; background:#E5F3FF; border-radius:0; color:#007AFF; font-size:14px; }
+    .menu-breadcrumb-tag svg { width:12px; height:12px; flex:0 0 auto; margin-right:6px; }
+    .menu-breadcrumb-next { width:24px; height:34px; display:inline-flex; align-items:center; justify-content:center; color:#9EA4AE; flex:0 0 auto; }
+    .menu-breadcrumb-next svg { width:12px; height:12px; }
+    .menu-breadcrumb-close { width:16px; height:16px; display:inline-flex; align-items:center; justify-content:center; margin-left:8px; cursor:pointer; color:#007AFF; }
+    .menu-breadcrumb-close svg { width:10px; height:10px; }
+
+    /* ==================== 页面主体 ==================== */
+    .page {
+      min-width: 0;
+      height: 100vh;
+      margin-left: var(--sidebar-width-new);
+      padding: 126px 12px 12px;
+      overflow: hidden;
+    }
+
+    .form-panel {
+      height: 100%;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background: #fff;
+      border-radius: 4px;
+      box-shadow: 0px 0px 8px 6px rgba(0,0,0,0.02);
+    }
+
+    .form-header {
+      width: 100%;
+      min-height: 50px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 0 0 auto;
+      padding: 12px 24px;
+      border-bottom: 1px solid var(--color-divider);
+      background: #fff;
+      border-radius: 4px 4px 0 0;
+    }
+
+    .form-header-back {
+      width: 28px;
+      height: 28px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-text-secondary);
+      background: transparent;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+    .form-header-back:hover { color: var(--color-brand); background: var(--color-brand-light); }
+    .form-header-back svg { width: 18px; height: 18px; }
+
+    .form-title {
+      margin: 0;
+      color: var(--color-text-primary);
+      font-size: 18px;
+      line-height: 26px;
+      font-weight: 400;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .form-body {
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow: auto;
+      padding: 32px 24px 24px;
+      scrollbar-color: var(--color-divider) transparent;
+      scrollbar-width: thin;
+    }
+
+    .form-body::-webkit-scrollbar { width: 3px; height: 3px; }
+    .form-body::-webkit-scrollbar-button { width: 0; height: 0; display: none; }
+    .form-body::-webkit-scrollbar-track { background: transparent; }
+    .form-body::-webkit-scrollbar-thumb { border-radius: 50px; background: var(--color-divider); }
+
+    .form-content {
+      width: min(800px, 100%);
+      margin: 0 auto;
+    }
+
+    /* ==================== 步骤条 ==================== */
+    .steps-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 32px;
+    }
+    .step-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--color-text-secondary);
+      font-size: 14px;
+    }
+    .step-item.active { color: var(--color-text-primary); }
+    .step-item.finished { color: var(--color-text-secondary); }
+    .step-number {
+      width: 24px;
+      height: 24px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: var(--color-bg-muted);
+      color: var(--color-text-secondary);
+      font-size: 12px;
+      font-weight: 500;
+    }
+    .step-item.active .step-number { background: var(--color-brand); color: #fff; }
+    .step-item.finished .step-number { background: var(--color-brand-light); color: var(--color-brand); }
+    .step-line {
+      width: 120px;
+      height: 1px;
+      background: var(--color-divider);
+      margin: 0 16px;
+    }
+    .step-line.finished { background: var(--color-brand); }
+
+    /* ==================== 表单分组 ==================== */
+    .form-section {
+      margin-bottom: 32px;
+    }
+    .form-section:last-child { margin-bottom: 0; }
+
+    .form-section-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      height: 24px;
+      margin-bottom: 16px;
+      color: var(--color-text-primary);
+      font-size: 16px;
+      line-height: 24px;
+      font-weight: 500;
+    }
+    .form-section-title::before {
+      content: "";
+      width: 3px;
+      height: 14px;
+      background: var(--color-brand);
+    }
+    .form-section-title .tip {
+      font-size: 12px;
+      color: var(--color-text-placeholder);
+      font-weight: 400;
+      margin-left: 4px;
+    }
+
+    /* ==================== 选择卡片 ==================== */
+    .range-cards {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .range-card {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 20px;
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      background: #fff;
+      cursor: pointer;
+      transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+    }
+    .range-card:hover { border-color: var(--color-brand); }
+    .range-card.selected {
+      border-color: var(--color-brand);
+      background: var(--color-brand-light);
+      box-shadow: 0 0 0 1px var(--color-brand) inset;
+    }
+    .range-card-icon {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      background: var(--color-bg-muted);
+      color: var(--color-brand);
+      flex-shrink: 0;
+    }
+    .range-card.selected .range-card-icon { background: #fff; }
+    .range-card-icon svg { width: 22px; height: 22px; }
+    .range-card-label {
+      flex: 1;
+      color: var(--color-text-primary);
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .range-card-check {
+      width: 18px;
+      height: 18px;
+      border: 2px solid var(--color-border);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .range-card.selected .range-card-check {
+      border-color: var(--color-brand);
+      background: var(--color-brand);
+    }
+    .range-card-check svg { width: 10px; height: 10px; fill: #fff; opacity: 0; }
+    .range-card.selected .range-card-check svg { opacity: 1; }
+
+    /* ==================== 人员区域 ==================== */
+    .person-section {
+      margin-bottom: 24px;
+    }
+    .person-section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .person-section-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--color-text-primary);
+    }
+    .person-section-title .count {
+      color: var(--color-text-secondary);
+      font-weight: 400;
+    }
+    .btn-clear-resigned {
+      height: 32px;
+      margin-left: 12px;
+      padding: 0 16px;
+      border-radius: 4px;
+      color: #fff;
+      background: var(--color-brand);
+      font-size: 13px;
+      font-weight: 500;
+    }
+    .btn-clear-resigned:hover { background: var(--color-brand-hover); }
+    .btn-clear-resigned.disabled {
+      background: #D0D5DD;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+    .person-section-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .person-section-action {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      color: var(--color-brand);
+      font-size: 13px;
+      cursor: pointer;
+      background: transparent;
+      padding: 0;
+      transition: opacity 0.15s;
+    }
+    .person-section-action:hover { opacity: 0.8; }
+    .person-section-action svg { width: 14px; height: 14px; }
+    .person-section-action.disabled { color: var(--color-text-disabled); cursor: not-allowed; pointer-events: none; }
+    .select-btn-row {
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .personnel-count {
+      color: var(--color-text-secondary);
+      font-size: 13px;
+      white-space: nowrap;
+    }
+    .btn-select-standalone {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 32px;
+      padding: 0 24px;
+      border-radius: var(--radius-component);
+      background: var(--color-brand);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      transition: background 0.15s;
+    }
+    .btn-select-standalone:hover {
+      background: var(--color-brand-hover);
+    }
+
+    .person-box {
+      min-height: 80px;
+      padding: 16px;
+      background: var(--color-bg-muted);
+      border-radius: 8px;
+      border: 1px solid var(--color-divider);
+    }
+    .person-box-empty {
+      color: var(--color-text-placeholder);
+      font-size: 13px;
+      padding: 8px 0;
+    }
+    .person-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .person-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      height: 32px;
+      padding: 0 12px;
+      background: #EAF4FF;
+      border: 1px solid #85B7FF;
+      border-radius: 4px;
+      font-size: 13px;
+      color: var(--color-brand);
+      font-weight: 500;
+    }
+    .person-tag-name { white-space: nowrap; }
+    .person-tag-status {
+      color: #F04438;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .person-tag-remove {
+      width: 16px;
+      height: 16px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-brand);
+      cursor: pointer;
+      border-radius: 50%;
+      transition: background 0.15s, color 0.15s;
+    }
+    .person-tag-remove:hover { color: var(--color-danger); background: #FFF0EF; }
+    .person-tag-remove svg { width: 10px; height: 10px; }
+
+    .scope-section {
+      display: none;
+      margin-bottom: 24px;
+    }
+    .scope-section.is-visible { display: block; }
+    .scope-section-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      height: 24px;
+      margin-bottom: 12px;
+      color: var(--color-text-primary);
+      font-size: 14px;
+      line-height: 22px;
+      font-weight: 500;
+    }
+    .scope-section-title::before {
+      content: "";
+      width: 3px;
+      height: 14px;
+      background: var(--color-brand);
+      flex-shrink: 0;
+    }
+    .scope-card {
+      border: 1px solid var(--color-divider);
+      border-radius: 6px;
+      overflow: hidden;
+      background: #fff;
+    }
+    .scope-card-header {
+      min-height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 0 24px;
+      background: #fff;
+    }
+    .scope-card-count {
+      color: var(--color-text-primary);
+      font-size: 14px;
+    }
+    .scope-card-actions {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-shrink: 0;
+    }
+    .scope-card-action {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-height: 32px;
+      padding: 0;
+      color: var(--color-brand);
+      background: transparent;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .scope-card-action:hover { opacity: 0.8; }
+    .scope-card-action svg { width: 14px; height: 14px; }
+    .scope-card-action + .scope-card-action {
+      padding-left: 14px;
+      border-left: 1px solid var(--color-divider);
+    }
+    .scope-card-body {
+      min-height: 80px;
+      padding: 24px;
+      background: #F6F7F9;
+    }
+    .scope-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .scope-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      height: 32px;
+      max-width: 100%;
+      padding: 0 10px;
+      background: #fff;
+      border-radius: 4px;
+      color: var(--color-text-primary);
+      font-size: 13px;
+    }
+    .scope-tag-name {
+      max-width: 260px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .scope-tag-remove {
+      width: 16px;
+      height: 16px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-text-placeholder);
+      border-radius: 50%;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .scope-tag-remove:hover {
+      color: var(--color-danger);
+      background: #FFF0EF;
+    }
+    .scope-tag-remove svg { width: 10px; height: 10px; }
+    .selected-company-groups {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .selected-company-group {
+      padding: 16px 18px 18px;
+      border: 1px solid #E8EDF5;
+      border-radius: 8px;
+      background: #fff;
+    }
+    .selected-company-title {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 12px;
+      color: var(--color-text-primary);
+      font-size: 15px;
+      line-height: 22px;
+      font-weight: 500;
+    }
+    .selected-company-count {
+      color: var(--color-text-secondary);
+      font-weight: 400;
+    }
+    .selected-company-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .selected-company-tags .person-tag,
+    .selected-company-tags .scope-tag {
+      height: 32px;
+      border: 1px solid #B7D7FF;
+      border-radius: 4px;
+      color: var(--color-text-primary);
+      background: #fff;
+    }
+    .scope-tags.is-grouped {
+      display: block;
+    }
+    .exempt-selection {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .exempt-selection-block {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .exempt-selection-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--color-text-primary);
+      font-size: 14px;
+      line-height: 22px;
+      font-weight: 500;
+    }
+    .exempt-selection-title::before {
+      content: "";
+      width: 3px;
+      height: 14px;
+      background: var(--color-brand);
+      flex-shrink: 0;
+    }
+    .exempt-selection-count {
+      color: var(--color-text-secondary);
+      font-weight: 400;
+    }
+    .exempt-selection-actions {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .exempt-selection-action {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 0;
+      background: transparent;
+      border: none;
+      color: var(--color-brand);
+      font-size: 12px;
+      line-height: 20px;
+      cursor: pointer;
+    }
+    .exempt-selection-action:hover { color: var(--color-brand-hover); }
+    .exempt-selection-action svg { width: 14px; height: 14px; flex-shrink: 0; }
+    .selected-more-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: fit-content;
+      height: 32px;
+      padding: 0 12px;
+      border: 1px solid #B7D7FF;
+      border-radius: 4px;
+      background: #F2F8FF;
+      color: var(--color-brand);
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .selected-more-btn:hover {
+      background: #E6F2FF;
+    }
+
+    .btn-add {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      height: 32px;
+      padding: 0 16px;
+      border: 1px dashed var(--color-brand);
+      border-radius: 4px;
+      background: var(--color-brand-light);
+      color: var(--color-brand);
+      font-size: 13px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .btn-add:hover { background: #D9EBFF; }
+    .btn-add svg { width: 14px; height: 14px; }
+
+    /* ==================== 底部按钮 ==================== */
+    .form-footer {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      padding: 16px 24px;
+      border-top: 1px solid var(--color-divider);
+      flex-shrink: 0;
+      background: #fff;
+      border-radius: 0 0 4px 4px;
+    }
+    .btn-outline {
+      height: 36px;
+      padding: 0 24px;
+      border: 1px solid var(--color-border);
+      border-radius: 4px;
+      background: #fff;
+      color: var(--color-text-primary);
+      font-size: 14px;
+      cursor: pointer;
+      transition: border-color 0.15s, color 0.15s, background 0.15s;
+    }
+    .btn-outline:hover { border-color: var(--color-brand); color: var(--color-brand); background: var(--color-brand-light); }
+    .btn-primary {
+      height: 36px;
+      padding: 0 24px;
+      border: none;
+      border-radius: 4px;
+      background: var(--color-brand);
+      color: #fff;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .btn-primary:hover { background: var(--color-brand-hover); }
+
+    /* ==================== 人员选择弹窗 ==================== */
+    .modal-overlay {
+      position: fixed;
+      z-index: 100;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.45);
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay.show { display: flex; }
+    .picker-modal {
+      width: min(1100px, calc(100vw - 48px));
+      height: min(760px, calc(100vh - 48px));
+      background: #fff;
+      border-radius: 4px;
+      overflow: hidden;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.18);
+      position: relative;
+    }
+    .picker-frame {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      display: block;
+    }
+    .picker-loading {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #fff;
+      color: var(--color-text-placeholder);
+      font-size: 13px;
+      pointer-events: none;
+    }
+    .picker-modal.is-loaded .picker-loading { display: none; }
+
+    /* 提示条 */
+    .warm-tip {
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+      margin-top: 8px;
+      padding: 8px 12px;
+      background: #FFF7E6;
+      border: 1px solid #FFD591;
+      border-radius: 4px;
+      color: #AD6800;
+      font-size: 12px;
+      line-height: 20px;
+    }
+    .warm-tip svg { width: 14px; height: 14px; flex-shrink: 0; margin-top: 3px; }
+  </style>
+  <link rel="stylesheet" href="prd-annotation.css">
+</head>
+<body>
+
+<div class="app">
+  <!-- ==================== 顶部导航栏 ==================== -->
+  <header class="menu-topbar">
+    <div class="menu-logo">
+      <div class="menu-logo-inner"></div>
+      <span class="menu-logo-icon"><img src="assets/CodeBuddyAssets/696_1660/14.svg" alt=""></span>
+      <div class="menu-logo-main">环慧慧<span class="menu-logo-brand">EHS+</span></div>
+      <div class="menu-logo-sub">Enterprise Edition</div>
+      <div class="menu-logo-sep"></div>
+    </div>
+    <nav class="menu-top-nav">
+      <div class="menu-top-track">
+        <button class="menu-top-item">环境</button>
+        <button class="menu-top-item">安全</button>
+        <button class="menu-top-item">EHS教育</button>
+        <button class="menu-top-item is-active">培训</button>
+        <button class="menu-top-item">系统管理</button>
+        <button class="menu-top-item">外委管理</button>
+      </div>
+    </nav>
+    <div class="menu-top-actions">
+      <div class="menu-actions-icons">
+        <button class="menu-icon-btn" title="消息"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></button>
+        <button class="menu-icon-btn" title="全屏"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg></button>
+      </div>
+      <div class="menu-user">
+        <div class="menu-user-avatar">虚</div>
+        <div class="menu-user-meta">虚根（系统管理员）</div>
+        <div class="menu-user-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==================== 侧边导航菜单 ==================== -->
+  <aside class="menu-shell">
+    <div class="menu-side-list">
+      <button class="menu-side-item is-expanded" data-group="resource">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+        <span class="menu-side-label">资源管理</span>
+        <span class="menu-side-arrow"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></span>
+      </button>
+      <div class="menu-sublist is-open" data-group="resource">
+        <button class="menu-side-child">课件管理</button>
+        <button class="menu-side-child">试题管理</button>
+        <button class="menu-side-child">试卷管理</button>
+      </div>
+
+      <button class="menu-side-item" data-group="config">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        <span class="menu-side-label">配置管理</span>
+        <span class="menu-side-arrow"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></span>
+      </button>
+      <div class="menu-sublist" data-group="config">
+        <button class="menu-side-child">课件分类</button>
+        <button class="menu-side-child">试题分类</button>
+        <button class="menu-side-child">标签分类</button>
+      </div>
+
+      <button class="menu-side-item is-expanded" data-group="learning">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        <span class="menu-side-label">学习中心</span>
+        <span class="menu-side-arrow"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></span>
+      </button>
+      <div class="menu-sublist is-open" data-group="learning">
+        <button class="menu-side-child is-active">考试管理</button>
+        <button class="menu-side-child">课程管理</button>
+        <button class="menu-side-child">培训类别</button>
+        <button class="menu-side-child">考试设置</button>
+        <button class="menu-side-child">三级安全教育</button>
+        <button class="menu-side-child">课程设置</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ==================== 面包屑栏 ==================== -->
+  <div class="menu-breadcrumb">
+    <div class="menu-breadcrumb-path">
+      <span class="menu-breadcrumb-tag">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        安全首页
+        <span class="menu-breadcrumb-close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>
+      </span>
+      <span class="menu-breadcrumb-next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></span>
+      <span class="menu-breadcrumb-tag" style="background:#E5F3FF; color:#007AFF;">
+        编辑考试-人员
+        <span class="menu-breadcrumb-close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>
+      </span>
+    </div>
+  </div>
+
+  <!-- ==================== 页面主体 ==================== -->
+  <main class="page">
+    <div class="form-panel">
+      <div class="form-header">
+        <button class="form-header-back" title="返回">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        </button>
+        <h1 class="form-title">编辑考试</h1>
+      </div>
+
+      <div class="form-body">
+        <div class="form-content">
+          <!-- 步骤条 -->
+          <div class="steps-bar">
+            <div class="step-item finished">
+              <span class="step-number">1</span>
+              <span class="step-label">基本信息</span>
+            </div>
+            <div class="step-line finished"></div>
+            <div class="step-item active">
+              <span class="step-number">2</span>
+              <span class="step-label">考生范围</span>
+            </div>
+            <div class="step-line"></div>
+            <div class="step-item">
+              <span class="step-number">3</span>
+              <span class="step-label">考试设置</span>
+            </div>
+          </div>
+
+          <!-- 考生范围 -->
+          <div class="form-section">
+            <div class="form-section-title">
+              考生范围
+              <span class="tip">温馨提示：系统会自动将被多次选中的人员进行去重操作，确保每个考试同个批次内每个人只参与一次。</span>
+            </div>
+            <div class="range-cards" id="rangeCards">
+              <div class="range-card selected" data-value="partial" onclick="setRange('partial')">
+                <div class="range-card-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                </div>
+                <span class="range-card-label">仅部分人员</span>
+                <div class="range-card-check"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>
+              </div>
+              <div class="range-card" data-value="all" onclick="setRange('all')">
+                <div class="range-card-icon" style="color:#00C5C3;">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                </div>
+                <span class="range-card-label">组织内全部人员</span>
+                <div class="range-card-check"><svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 选择按钮 -->
+          <div class="select-btn-row" id="selectBtnRow">
+            <button class="btn-select-standalone" onclick="openPersonPicker()">选择</button>
+            <span class="personnel-count" id="examPersonCount"><span class="personnel-count-text">共计人员：0人</span></span>
+          </div>
+
+          <!-- 指定用户 -->
+          <div class="form-section" id="specifiedUserSection">
+            <div class="person-section-header">
+              <div class="person-section-title">
+                人员
+                <span class="count" id="specifiedCount">（13个）</span>
+                <button class="btn-clear-resigned" id="btnClearResigned" type="button" onclick="removeResignedSpecified()">一键清理离职人员</button>
+              </div>
+              <div class="person-section-actions">
+                <button class="person-section-action" id="btnViewSelected" onclick="viewScopeSelected('person')">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  查看已选
+                </button>
+                <button class="person-section-action" id="btnRemoveAll" onclick="removeAllSpecified()">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                  全部移除
+                </button>
+              </div>
+            </div>
+            <div class="person-box" id="specifiedUserBox">
+              <div class="person-tags" id="specifiedTags">
+                <span class="person-tag" data-id="p1" title="福建华电可门发电有限公司 / 安环部 / 安全专员 / 离职">
+                  <span class="person-tag-name">李明明</span><span class="person-tag-status">（离职）</span>
+                  <span class="person-tag-remove" onclick="removeSpecified('p1')" title="移除">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                  </span>
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 部门范围 -->
+          <div class="scope-section" id="deptRangeSection">
+            <div class="scope-section-title">部门范围</div>
+            <div class="scope-card">
+              <div class="scope-card-header">
+                <div class="scope-card-count" id="deptRangeCount">0个部门</div>
+                <div class="scope-card-actions">
+                  <button class="scope-card-action" onclick="viewScopeSelected('dept')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    查看已选
+                  </button>
+                  <button class="scope-card-action" onclick="removeAllDeptRanges()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                    全部移除
+                  </button>
+                </div>
+              </div>
+              <div class="scope-card-body">
+                <div class="scope-tags" id="deptRangeTags"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 免考人员 -->
+          <div class="form-section" id="exemptSection">
+            <div class="person-section-header">
+              <div class="person-section-title">
+                免考人员
+                <span class="count" id="exemptCount"></span>
+              </div>
+            </div>
+            <div class="select-btn-row" style="margin-bottom:0;">
+              <button class="btn-add" onclick="openExemptPicker()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                选择
+              </button>
+              <span class="personnel-count" id="exemptPersonCount"><span class="personnel-count-text">共计人员：0人</span></span>
+            </div>
+            <div class="person-box" id="exemptBox" style="margin-top:12px; display:none;">
+              <div class="person-tags" id="exemptTags"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-footer">
+        <button class="btn-outline" onclick="goPrev()">上一步</button>
+        <button class="btn-primary" onclick="goNext()">保存并下一步</button>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- ==================== 人员选择弹窗 ==================== -->
+<div class="modal-overlay" id="personModal" aria-hidden="true">
+  <div class="picker-modal" id="pickerModalPanel">
+    <div class="picker-loading">正在加载人员选择器...</div>
+    <iframe class="picker-frame" id="personPickerFrame" title="人员选择器"></iframe>
+  </div>
+</div>
+
+<script>
+  const mockSpecifiedUsers = [
+    { id: 'mock-001', name: '李明明', company: '福建华电可门发电有限公司', dept: '安环部', post: '安全专员', status: '离职' },
+    { id: 'mock-002', name: '王芳', company: '福建华电可门发电有限公司', dept: '生产部/一车间', post: '班组长', status: '离职' },
+    { id: 'mock-003', name: '陈静', company: '福建华电可门发电有限公司', dept: '技术部/研发组', post: '工程师', status: '在职' },
+    { id: 'mock-004', name: '刘洋', company: '福建华电可门发电有限公司', dept: '消防管理部', post: '消防专员', status: '在职' },
+    { id: 'mock-005', name: '孙丽', company: '华电集团新能源有限公司', dept: '运维部', post: '运维专员', status: '停用' },
+    { id: 'mock-006', name: '周杰', company: '华电集团新能源有限公司', dept: '安全监察部', post: '安全主管', status: '在职' },
+    { id: 'mock-007', name: '吴敏', company: '华电集团新能源有限公司', dept: '人力资源部', post: '培训专员', status: '在职' },
+    { id: 'mock-008', name: '郑凯', company: '国电燃料集团有限公司', dept: '采购部', post: '采购经理', status: '在职' },
+    { id: 'mock-009', name: '高媛', company: '国电燃料集团有限公司', dept: '质检部', post: '质检员', status: '离职' },
+    { id: 'mock-010', name: '宋晨', company: '华电福建分公司', dept: '综合部', post: '综合管理员', status: '在职' },
+    { id: 'mock-011', name: '罗成', company: '华电福建分公司', dept: '工程部', post: '项目经理', status: '在职' },
+    { id: 'mock-012', name: '许诺', company: '华电浙江分公司', dept: '运行部', post: '值班员', status: '在职' },
+    { id: 'mock-013', name: '蒋欣', company: '华电浙江分公司', dept: '安环部', post: '安全员', status: '在职' }
+  ];
+
+  let currentRange = 'partial';
+  let specifiedUsers = [...mockSpecifiedUsers];
+  let specifiedDeptRanges = [];
+  let specifiedResolvedUsers = [...specifiedUsers];
+  let exemptUsers = [];
+  let exemptDeptRanges = [];
+  let exemptResolvedUsers = [];
+  let currentPicker = ''; // 'specified' | 'exempt'
+  const MAX_VISIBLE_SELECTED_TAGS = 10;
+
+  const rangeCards = document.querySelectorAll('.range-card');
+  const selectBtnRow = document.getElementById('selectBtnRow');
+  const specifiedSection = document.getElementById('specifiedUserSection');
+  const deptRangeSection = document.getElementById('deptRangeSection');
+  const exemptSection = document.getElementById('exemptSection');
+  const personModal = document.getElementById('personModal');
+  const pickerModalPanel = document.getElementById('pickerModalPanel');
+  const personPickerFrame = document.getElementById('personPickerFrame');
+
+  function escapeHTML(str) {
+    const div = document.createElement('div');
+    div.textContent = String(str ?? '');
+    return div.innerHTML;
+  }
+
+  function dedupeUsers(users) {
+    const userMap = new Map();
+    users.forEach(user => {
+      if (!user || !user.id) return;
+      userMap.set(String(user.id), {
+        id: String(user.id),
+        name: user.name || String(user.id),
+        company: user.company || '',
+        dept: user.dept || '',
+        post: user.post || '',
+        status: user.status || ''
+      });
+    });
+    return [...userMap.values()];
+  }
+
+  function dedupeItems(items, normalize) {
+    const itemMap = new Map();
+    items.forEach(item => {
+      if (!item || !item.id) return;
+      const normalized = normalize(item);
+      itemMap.set(String(normalized.id), normalized);
+    });
+    return [...itemMap.values()];
+  }
+
+  function normalizeDeptRanges(depts) {
+    return dedupeItems(depts || [], dept => ({
+      id: String(dept.id),
+      name: dept.name || String(dept.id),
+      company: dept.company || '',
+      count: dept.count || 0
+    }));
+  }
+function hasSpecifiedSelection() {
+    return specifiedUsers.length > 0 || specifiedDeptRanges.length > 0;
+  }
+
+  function removeIconSvg() {
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+  }
+
+  function getCompanyGroupName(item) {
+    return item?.company || '未设置公司';
+  }
+
+  function groupByCompany(items) {
+    const groups = [];
+    const groupMap = new Map();
+    (items || []).forEach(item => {
+      const company = getCompanyGroupName(item);
+      if (!groupMap.has(company)) {
+        const group = { company, items: [] };
+        groupMap.set(company, group);
+        groups.push(group);
+      }
+      groupMap.get(company).items.push(item);
+    });
+    return groups;
+  }
+
+  function companyGroupTemplate(group, renderTag, extraHTML = '') {
+    const totalCount = group.totalCount ?? group.items.length;
+    return `
+      <div class="selected-company-group">
+        <div class="selected-company-title">
+          <span>${escapeHTML(group.company)}</span>
+          <span class="selected-company-count">（${totalCount}）</span>
+        </div>
+        <div class="selected-company-tags">
+          ${group.items.map(renderTag).join('')}
+          ${extraHTML}
+        </div>
+      </div>
+    `;
+  }
+
+  function selectedMoreButton(hiddenCount, clickHandler) {
+    if (!hiddenCount || hiddenCount <= 0 || !clickHandler) return '';
+    return `<button type="button" class="selected-more-btn" onclick="${escapeHTML(clickHandler)}">查看更多${hiddenCount}项</button>`;
+  }
+
+  function escapeJSString(str) {
+    return String(str ?? '').replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/\r/g, '\\r').replace(/\n/g, '\\n');
+  }
+
+  function getCompanyMoreHandler(clickMoreHandler, company) {
+    return typeof clickMoreHandler === 'function' ? clickMoreHandler(company) : clickMoreHandler;
+  }
+
+  function renderCompanyGroups(items, renderTag, emptyText, clickMoreHandler = '') {
+    if (!items || items.length === 0) return `<div class="person-box-empty">${escapeHTML(emptyText)}</div>`;
+    const groups = groupByCompany(items);
+    return `
+      <div class="selected-company-groups">
+        ${groups.map(group => {
+          const visibleGroup = {
+            company: group.company,
+            items: group.items.slice(0, MAX_VISIBLE_SELECTED_TAGS),
+            totalCount: group.items.length
+          };
+          const hiddenCount = Math.max(0, group.items.length - MAX_VISIBLE_SELECTED_TAGS);
+          return companyGroupTemplate(
+            visibleGroup,
+            renderTag,
+            selectedMoreButton(hiddenCount, getCompanyMoreHandler(clickMoreHandler, group.company))
+          );
+        }).join('')}
+      </div>
+    `;
+  }
+
+  function renderExemptBlock(title, amount, bodyHTML, viewHandler, removeHandler) {
+    const hasActions = viewHandler && removeHandler;
+    return `
+      <div class="exempt-selection-block">
+        <div class="exempt-selection-title">
+          <span>${escapeHTML(title)}</span>
+          <span class="exempt-selection-count">（${escapeHTML(amount)}）</span>
+          ${hasActions ? `
+          <div class="exempt-selection-actions">
+            <button type="button" class="exempt-selection-action" onclick="${viewHandler}">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              查看已选
+            </button>
+            <button type="button" class="exempt-selection-action" onclick="${removeHandler}">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+              全部移除
+            </button>
+          </div>
+          ` : ''}
+        </div>
+        ${bodyHTML}
+      </div>
+    `;
+  }
+
+  function userTagTemplate(user, removeFnName) {
+    const id = escapeHTML(user.id);
+    const title = [user.company, user.dept, user.post, user.status].filter(Boolean).join(' / ');
+    const statusText = user.status === '离职' || user.status === '停用' ? '<span class="person-tag-status">（离职）</span>' : '';
+    return `
+      <span class="person-tag" data-id="${id}" title="${escapeHTML(title)}">
+        <span class="person-tag-name">${escapeHTML(user.name)}</span>${statusText}
+        <span class="person-tag-remove" onclick="${removeFnName}('${id}')" title="移除">
+          ${removeIconSvg()}
+        </span>
+      </span>
+    `;
+  }
+
+  function scopeTagTemplate(item, removeFnName, label) {
+    const id = escapeHTML(item.id);
+    return `
+      <span class="scope-tag" data-id="${id}" title="${escapeHTML(label)}">
+        <span class="scope-tag-name">${escapeHTML(label)}</span>
+        <span class="scope-tag-remove" onclick="${removeFnName}('${id}')" title="移除">
+          ${removeIconSvg()}
+        </span>
+      </span>
+    `;
+  }
+
+  function formatScopeName(company, name) {
+    if (company && name && company !== name) return `${company}-${name}`;
+    return company || name || '';
+  }
+
+  function formatDeptRangeInCompany(dept) {
+    if (dept.company && dept.name === dept.company) return '全公司';
+    return dept.name;
+  }
+function setRange(value) {
+    currentRange = value;
+    rangeCards.forEach(card => {
+      const selected = card.dataset.value === value;
+      card.classList.toggle('selected', selected);
+    });
+    // 组织内全部人员时，隐藏选择按钮、指定用户和免考人员区域
+    if (value === 'all') {
+      selectBtnRow.style.display = 'none';
+      specifiedSection.style.display = 'none';
+      deptRangeSection.classList.remove('is-visible');
+      exemptSection.style.display = 'none';
+    } else {
+      selectBtnRow.style.display = 'block';
+      renderSpecified();
+      renderScopeRanges();
+      exemptSection.style.display = 'block';
+    }
+  }
+
+  function renderSpecified() {
+    const count = document.getElementById('specifiedCount');
+    const box = document.getElementById('specifiedUserBox');
+    const hasScopeRanges = specifiedDeptRanges.length > 0;
+    if (currentRange === 'partial') {
+      specifiedSection.style.display = specifiedUsers.length > 0 ? 'block' : 'none';
+    }
+    count.textContent = '（' + specifiedUsers.length + '个）';
+    box.innerHTML = renderCompanyGroups(
+      specifiedUsers,
+      user => userTagTemplate(user, 'removeSpecified'),
+      '暂无指定用户',
+      company => `viewScopeSelected('person', '${escapeJSString(company)}')`
+    );
+
+    const hasSpecified = hasSpecifiedSelection();
+    var epc = document.getElementById('examPersonCount');
+    var epcText = epc.querySelector('.personnel-count-text');
+    if (epcText) epcText.textContent = '共计人员：' + specifiedResolvedUsers.length + '人';
+    else epc.textContent = '共计人员：' + specifiedResolvedUsers.length + '人';
+    document.getElementById('btnViewSelected').classList.toggle('disabled', !hasSpecified);
+    document.getElementById('btnRemoveAll').classList.toggle('disabled', !hasSpecified);
+    document.getElementById('btnClearResigned').classList.toggle('disabled', !specifiedUsers.some(user => user.status === '离职' || user.status === '停用'));
+  }
+
+  function renderScopeRanges() {
+    const hasDeptRanges = currentRange === 'partial' && specifiedDeptRanges.length > 0;
+
+    deptRangeSection.classList.toggle('is-visible', hasDeptRanges);
+
+    document.getElementById('deptRangeCount').textContent = specifiedDeptRanges.length + '个部门';
+
+    const deptRangeTags = document.getElementById('deptRangeTags');
+    deptRangeTags.classList.toggle('is-grouped', specifiedDeptRanges.length > 0);
+    deptRangeTags.innerHTML = renderCompanyGroups(
+      specifiedDeptRanges,
+      dept => scopeTagTemplate(dept, 'removeDeptRange', formatDeptRangeInCompany(dept)),
+      '暂无已选部门',
+      company => `viewScopeSelected('dept', '${escapeJSString(company)}')`
+    );
+  }
+
+function renderExempt() {
+    const count = document.getElementById('exemptCount');
+    const box = document.getElementById('exemptBox');
+    const hasExempt = exemptUsers.length > 0 || exemptDeptRanges.length > 0;
+    count.textContent = '';
+    var expc = document.getElementById('exemptPersonCount');
+    var expcText = expc.querySelector('.personnel-count-text');
+    if (expcText) expcText.textContent = '共计人员：' + exemptResolvedUsers.length + '人';
+    else expc.textContent = '共计人员：' + exemptResolvedUsers.length + '人';
+    if (!hasExempt) {
+      box.style.display = 'none';
+      return;
+    }
+    const userBlock = exemptUsers.length > 0 ? renderExemptBlock(
+      '已选人员',
+      exemptUsers.length + '人',
+      renderCompanyGroups(exemptUsers, user => userTagTemplate(user, 'removeExempt'), '暂无已选人员', company => `viewExemptSelected('person', '${escapeJSString(company)}')`),
+      "viewExemptSelected('person')",
+      'removeAllExemptUsers()'
+    ) : '';
+    const deptBlock = exemptDeptRanges.length > 0 ? renderExemptBlock(
+      '已选部门',
+      exemptDeptRanges.length + '个部门',
+      renderCompanyGroups(exemptDeptRanges, dept => scopeTagTemplate(dept, 'removeExemptDept', formatDeptRangeInCompany(dept)), '暂无已选部门', company => `viewExemptSelected('dept', '${escapeJSString(company)}')`),
+      "viewExemptSelected('dept')",
+      'removeAllExemptDepts()'
+    ) : '';
+    box.style.display = 'block';
+    box.innerHTML = `
+      <div class="exempt-selection">
+        ${userBlock}
+        ${deptBlock}
+      </div>
+    `;
+  }
+
+  function removeSpecified(id) {
+    specifiedUsers = specifiedUsers.filter(u => u.id !== String(id));
+    specifiedResolvedUsers = specifiedResolvedUsers.filter(u => u.id !== String(id));
+    renderSpecified();
+  }
+
+  function removeExempt(id) {
+    exemptUsers = exemptUsers.filter(u => u.id !== String(id));
+    exemptResolvedUsers = exemptResolvedUsers.filter(u => u.id !== String(id));
+    renderExempt();
+  }
+
+  function removeExemptDept(id) {
+    exemptDeptRanges = exemptDeptRanges.filter(item => item.id !== String(id));
+    renderExempt();
+  }
+
+  function removeAllExemptUsers() {
+    exemptUsers = [];
+    renderExempt();
+  }
+
+  function removeAllExemptDepts() {
+    exemptDeptRanges = [];
+    renderExempt();
+  }
+
+  function removeAllExempt() {
+    exemptUsers = [];
+    exemptDeptRanges = [];
+    exemptResolvedUsers = [];
+    renderExempt();
+  }
+
+  function removeAllSpecified() {
+    specifiedUsers = [];
+    specifiedDeptRanges = [];
+    specifiedResolvedUsers = [];
+    renderSpecified();
+    renderScopeRanges();
+  }
+
+  function removeResignedSpecified() {
+    specifiedUsers = specifiedUsers.filter(user => user.status !== '离职' && user.status !== '停用');
+    specifiedResolvedUsers = specifiedResolvedUsers.filter(user => user.status !== '离职' && user.status !== '停用');
+    renderSpecified();
+  }
+
+  function removeDeptRange(id) {
+    specifiedDeptRanges = specifiedDeptRanges.filter(item => item.id !== String(id));
+    renderSpecified();
+    renderScopeRanges();
+  }
+function removeAllDeptRanges() {
+    specifiedDeptRanges = [];
+    renderSpecified();
+    renderScopeRanges();
+  }
+function viewScopeSelected(type, companyFilter = '') {
+    openPersonPicker(type, type, companyFilter);
+  }
+
+  function viewExemptSelected(type, companyFilter = '') {
+    currentPicker = 'exempt';
+    openPickerModal({
+      users: exemptUsers,
+      depts: exemptDeptRanges,
+      activeTab: type,
+      viewSelectedType: type,
+      companyFilter
+    });
+  }
+
+  function getExemptDefaultSelectedType() {
+    return exemptUsers.length > 0 ? 'person' : 'dept';
+  }
+
+  function openPersonPicker(activeTab = 'person', viewSelectedType = '', companyFilter = '') {
+    currentPicker = 'specified';
+    openPickerModal({
+      users: specifiedUsers,
+      depts: specifiedDeptRanges,
+      activeTab,
+      viewSelectedType,
+      companyFilter
+    });
+  }
+
+  function openExemptPicker() {
+    currentPicker = 'exempt';
+    openPickerModal({
+      users: exemptUsers,
+      depts: exemptDeptRanges,
+      activeTab: 'person'
+    });
+  }
+
+  function openPickerModal(selection) {
+    const selectedIds = (selection.users || []).map(u => String(u.id));
+    const selectedDeptIds = (selection.depts || []).map(item => String(item.id));
+    pickerModalPanel.classList.remove('is-loaded');
+    /* 弹窗打开时隐藏页面级角标 */
+    document.body.classList.add('modal-open');
+    document.querySelectorAll('.prd-annotation-popover').forEach(node => node.remove());
+    personModal.classList.add('show');
+    personModal.setAttribute('aria-hidden', 'false');
+
+    personPickerFrame.onload = () => {
+      pickerModalPanel.classList.add('is-loaded');
+      personPickerFrame.contentWindow.postMessage({
+        type: 'person-picker:init',
+        payload: {
+          context: currentPicker,
+          personIds: selectedIds,
+          deptIds: selectedDeptIds,
+          activeTab: selection.activeTab || 'person',
+          viewSelectedType: selection.viewSelectedType || '',
+          companyFilter: selection.companyFilter || ''
+        }
+      }, '*');
+    };
+    personPickerFrame.src = '人员选择-集团.html?embed=1&context=' + encodeURIComponent(currentPicker) + '&t=' + Date.now();
+  }
+
+  function closeModal() {
+    document.body.classList.remove('modal-open');
+
+    personModal.classList.remove('show');
+    personModal.setAttribute('aria-hidden', 'true');
+    personPickerFrame.onload = null;
+    personPickerFrame.removeAttribute('src');
+  }
+
+  function applyPickerResult(result) {
+    const directUsers = dedupeUsers(result?.person || []);
+    const resolvedUsers = dedupeUsers(result?.resolvedPersons || directUsers);
+    if (currentPicker === 'specified') {
+      specifiedUsers = directUsers;
+      specifiedDeptRanges = normalizeDeptRanges(result?.dept || []);
+      specifiedResolvedUsers = resolvedUsers;
+      renderSpecified();
+      renderScopeRanges();
+    } else if (currentPicker === 'exempt') {
+      exemptUsers = directUsers;
+      exemptDeptRanges = normalizeDeptRanges(result?.dept || []);
+      exemptResolvedUsers = resolvedUsers;
+      renderExempt();
+    }
+  }
+
+  window.addEventListener('message', event => {
+    const data = event.data;
+    if (!data || typeof data !== 'object') return;
+    if (data.type === 'person-picker:confirm') {
+      applyPickerResult(data.payload);
+      closeModal();
+    }
+    if (data.type === 'person-picker:close') {
+      closeModal();
+    }
+  });
+
+  personModal.addEventListener('click', event => {
+    if (event.target === personModal) closeModal();
+  });
+
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && personModal.classList.contains('show')) {
+      closeModal();
+    }
+  });
+
+  function goPrev() {
+    alert('返回上一步：基本信息');
+  }
+
+  function goNext() {
+    if (currentRange === 'partial' && !hasSpecifiedSelection()) {
+      alert('请至少选择一名指定用户、一个部门或一个岗位');
+      return;
+    }
+    alert('保存并进入下一步：考试设置');
+  }
+
+  // 侧边栏分组折叠
+  document.querySelectorAll('.menu-side-item[data-group]').forEach(item => {
+    item.addEventListener('click', () => {
+      const group = item.dataset.group;
+      const sublist = document.querySelector('.menu-sublist[data-group="' + group + '"]');
+      if (sublist) {
+        item.classList.toggle('is-expanded');
+        sublist.classList.toggle('is-open');
+      }
+    });
+  });
+
+  // 初始化
+  renderSpecified();
+  renderScopeRanges();
+  renderExempt();
+</script>
+
+
+  <script type="application/json" id="prd-annotation-config">
+{
+  "pageTitle": "编辑考试-集团",
+  "scope": "with_global",
+  "showPrdActions": true,
+  "pagePrd": "# 编辑考试-人员-集团 PRD\n\n## 1. 文档范围\n\n本文档仅描述\"编辑考试-集团\"页面的考生范围维护能力，包括考生范围切换、已选人员回显与移除、一键清理离职人员、部门范围维护、部门人员数量动态更新、免考人员配置、人员选择弹窗、以及保存覆盖人员快照。\n\n原有考试基本信息步骤（步骤1）、考试设置步骤（步骤3）、步骤条流转、顶部导航栏、侧边菜单等通用布局能力沿用既有系统规则，本文不重复说明。\n\n> 本页面PRD需配合[《考试功能-整体PRD》](./考试功能-整体PRD.md)阅读，全局业务规则、数据模型、角色权限定义和核心流程参见整体PRD。\n\n## 2. 使用角色\n\n- **集团管理员**：在集团端编辑考试，进入\"考生范围\"步骤维护已选人员、部门范围和免考人员，清理离职/禁用人员，并保存覆盖人员快照。\n- **系统**：保存后根据当前考试对象覆盖人员快照，作为后续草稿发布前人员变更校验的基准。\n\n## 3. 前置条件\n\n- 用户已登录集团端系统\n- 用户具有考试管理相关权限\n- 当前考试为集团自建考试，且处于可编辑状态（草稿）\n- 通过考试列表进入编辑考试流程，已完成\"基本信息\"步骤\n\n## 4. 页面布局（ASCII 结构图）\n\n```\n+-------------------------------------------------------+\n| [← 编辑考试]                                          |\n+-------------------------------------------------------+\n|                                                        |\n|   ○ 基本信息  ───  ● 考生范围  ───  ○ 考试设置        |\n|                                                        |\n+-------------------------------------------------------+\n| 【考生范围】                                           |\n|  ┌─────────────────────┐ ┌─────────────────────┐      |\n|  │ 🧑 仅部分人员  ✓    │ │ 🧑‍🤝‍🧑 组织内全部人员    │      |\n|  └─────────────────────┘ └─────────────────────┘      |\n|                                                        |\n| [选择] 共计人员：X人                                    |\n|                                                        |\n| 【人员】 (13个)          [查看已选] [全部移除]          |\n|   [一键清理离职人员]                                   |\n|  ┌──────────────────────────────────────────┐         |\n|  │  公司A                                   │         |\n|  │  [李明明(离职) ×] [王芳(离职) ×] [陈静 ×] │         |\n|  │  公司B                                   │         |\n|  │  [周杰 ×] [吴敏 ×]                       │         |\n|  └──────────────────────────────────────────┘         |\n|                                                        |\n| 【部门范围】                                           |\n|  ┌───────────────────── 0个部门 ───────┐              |\n|  │  [查看已选] [全部移除]              │              |\n|  │  ──────────────────────────────     │              |\n|  │  暂无已选部门                        │              |\n|  └──────────────────────────────────────┘              |\n|                                                        |\n| 【免考人员】 (0人)      [查看已选] [全部移除]          |\n|  [+ 选择] 共计人员：0人                                  |\n|                                                        |\n+-------------------------------------------------------+\n|                   [上一步]  [保存并下一步]               |\n+-------------------------------------------------------+\n```\n\n## 5. 功能清单\n\n| 模块 | 功能 | 功能描述 |\n|------|------|----------|\n| 考生范围 | 范围切换 | 支持\"仅部分人员\"和\"组织内全部人员\"两种模式切换，编辑时默认继承创建考试时的选择。 |\n| 考生范围 | 已选人员回显 | 按公司分组展示已选人员列表，离职/禁用人员标注\"（离职）\"，支持查看已选、单个移除、全部移除。 |\n| 考生范围 | 一键清理离职人员 | 批量移除所有离职/禁用人员，保留在职/启用人员，并刷新已选人数和标签列表。 |\n| 考生范围 | 部门范围回显 | 展示已选部门标签，按公司分组，支持查看已选、单个移除、全部移除。 |\n| 考生范围 | 部门人数动态更新 | 编辑考试时基于最新人员主数据重新计算已选部门人数，覆盖创建时的人数快照。 |\n| 考生范围 | 免考人员配置 | 支持查看和编辑免考人员与免考部门范围，支持查看已选、单个移除、全部移除。 |\n| 人员选择器 | 人员/部门选择 | 通过 iframe 加载集团人员选择器，支持选人员、选部门、查看已选、确认返回。 |\n| 人员快照 | 编辑覆盖快照 | 保存编辑后覆盖原创建考试时人员快照，作为后续发布校验基准。 |\n\n## 6. 需求说明\n\n### 6.1 考试对象范围切换\n\n| 规则项 | 页面要求 |\n|--------|----------|\n| 模式类型 | 支持\"仅部分人员\"和\"组织内全部人员\"。 |\n| 默认值 | 编辑时默认继承创建考试时所选模式。 |\n| 仅部分人员 | 展示\"选择\"按钮、指定用户区域、部门范围区域（有数据时）、免考人员区域。 |\n| 组织内全部人员 | 隐藏\"选择\"按钮、指定用户区域、部门范围区域、免考人员区域。 |\n| 切换回仅部分人员 | 恢复展示所有区域，已选数据不丢失。 |\n\n### 6.2 指定用户区域\n\n| 展示项 | 规则 |\n|--------|------|\n| 人员列表 | 已选人员按公司分组展示，每组展示公司名称和人数，每组最多展示 10 个人员标签，超出部分显示\"查看更多N项\"按钮。 |\n| 离职标识 | 离职/禁用人员姓名后标注\"（离职）\"，红色字体展示。在职/启用人员不展示状态标识。 |\n| 单个移除 | 点击人员标签上的 × 按钮，移除该人员，同步刷新人数和标签列表。 |\n| 全部移除 | 点击\"全部移除\"按钮，清空所有指定用户和部门范围数据，并刷新人数。 |\n| 查看已选 | 点击\"查看已选\"按钮，打开人员选择弹窗的已选视图（人员 Tab + 部门 Tab），支持按公司筛选。 |\n| 选择入口 | 点击\"选择\"按钮，打开集团人员选择弹窗，支持跨公司选人和选部门。选择按钮旁展示\"共计人员：X人\"，基于已选人员和部门解析后去重统计。 |\n| 空状态 | 无已选人员时不展示指定用户区域。 |\n| 无已选人员/部门时 | \"查看已选\"和\"全部移除\"按钮置灰禁用。 |\n\n### 6.3 一键清理离职人员\n\n| 规则项 | 规则 |\n|--------|------|\n| 按钮位置 | 位于\"人员\"标题区域，\"一键清理离职人员\"按钮与人数并排。 |\n| 触发条件 | 已选人员中存在离职/禁用人员时按钮可用，否则置灰禁用。 |\n| 清理范围 | 仅移除状态为\"离职\"或\"禁用\"的已选人员。 |\n| 保留范围 | 状态为\"启用\"的在职人员继续保留在已选列表。 |\n| 清理结果 | 移除后立即刷新已选人数和人员标签列表，同步更新\"查看已选\"和\"全部移除\"按钮状态。 |\n| 清理后保存 | 清理操作仅在前端完成，需点击\"保存并下一步\"后正式覆盖人员快照。 |\n\n### 6.4 部门范围区域\n\n| 展示项 | 规则 |\n|--------|------|\n| 可见性 | 仅在已选部门范围有数据时展示。 |\n| 部门列表 | 已选部门按公司分组展示，每组展示公司名称和部门数量。 |\n| 部门标签 | 展示格式：部门名称，按公司分组时前面显示\"公司名-部门名\"。 |\n| 单个移除 | 点击部门标签上的 × 按钮，移除该部门，同步刷新部门范围和指定用户区域（部门移除后连带的人也可能变化）。 |\n| 全部移除 | 点击\"全部移除\"按钮，清空所有部门范围。 |\n| 查看已选 | 点击\"查看已选\"按钮，打开人员选择弹窗的已选视图（部门 Tab），展示当前已选部门清单。 |\n\n### 6.5 部门人员数量动态更新\n\n| 规则项 | 规则 |\n|--------|------|\n| 触发时机 | 进入编辑考试页面加载已选部门时、点击\"选择\"按钮打开人员选择弹窗时、进入\"查看已选\"弹窗时。 |\n| 更新场景 | 部门人数需基于当前最新人员主数据重新计算，覆盖创建考试时记录的人数。 |\n| 场景1：有人离职 | 部门内原有人员离职 → 部门人数减少，弹窗和已选区域均需展示更新后的人数。 |\n| 场景2：有人禁用 | 部门内原有人员被禁用 → 部门人数减少，弹窗和已选区域均需展示更新后的人数。 |\n| 场景3：有人移入 | 新人员移入该部门 → 部门人数增加，弹窗和已选区域均需展示更新后的人数。 |\n| 场景4：停用改启用 | 部门内原有停用/禁用人员改为启用 → 部门人数增加，弹窗和已选区域均需展示更新后的人数。 |\n| 示例 | 新增考试时 A 部门有 5 人 → 编辑时 A 部门变为 6 人（1 人移入） → 弹窗和已选区域人数展示为 6 人。 |\n| 影响范围 | 人员选择弹窗中部门列表的人数展示、已选部门标签的人数展示、\"查看已选\"弹窗中部门对应的人数展示。 |\n\n### 6.6 免考人员区域\n\n| 项目 | 规则 |\n|------|------|\n| 选择入口 | 点击\"免考人员\"区域的\"+ 选择\"按钮，打开集团人员选择弹窗，用于选择免考对象。选择按钮旁展示\"共计人员：X人\"，基于已选免考人员和免考部门解析后去重统计。 |\n| 免考对象 | 支持选择免考人员和免考部门范围。 |\n| 已选回显 | 存在免考对象时，顶部展示\"免考人员（N人，M个部门）\"，下方展示已选人员和已选部门分组标签。 |\n| 已选人员 | 按公司分组展示，离职/禁用人员标注\"（离职）\"。 |\n| 已选部门 | 按公司分组展示部门标签。 |\n| 查看已选 | 存在免考对象时，\"查看已选\"按钮可用，点击打开人员选择弹窗查看免考范围。 |\n| 全部移除 | 存在免考对象时，\"全部移除\"按钮可用，点击清空所有免考人员和免考部门。 |\n| 空状态 | 无免考对象时，不展示已选区域，\"查看已选\"和\"全部移除\"按钮置灰禁用。 |\n\n### 6.7 人员选择弹窗\n\n| 规则项 | 规则 |\n|--------|------|\n| 打开方式 | 通过 iframe 加载`人员选择-集团.html`页面，以 embed 模式嵌入弹窗。 |\n| 弹窗尺寸 | 宽度最大 1100px、高度最大 760px，自适应视窗。 |\n| 弹窗关闭 | 支持点击蒙层、按 ESC 键、iframe 内发送关闭消息三种方式关闭。 |\n| 数据通信 | 通过 `postMessage` 与 iframe 内页面通信，初始化时传入已选人员 ID 列表、已选部门 ID 列表、当前激活 Tab 和查看已选参数。 |\n| 确认返回 | iframe 内点击确认后，通过 `postMessage` 发送 `person-picker:confirm` 消息，携带选定的人员和部门数据。 |\n| 取消/关闭 | 关闭弹窗时不更新页面当前已选结果。 |\n| 三种入口 | 1. 指定用户的\"选择\"按钮；2. 免考人员的\"选择\"按钮；3. 任意区域的\"查看已选\"按钮。 |\n| 数据去重 | 返回后，系统自动对人员和部门进行去重，确保同一人员只进入一次考生范围。 |\n\n### 6.8 保存校验与快照覆盖\n\n| 规则项 | 规则 |\n|--------|------|\n| 保存校验 | \"仅部分人员\"模式下，点击\"保存并下一步\"时校验至少选择了一名指定用户或一个部门，否则提示\"请至少选择一名指定用户、一个部门或一个岗位\"。 |\n| \"组织内全部人员\"模式 | 无需校验已选人员，可直接保存。 |\n| 快照覆盖 | 保存成功后，系统基于当前考试对象重新生成人员快照，覆盖创建考试或上一次编辑保存时生成的快照。 |\n| 快照内容 | 快照需包含人员 ID、姓名、公司、部门、人员状态（启用/离职/禁用）等信息。 |\n| 后续用途 | 编辑覆盖后的快照作为草稿发布前人员变更校验的最新基准。 |\n| 保存后行为 | 进入下一步\"考试设置\"步骤。 |\n\n## 7. 交互设计\n\n### 7.1 范围切换\n\n- 点击\"仅部分人员\"卡片，展开所有人员选择相关区域。\n- 点击\"组织内全部人员\"卡片，折叠所有人员选择、部门范围、免考人员区域。\n- 切换模式时平滑过渡，已选数据在模式间保持不丢失。\n\n### 7.2 已选人员操作\n\n- 点击人员标签上的 × 按钮，仅移除该人员，实时刷新计数和标签列表。\n- 点击\"全部移除\"，弹出确认后清空所有指定用户和部门范围。\n- 点击\"一键清理离职人员\"，即时移除所有离职/禁用人员，无需二次确认。\n- \"查看已选\"和\"全部移除\"在无已选数据时置灰不可点击。\n\n### 7.3 部门人数更新\n\n- 页面初始加载和每次打开人员选择弹窗时，基于后端最新人员主数据拉取部门人数。\n- 已选部门和弹窗中的部门人数展示必须与最新数据一致。\n\n### 7.4 免考人员操作\n\n- 点击\"+ 选择\"按钮打开弹窗选择免考人员/部门，确认后回写已选结果。\n- 已选免考人员和部门标签支持单个移除。\n- 免考人员也展示离职标识，但不提供\"一键清理离职人员\"按钮。\n- 未选择免考对象时，\"查看已选\"和\"全部移除\"按钮隐藏。\n\n### 7.5 保存操作\n\n- 点击\"保存并下一步\"时，先执行保存校验，通过后保存数据并覆盖快照。\n- 点击\"上一步\"时，返回\"基本信息\"步骤（步骤1），不触发快照覆盖。\n\n## 8. 异常处理\n\n| 异常场景 | 处理方式 |\n|----------|----------|\n| 仅部分人员但未选择考试对象 | 点击保存时弹出提示\"请至少选择一名指定用户、一个部门\"。 |\n| 人员选择弹窗加载失败 | 弹窗内展示加载提示，持续尝试加载 iframe，不阻塞页面其他操作。 |\n| 人员选择弹窗取消或关闭 | 不更新当前页面已选结果，保留原有已选数据。 |\n| 当前区域无已选结果 | \"查看已选\"和\"全部移除\"按钮不展示。 |\n| 无离职/禁用人员 | \"一键清理离职人员\"按钮不展示。 |\n| 保存失败 | 提示具体错误信息，保留已编辑内容，用户可再次尝试保存。 |\n| 部门人数接口异常 | 部门人数展示上次缓存值或显示\"--\"，不影响选择操作，后续重试获取。 |\n\n## 9. 验收标准\n\n| 验收项 | 验收标准 |\n|--------|----------|\n| 范围切换 | 仅部分人员/组织内全部人员两种模式可正常切换，切换后区域显隐正确，数据不丢失。 |\n| 已选人员回显 | 已选人员按公司分组展示，人数正确，离职/禁用人员标注\"（离职）\"。 |\n| 一键清理离职人员 | 仅移除离职/禁用人员，保留在职人员，计数和标签同步刷新。 |\n| 单个移除人员 | 点击 × 移除单个人，计数减1，标签消失。 |\n| 全部移除 | 清空所有指定用户和部门，按钮同步置灰。 |\n| 查看已选 | 点击\"查看已选\"打开弹窗，展示当前已选人员和部门，支持按公司筛选。 |\n| 部门范围回显 | 已选部门按公司分组展示，支持查看已选、单个移除、全部移除。 |\n| 部门人数动态更新 | 编辑时部门人数基于最新主数据更新；有人离职/禁用/移入/启用变化时，弹窗和已选区域人数正确变化。 |\n| 免考人员配置 | 支持选择/回显免考人员和部门，支持查看已选和全部移除，空状态时不展示操作按钮。 |\n| 人员选择弹窗 | 弹窗正常加载、数据通信正常、确认后回写正确、取消不更新数据。 |\n| 保存校验 | 仅部分人员未选任何对象时提示校验信息，组织内全部人员无校验。 |\n| 快照覆盖 | 保存后生成新快照覆盖旧快照，快照内容包含人员ID、姓名、公司、部门、状态。 |\n| 上一步 | 点击返回基本信息步骤，不触发保存和快照覆盖。 |\n\n## 10. 版本变更记录\n\n| 版本 | 日期 | 变更内容 | 作者 |\n|------|------|----------|------|\n| V1.0 | 2026-07-13 | 初版创建。包含考生范围切换、已选人员回显、一键清理离职人员、部门范围维护、部门人数动态更新、免考人员配置、人员选择弹窗、保存覆盖快照。 | — |\n\n## 11. 关联文档\n\n- [考试功能整体PRD]() – 包含名词解释、业务流程图、ER 图、用例图、业务规则等全局内容（已内嵌于页面 `prd-annotation-config` 中）\n- [新增考试-集团 PRD](./新增考试-集团.md) – 新增考试的考生范围和免考配置\n- [人员选择-集团 PRD](./人员选择-集团.md) – 集团人员选择器\n",
+  "globalPrd": "# 考试功能 — 整体 PRD\n\n## 1. 引言\n\n### 1.1 背景与目标\n\n\"考试功能\"是 EHS+ 企业版中对员工进行安全生产知识评测的核心模块。该模块需要支持三种不同的租户形态：\n\n- **集团（上级单位）**：跨多家子公司的人员管理形态，需要跨公司选择考试对象、查看跨公司统计数据。\n- **下级单位**：处于集团层级下的成员单位，承接上级派发的考试，同时可创建本单位内部考试。\n- **独立租户（普通租户/非集团）**：无上下级层级关系的独立组织，仅管理本租户范围内的考试。\n\n本 PRD 从全局视角定义考试功能在上述三种租户形态下的统一业务规则、数据模型、角色权限和核心流程。各页面的详细交互规格请参见对应的页面 PRD。\n\n### 1.2 用户价值\n\n| 租户类型 | 核心价值 |\n|----------|----------|\n| 集团管理员 | 跨公司统一下发安全知识考试，掌握全集团各子公司的考试进展与成绩分布。 |\n| 下级单位管理员 | 承接集团下发的考试任务，同时自主创建本单位专属考试来满足内部学习需求。 |\n| 普通租户管理员 | 自主管理本组织的考试全生命周期，从创建、发布到统计分析形成完整闭环。 |\n\n### 1.3 功能范围\n\n**包含**：\n\n| 模块 | 说明 |\n|------|------|\n| 考试列表 | 按租户类型展示对应的考试清单，支持新增、编辑、删除、复制、发布（草稿）、管理（统计入口） |\n| 新增考试 | 三步创建考试：基本信息 → 考生范围（人员/部门选择 + 免考） → 考试设置 |\n| 编辑考试 | 修改草稿考试的考生范围，覆盖人员快照 |\n| 考试统计 | 考生分析、考试记录、部门统计三个维度，含人员状态筛选和部门统计在职过滤 |\n| 人员选择 | 按租户数据范围选择考试对象（人员 + 部门） |\n| 发布校验 | 草稿发布前对人员快照与当前人员主数据的差异进行校验与确认 |\n\n**不包含**：\n\n- 试题配置与管理（考试设置步骤中的具体试题选择不属于本次范围）\n- 考生端的考试作答/提交/成绩查看\n- 移动端管理能力\n\n---\n\n## 2. 三种租户形态概览\n\n```\n┌──────────────────────────────────────────────────────────────────┐\n│                        EHS+ 考试功能                              │\n│                                                                   │\n│  ┌──────────────┐    ┌──────────────────┐    ┌───────────────┐   │\n│  │ 集团         │    │  下级单位         │    │ 独立租户      │   │\n│  │ (上级单位)    │───▶│  (子公司/分公司)   │    │ (非集团组织)   │   │\n│  │              │    │                  │    │               │   │\n│  │ • 跨公司选人  │    │ • 承接上级考试    │    │ • 自建考试    │   │\n│  │ • 自建考试    │    │ • 自建本单位考试  │    │ • 本单位数据  │   │\n│  │ • 跨公司统计  │    │ • 本单位统计     │    │ • 本单位统计  │   │\n│  └──────────────┘    └──────────────────┘    └───────────────┘   │\n│                                                                   │\n│  数据范围: 集团全部公司     数据范围: 本单位+下属部门                  │\n│  人员列: 含\"所属公司\"      人员列: 无\"所属公司\"                   无公司概念 │\n│  统计视图: 部门明细/公司汇总 统计视图: 部门明细                     同下级单位 │\n└──────────────────────────────────────────────────────────────────┘\n```\n\n### 2.1 核心差异对照表\n\n| 差异维度 | 集团 | 下级单位 | 独立租户/普通租户 |\n|----------|------|----------|-------------------|\n| 人员数据范围 | 集团内全部公司 | 本单位 + 下属部门 | 本租户内全部人员 |\n| 跨公司选人 | ✅ 支持 | ❌ 不支持 | ❌ 不涉及（无公司概念） |\n| 上级下发考试 | ❌ 不涉及 | ✅ 考试列表展示上级下发 | ❌ 不涉及 |\n| 上级下发考试操作 | — | 仅\"管理\" | — |\n| 人员列表分组 | 按公司分组 | 不分组、平铺展示 | 不分组、平铺展示 |\n| 考生分析/考试记录列表 | 含\"所属公司\"列 | 无\"所属公司\"列 | 无\"所属公司\"列 |\n| 部门筛选方式 | 公司+部门级联 | 部门下拉树 | 部门下拉树 |\n| 统计部门视图 | 部门明细 + 公司汇总 | 部门明细 | 部门明细 |\n| 人员选择器页面 | 人员选择-集团 | 人员选择-下级单位 | 人员选择-下级单位 |\n\n---\n\n## 3. 角色与权限\n\n| 角色 | 租户端 | 可创建考试 | 可选择的考试对象范围 | 可编辑考试 | 可查看统计 | 说明 |\n|------|--------|-----------|---------------------|-----------|-----------|------|\n| 集团管理员 | 集团 | ✅ | 集团全部公司的人员和部门 | ✅ 仅草稿 | ✅ 全集团 | 可跨公司管理考试全生命周期 |\n| 下级单位管理员 | 下级单位 | ✅ 本单位考试 | 本单位 + 下属部门 | ✅ 仅自建草稿 | ✅ 本单位 | 可承接上级下发考试，对其进行管理操作 |\n| 普通租户管理员 | 独立租户 | ✅ | 本租户全量人员 | ✅ 仅草稿 | ✅ 本租户 | 与下级单位类似，但无上下级关系 |\n\n### 3.1 下级单位对上级下发考试的操作权限\n\n| 操作 | 本单位自建考试 | 上级下发考试 |\n|------|:---:|:---:|\n| 查看详情（名称链接） | ✅ | ✅（查看集团版详情） |\n| 管理（进入统计） | ✅ | ✅ |\n| 预览 | ✅ | ❌ |\n| 发布 | ✅ 草稿 | ❌ |\n| 编辑 | ✅ 草稿 | ❌ |\n| 复制 | ✅ | ❌ |\n| 删除 | ✅ | ❌ |\n| 批量删除 | ✅ | ❌ |\n\n---\n\n## 4. 名词解释\n\n| 术语 | 定义 |\n|------|------|\n| **考试** | 一次完整的考试活动，包含基本信息、考生范围、考试设置、题目配置等。 |\n| **考生范围** | 考试的目标对象集合，可通过选择人员（指定用户）或部门范围来定义。 |\n| **指定用户** | 以单个人员为维度选定的考试对象。 |\n| **部门范围** | 以部门为维度选定的考试对象，选择某部门即包含该部门下（可选含下级部门）的全体人员。 |\n| **组织内全部人员** | 考试对象覆盖当前租户范围内的全部人员，无需单独选择。 |\n| **仅部分人员** | 考试对象仅为管理员选择的具体人员或部门范围内的人员。 |\n| **免考人员** | 被排除在考试要求之外的人员或部门，不计入应考人数，不影响参与率和及格率计算。 |\n| **人员快照** | 创建考试或编辑保存时对当时考试对象范围内所有人员的完整记录（含 ID、姓名、所属公司、部门、人员状态），用于发布前人员变更校验。 |\n| **人员状态** | 枚举值：在职（启用）、离职、停用（禁用）。 |\n| **草稿** | 考试创建后尚未发布的初始状态，支持编辑和发布。 |\n| **未开始** | 考试发布后但尚未到达考试开始时间的状态。 |\n| **进行中** | 考试正处于考试时间段内的状态。 |\n| **已结束** | 考试时间已过的状态。 |\n| **上级下发考试** | 由集团或上级单位创建并推送给下级单位的考试，下级单位不可编辑、删除、发布。 |\n| **自建考试** | 当前租户管理员自行创建的考试。 |\n| **公司汇总** | 集团独有的统计视图，以公司为粒度对部门数据进行扁平汇总展示。 |\n| **部门明细** | 以部门树结构展示统计数据的视图。 |\n\n---\n\n## 5. 核心业务流程图\n\n### 5.1 考试全生命周期（通用）\n\n```mermaid\nflowchart TD\n    A[创建考试] --> B[填写基本信息]\n    B --> C[选择考生范围]\n    C --> C1{考试对象模式?}\n    C1 -->|仅部分人员| C2[选择人员/部门 + 配置免考]\n    C1 -->|组织内全部人员| C3[跳过选人]\n    C2 --> D[设置考试参数]\n    C3 --> D\n    D --> E[生成人员快照]\n    E --> F{保存为草稿}\n    F --> G[草稿状态]\n    G --> H{管理员操作?}\n    H -->|编辑| I[编辑考生范围 → 覆盖快照]\n    I --> G\n    H -->|发布| J[执行发布前人员变更校验]\n    J --> K{有人员变更?}\n    K -->|否| L[直接发布]\n    K -->|是| M[展示发布弹窗]\n    M --> N{管理员确认?}\n    N -->|取消| G\n    N -->|确认发布| L\n    L --> O[未开始]\n    O --> P[进行中]\n    P --> Q[已结束]\n    G -->|删除| R[考试删除]\n```\n\n### 5.2 下级单位特殊流程：上级下发考试\n\n```mermaid\nflowchart TD\n    G[集团管理员] -->|创建并下发| S[上级下发考试]\n    S -->|出现在| SU[下级单位考试列表]\n    SU --> SU1{下级单位操作}\n    SU1 -->|点击名称| SU2[查看集团版考试详情]\n    SU1 -->|管理| SU3[进入本单位统计页]\n    SU1 -->|编辑/删除/发布/复制| SU4[❌ 不可操作]\n```\n\n### 5.3 发布前人员变更校验流程\n\n```mermaid\nflowchart TD\n    A[管理员点击发布] --> B[系统获取人员快照]\n    B --> C[获取当前人员主数据]\n    C --> D{比对快照与主数据}\n    D --> E1[已选人员离职/停用 → 移除]\n    D --> E2[部门内人员离职/停用/转出 → 移除]\n    D --> E3[部门内人员转入/启用 → 新增]\n    E1 --> F{总计变更 > 0 ?}\n    E2 --> F\n    E3 --> F\n    F -->|否| G[直接发布，状态变更为未开始]\n    F -->|是| H[展示发布弹窗]\n    H --> I[按分类查看：全部 / 移除 / 新增]\n    I --> J{管理员操作?}\n    J -->|点击发布| G\n    J -->|点击取消 / 关闭 / 遮罩| K[保持草稿，不发布]\n```\n\n---\n\n## 6. 用例图\n\n```mermaid\nflowchart LR\n    subgraph Actors\n        GA[集团管理员]\n        SA[下级单位管理员]\n        NA[普通租户管理员]\n        SYS[系统]\n    end\n\n    subgraph UC[考试功能用例]\n        direction TB\n        UC1((创建考试))\n        UC2((编辑考试))\n        UC3((发布考试))\n        UC4((查看考试列表))\n        UC5((考试统计))\n        UC6((人员选择))\n        UC7((免考配置))\n        UC8((接收上级考试))\n        UC9((发布前校验))\n        UC10((快照管理))\n    end\n\n    GA --> UC1\n    GA --> UC2\n    GA --> UC3\n    GA --> UC4\n    GA --> UC5\n    GA --> UC6\n    GA --> UC7\n    SA --> UC1\n    SA --> UC2\n    SA --> UC3\n    SA --> UC4\n    SA --> UC5\n    SA --> UC6\n    SA --> UC7\n    SA --> UC8\n    NA --> UC1\n    NA --> UC2\n    NA --> UC3\n    NA --> UC4\n    NA --> UC5\n    NA --> UC6\n    NA --> UC7\n    SYS --> UC9\n    SYS --> UC10\n```\n\n---\n\n## 7. 数据模型\n\n### 7.1 核心实体关系图\n\n```mermaid\nerDiagram\n    租户 ||--o{ 考试 : \"拥有\"\n    考试 ||--o{ 人员快照 : \"生成\"\n    考试 ||--o{ 考试记录 : \"产生\"\n    考试 ||--o{ 免考配置 : \"配置\"\n    考试 }o--|| 租户 : \"归属\"\n    考试 }o--|| 考试分类 : \"分类\"\n\n    租户 {\n        string 租户ID PK\n        string 租户名称\n        string 租户类型 \"集团 / 下级单位 / 普通租户\"\n        string 上级租户ID FK \"下级单位时有值\"\n        string 所属公司名称 \"集团/下级单位\"\n    }\n\n    考试 {\n        string 考试ID PK\n        string 所属租户ID FK\n        string 考试名称\n        string 分类ID FK\n        string 来源 \"自建 / 上级下发\"\n        string 状态 \"草稿 / 未开始 / 进行中 / 已结束\"\n        string 范围模式 \"仅部分人员 / 组织内全部人员\"\n        datetime 考试开始时间\n        datetime 考试结束时间\n        datetime 快照生成时间\n        datetime 创建时间\n        datetime 更新时间\n    }\n\n    人员快照 {\n        string 快照ID PK\n        string 考试ID FK\n        string 人员ID\n        string 姓名\n        string 所属公司 \"集团有值，下级单位/普通租户无\"\n        string 部门名称\n        string 部门全路径\n        string 人员状态 \"在职 / 离职 / 停用\"\n        datetime 快照时间\n        string 快照版本 \"创建 / 编辑\"\n    }\n\n    免考配置 {\n        string 免考配置ID PK\n        string 考试ID FK\n        string 免考类型 \"人员 / 部门\"\n        string 免考目标ID\n        string 免考目标名称\n    }\n\n    考试记录 {\n        string 考试记录ID PK\n        string 考试ID FK\n        string 考生ID\n        string 考生姓名\n        string 所属公司\n        string 部门名称\n        string 完成状态 \"已完成 / 未完成\"\n        int 分数\n        bool 是否及格\n        datetime 交卷时间\n    }\n\n    考试分类 {\n        string 分类ID PK\n        string 租户ID FK\n        string 分类名称\n        string 上级分类ID\n        string 来源 \"自建 / 上级下发（下级单位有上级下发分类节点）\"\n    }\n```\n\n### 7.2 关键字段说明\n\n#### 考试来源\n\n| 值 | 含义 | 适用租户 |\n|----|------|---------|\n| 自建 | 当前租户自建考试 | 全部 |\n| 上级下发 | 上级下发考试 | 下级单位 |\n\n#### 考试状态流转\n\n```\n草稿 → 未开始 → 进行中 → 已结束\n  │\n  └── (删除)\n```\n\n#### 人员快照版本\n\n| 值 | 生成时机 | 说明 |\n|----|---------|------|\n| 创建 | 创建考试保存时 | 考试首次创建时生成 |\n| 编辑 | 编辑考试保存时 | 覆盖旧快照，作为发布校验的最新基准 |\n\n---\n\n## 8. 非功能性需求\n\n### 8.1 性能要求\n\n| 指标 | 要求 |\n|------|------|\n| 考试列表查询响应 | ≤ 2s（1000 条以内） |\n| 人员选择器加载 | ≤ 3s（10,000 以内人员数据） |\n| 部门人数重新计算 | ≤ 3s |\n| 发布前人员变更校验 | ≤ 5s（包含三分类校验） |\n| 考试统计查询 | ≤ 3s |\n| 并发支持 | 支持 100+ 管理员同时操作 |\n\n### 8.2 安全性\n\n| 要求 | 说明 |\n|------|------|\n| 数据隔离 | 不同租户数据严格隔离，下级单位不可访问集团或平级单位数据 |\n| 操作权限 | 上级下发考试在下级单位侧仅开放\"管理\"操作，编辑/删除/发布等操作需校验考试来源为自建 |\n| 人员选择范围限制 | 下级单位人员选择器限定本单位及下属部门，不可越权访问平级或上级单位人员 |\n| 快照安全 | 人员快照为只读历史数据，持久化后不可篡改 |\n\n### 8.3 兼容性\n\n| 要求 | 说明 |\n|------|------|\n| 浏览器 | Chrome 90+、Edge 90+、Safari 14+ |\n| 分辨率 | 1366×768 及以上 |\n\n### 8.4 可维护性\n\n| 要求 | 说明 |\n|------|------|\n| 操作日志 | 考试创建、编辑、发布、删除需记录操作日志 |\n| 快照审计 | 快照生成和覆盖保留历史记录，发布校验时可回溯 |\n\n---\n\n## 9. 页面清单与关联 PRD\n\n### 9.1 集团（上级单位）\n\n| 序号 | 页面名称 | 页面 PRD 路径 | 原型文件 |\n|------|---------|--------------|---------|\n| 1 | 考试列表-集团 | `prd/考试列表-集团.md` | `考试列表-集团.html` |\n| 2 | 新增考试-集团 | `prd/新增考试-集团.md` | `新增考试-集团.html` |\n| 3 | 编辑考试-集团 | `prd/编辑考试-集团.md` | `编辑考试-集团.html` |\n| 4 | 考试统计-集团 | `prd/考试统计-集团.md` | `考试统计-集团.html` |\n| 5 | 人员选择-集团 | — | `人员选择-集团.html` |\n\n### 9.2 下级单位\n\n| 序号 | 页面名称 | 页面 PRD 路径 | 原型文件 |\n|------|---------|--------------|---------|\n| 1 | 考试列表-下级单位 | `prd/考试列表-下级单位.md` | `考试列表-下级单位.html` |\n| 2 | 新增考试-下级单位 | `prd/新增考试-下级单位.md` | `新增考试-下级单位.html` |\n| 3 | 编辑考试-下级单位 | `prd/编辑考试-下级单位.md` | `编辑考试-下级单位:独立租户.html` |\n| 4 | 考试统计-下级单位 | `prd/考试统计-下级单位.md` | `考试统计-下级单位:独立租户.html` |\n| 5 | 人员选择-下级单位：本单位 | — | `人员选择-下级单位:本单位.html` |\n| 6 | 人员选择-下级单位 | — | `人员选择-下级单位.html` |\n\n### 9.3 独立租户/普通租户\n\n| 序号 | 页面名称 | 页面 PRD 路径 | 原型文件 |\n|------|---------|--------------|---------|\n| 1 | 考试列表 | `prd/考试列表-普通租户.md` | `考试列表-普通租户.html` |\n| 2 | 新增考试 | —（参考集团/下级新增） | `新增考试-普通租户.html` |\n| 3 | 编辑考试 | —（参考下级编辑，同数据范围） | `编辑考试-下级单位:独立租户.html` |\n| 4 | 考试统计 | —（参考下级统计） | `考试统计-普通租户.html` |\n\n### 9.4 通用页面\n\n| 序号 | 页面名称 | 说明 | 原型文件 |\n|------|---------|------|---------|\n| 1 | 规则说明 | 考试功能入口的规则说明页 | `规则说明.html` |\n\n### 9.5 小程序\n\n| 序号 | 页面名称 | 说明 | 原型文件 |\n|------|---------|------|---------|\n| 1 | 考试列表 | 小程序端考试列表 | `小程序考试列表.html` |\n\n---\n\n## 10. 附录\n\n### 10.1 租户数据范围矩阵\n\n```\n┌────────────────┬──────────────────────┬──────────────────────┬──────────────────┐\n│   能力 \\ 租户   │        集团           │       下级单位         │    独立租户        │\n├────────────────┼──────────────────────┼──────────────────────┼──────────────────┤\n│ 创建考试        │ 集团跨公司            │ 本单位+下属部门        │ 本租户            │\n│ 上级下发考试     │ 不涉及（集团不下发自己） │ ✅ 列表展示+接收       │ ❌ 不涉及          │\n│ 跨公司选人       │ ✅                    │ ❌                    │ ❌ 无公司概念       │\n│ 人员按公司分组    │ ✅                    │ ❌ 平铺标签            │ ❌ 平铺标签        │\n│ 列表含所属公司列  │ ✅ 考生分析/考试记录    │ ❌                    │ ❌                │\n│ 部门筛选          │ 公司+部门级联          │ 部门下拉树            │ 部门下拉树         │\n│ 统计视图          │ 部门明细 + 公司汇总     │ 部门明细              │ 部门明细           │\n│ 人员选择器        │ 人员选择-集团          │ 人员选择-下级单位       │ 人员选择-下级单位    │\n│ 快照含公司字段    │ ✅                    │ ❌                    │ ❌                │\n│ 分类树上级下发节点 │ ❌                    │ ✅                    │ ❌                │\n└────────────────┴──────────────────────┴──────────────────────┴──────────────────┘\n```\n\n### 10.2 页面状态流转\n\n| 当前状态 | 触发操作 | 目标状态 | 前置条件 |\n|----------|---------|---------|----------|\n| — | 创建考试（保存草稿） | 草稿 | 基本信息填写完成 + 考生范围选择（部分人员模式下至少 1 人或 1 部门） |\n| 草稿 | 编辑保存 | 草稿 | 编辑后覆盖人员快照 |\n| 草稿 | 发布（无变更） | 未开始 | 无人员变更 |\n| 草稿 | 发布（有变更→确认） | 未开始 | 管理员在发布弹窗确认 |\n| 草稿 | 删除 | — | — |\n| 未开始 | 到达开始时间 | 进行中 | 系统自动 |\n| 进行中 | 到达结束时间 | 已结束 | 系统自动 |\n\n### 10.3 版本变更记录\n\n| 版本 | 日期 | 变更内容 | 作者 |\n|------|------|----------|------|\n| V1.0 | 2026-07-13 | 初版。统一定义集团/下级单位/独立租户三种形态下考试功能的全局业务规则、数据模型、角色权限、核心流程和页面清单。 | — |\n\n### 10.4 引用标准\n\n- 本 PRD 作为\"总分结构\"中的总纲，各页面详细交互/UI 规格参见对应的页面 PRD。\n- 所有页面 PRD 的编号均以本 PRD 中第 9 节的页面清单为索引。\n- 三种租户的独特规则已在各差异对照表和矩阵中明确标注。\n",
+  "annotations": [],
+  "badges": [
+    {
+      "id": "1",
+      "title": "考生范围切换",
+      "anchor": {
+        "selector": ".range-cards"
+      },
+      "content": "<div class=\"prd-content-wide\"><p><strong>对应 PRD：6.1 考试对象范围切换</strong></p><table class=\"prd-readable-table\"><thead><tr><th>规则项</th><th>页面要求</th></tr></thead><tbody><tr><td>模式类型</td><td>支持\"仅部分人员\"和\"组织内全部人员\"两种模式。</td></tr><tr><td>默认值</td><td>编辑时默认继承创建考试时所选模式。</td></tr><tr><td>仅部分人员</td><td>展示选择按钮、指定用户区域、部门范围区域和免考人员区域。</td></tr><tr><td>组织内全部人员</td><td>隐藏选择按钮、指定用户区域、部门范围区域和免考人员区域。</td></tr><tr><td>切换规则</td><td>切回仅部分人员时恢复展示所有区域，已选数据不丢失。</td></tr></tbody></table></div>"
+    },
+    {
+      "id": "2",
+      "title": "选择考试对象",
+      "anchor": {
+        "selector": ".btn-select-standalone"
+      },
+      "content": "<div class=\"prd-content-wide\"><p><strong>对应 PRD：6.2 指定用户区域、6.7 人员选择弹窗</strong></p><table class=\"prd-readable-table\"><thead><tr><th>项目</th><th>规则</th></tr></thead><tbody><tr><td>触发动作</td><td>点击\"选择\"按钮打开集团人员选择弹窗。</td></tr><tr><td>选择范围</td><td>支持集团内跨公司选择人员和部门。</td></tr><tr><td>数据通信</td><td>通过 iframe 加载人员选择-集团页面，并传入当前已选人员、部门和查看已选参数。</td></tr><tr><td>确认返回</td><td>确认后回写人员和部门数据，系统自动去重并刷新人数。</td></tr><tr><td>取消关闭</td><td>取消、关闭或遮罩关闭时不更新当前已选结果。</td></tr></tbody></table></div>"
+    },
+    {
+      "id": "3",
+      "title": "指定用户",
+      "anchor": {
+        "selector": "#specifiedUserSection"
+      },
+      "content": "<div class=\"prd-content-wide\"><p><strong>对应 PRD：6.2 指定用户区域、6.3 一键清理离职人员</strong></p><table class=\"prd-readable-table\"><thead><tr><th>展示项</th><th>规则</th></tr></thead><tbody><tr><td>人员列表</td><td>已选人员按公司分组展示，每组展示公司名称和人数。</td></tr><tr><td>离职标识</td><td>离职或禁用人员姓名后标注\"（离职）\"，在职人员不展示状态标识。</td></tr><tr><td>单个移除</td><td>点击人员标签上的移除按钮，仅移除该人员并刷新人数。</td></tr><tr><td>全部移除</td><td>点击\"全部移除\"清空所有指定用户和部门范围数据。</td></tr><tr><td>查看已选</td><td>打开人员选择弹窗的已选视图，支持按公司筛选。</td></tr><tr><td>一键清理离职人员</td><td>仅移除离职或禁用人员，保留在职人员；清理后仍需保存才覆盖快照。</td></tr></tbody></table></div>"
+    },
+    {
+      "id": "4",
+      "title": "部门范围",
+      "anchor": {
+        "selector": "#deptRangeSection"
+      },
+      "content": "<div class=\"prd-content-wide\"><p><strong>对应 PRD：6.4 部门范围区域、6.5 部门人员数量动态更新</strong></p><table class=\"prd-readable-table\"><thead><tr><th>规则项</th><th>规则</th></tr></thead><tbody><tr><td>可见性</td><td>仅在已选部门范围有数据时展示。</td></tr><tr><td>部门列表</td><td>已选部门按公司分组展示，每组展示公司名称和部门数量。</td></tr><tr><td>部门标签</td><td>展示部门名称，按公司分组时前面显示公司名。</td></tr><tr><td>移除操作</td><td>支持单个移除和全部移除，移除后同步刷新部门范围和指定用户区域。</td></tr><tr><td>人数更新</td><td>进入编辑页、打开选择弹窗或查看已选时，基于最新人员主数据重新计算部门人数。</td></tr></tbody></table></div>"
+    },
+    {
+      "id": "5",
+      "title": "免考人员",
+      "anchor": {
+        "selector": "#exemptSection"
+      },
+      "content": "<div class=\"prd-content-wide\"><p><strong>对应 PRD：6.6 免考人员区域</strong></p><table class=\"prd-readable-table\"><thead><tr><th>项目</th><th>规则</th></tr></thead><tbody><tr><td>选择入口</td><td>点击免考人员区域的选择按钮，打开集团人员选择弹窗。</td></tr><tr><td>免考对象</td><td>支持选择免考人员和免考部门范围。</td></tr><tr><td>已选回显</td><td>存在免考对象时展示免考人员数量、部门数量和已选标签。</td></tr><tr><td>已选人员</td><td>按公司分组展示，离职或禁用人员标注\"（离职）\"。</td></tr><tr><td>查看/移除</td><td>支持查看已选、单个移除和全部移除；无免考对象时操作不可用或隐藏。</td></tr></tbody></table></div>"
+    },
+    {
+      "id": "6",
+      "title": "保存并下一步",
+      "anchor": {
+        "selector": ".form-footer .btn-primary"
+      },
+      "content": "<div class=\"prd-content-wide\"><p><strong>对应 PRD：6.8 保存校验与快照覆盖、7.5 保存操作</strong></p><table class=\"prd-readable-table\"><thead><tr><th>规则项</th><th>规则</th></tr></thead><tbody><tr><td>保存校验</td><td>仅部分人员模式下，至少选择一名指定用户或一个部门，否则提示校验信息。</td></tr><tr><td>全部人员模式</td><td>无需校验已选人员，可直接保存。</td></tr><tr><td>快照覆盖</td><td>保存成功后基于当前考试对象重新生成人员快照，覆盖原快照。</td></tr><tr><td>快照内容</td><td>包含人员 ID、姓名、公司、部门、人员状态等信息。</td></tr><tr><td>后续行为</td><td>保存后进入下一步\"考试设置\"，编辑后的快照作为发布前校验基准。</td></tr></tbody></table></div>"
+    },
+    {
+      "id": "7",
+      "title": "考生范围人员统计",
+      "anchor": {
+        "selector": "#examPersonCount"
+      },
+      "content": "<div class=\"prd-content-wide\"><p><strong>对应 PRD：6.2 指定用户区域</strong></p><table class=\"prd-readable-table\"><thead><tr><th>统计项</th><th>规则</th></tr></thead><tbody><tr><td>共计人员</td><td>基于已选人员和部门范围解析后的人员结果去重统计。</td></tr><tr><td>刷新时机</td><td>选择返回、移除人员、移除部门、清理离职人员和切换范围后同步刷新。</td></tr><tr><td>部门范围</td><td>部门人数需基于最新人员主数据重新计算，覆盖创建时人数快照。</td></tr></tbody></table></div>"
+    },
+    {
+      "id": "8",
+      "title": "免考人员统计",
+      "anchor": {
+        "selector": "#exemptPersonCount"
+      },
+      "content": "<div class=\"prd-content-wide\"><p><strong>对应 PRD：6.6 免考人员区域</strong></p><table class=\"prd-readable-table\"><thead><tr><th>统计项</th><th>规则</th></tr></thead><tbody><tr><td>共计人员</td><td>基于已选免考人员和免考部门解析后去重统计。</td></tr><tr><td>展示位置</td><td>展示在免考人员选择入口旁，随选择结果同步更新。</td></tr><tr><td>业务口径</td><td>免考范围随考试对象一并保存，用于后续应考人数和考试流程口径计算。</td></tr></tbody></table></div>"
+    }
+  ]
+}
+</script>
+</script>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script src="prd-annotation.js"></script>
+
+</body>
+</html>

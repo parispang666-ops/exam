@@ -1,0 +1,2032 @@
+<!DOCTYPE html>
+<!-- 整体PRD参考：prd/考试功能-整体PRD.md -->
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>选择人员</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      background: #f5f7fa;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    body.embedded-picker {
+      background: transparent;
+      align-items: stretch;
+      justify-content: stretch;
+      min-height: 100vh;
+    }
+    body.embedded-picker .modal {
+      width: 100%;
+      height: 100vh;
+      max-height: none;
+      border-radius: 0;
+      box-shadow: none;
+    }
+    body.embedded-picker .selected-view {
+      min-height: 0;
+    }
+
+    .modal {
+      width: 1100px;
+      background: #fff;
+      border-radius: 4px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      max-height: 92vh;
+    }
+
+    .modal-header {
+      padding: 14px 20px;
+      border-bottom: 1px solid #e8e8e8;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .modal-header h3 {
+      font-size: 16px;
+      font-weight: 600;
+      color: #262626;
+    }
+    .modal-header .close {
+      font-size: 20px;
+      color: #8c8c8c;
+      cursor: pointer;
+      line-height: 1;
+      border: none;
+      background: none;
+    }
+    .modal-header .close:hover { color: #262626; }
+
+    .modal-body {
+      padding: 16px 20px;
+      display: flex;
+      gap: 16px;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    /* 左侧选择区 */
+    .select-area {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .tabs {
+      display: flex;
+      border-bottom: 1px solid #e8e8e8;
+      margin-bottom: 12px;
+    }
+    .tab {
+      padding: 8px 16px;
+      font-size: 14px;
+      color: #595959;
+      cursor: pointer;
+      position: relative;
+      user-select: none;
+      transition: color .2s;
+    }
+    .tab:hover { color: #1890ff; }
+    .tab.active {
+      color: #1890ff;
+      font-weight: 600;
+    }
+    .tab.active::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -1px;
+      height: 2px;
+      background: #1890ff;
+    }
+
+    .filter-bar {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .filter-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .filter-row.hidden { display: none; }
+    .filter-fields {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      gap: 10px;
+    }
+    .filter-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+    .filter-actions.placeholder,
+    .filter-item.placeholder {
+      visibility: hidden;
+      pointer-events: none;
+    }
+    .filter-actions .btn,
+    .filter-actions .btn-text { flex-shrink: 0; }
+    .filter-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      flex: 1;
+      min-width: 0;
+    }
+    .filter-item input,
+    .filter-item select,
+    .filter-item .cascade-dropdown { flex: 1; min-width: 50px; width: auto; }
+    .filter-item label { color: #262626; white-space: nowrap; flex-shrink: 0; }
+    .filter-item input,
+    .filter-item select {
+      height: 30px;
+      padding: 0 8px;
+      border: 1px solid #d9d9d9;
+      border-radius: 4px;
+      font-size: 13px;
+      outline: none;
+    }
+    .filter-item input { flex: 1; min-width: 50px; width: auto; }
+    .filter-item select { flex: 1; min-width: 50px; width: auto; background: #fff; }
+    /* 部门级联选择：公司下拉稍宽 */
+    .filter-item select + select { margin-left: 2px; }
+    .filter-item input:focus,
+    .filter-item select:focus { border-color: #40a9ff; }
+
+    /* 级联下拉面板 */
+    .cascade-dropdown { position: relative; display: flex; align-items: center; flex: 1; min-width: 0; }
+    .cascade-trigger {
+      height: 30px; flex: 1; min-width: 0; padding: 0 8px;
+      border: 1px solid #d9d9d9; border-radius: 4px; background: #fff;
+      font-size: 13px; color: #262626;
+      display: flex; align-items: center; justify-content: space-between;
+      cursor: pointer; user-select: none;
+    }
+    .cascade-trigger .placeholder { color: #bfbfbf; }
+    .cascade-trigger .arrow { color: #8c8c8c; font-size: 12px; }
+    .cascade-trigger:hover { border-color: #40a9ff; }
+    .cascade-panel {
+      position: absolute; top: 34px; left: 0; width: 440px; min-width: 440px;
+      background: #fff; border: 1px solid #d9d9d9; border-radius: 4px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.12); display: none; z-index: 100;
+    }
+    .cascade-panel.show { display: flex; }
+    .cascade-left, .cascade-right {
+      flex: 1; max-height: 280px; overflow-y: auto; padding: 6px 0;
+    }
+    .cascade-left { border-right: 1px solid #e8e8e8; }
+    .cascade-item {
+      display: flex; align-items: center; gap: 6px;
+      padding: 8px 12px; font-size: 13px; color: #262626;
+      cursor: pointer; user-select: none;
+    }
+    .cascade-item:hover { background: #f5f5f5; }
+    .cascade-item.active { background: #e6f7ff; color: #1890ff; }
+    .cascade-item input { width: auto; height: auto; margin: 0; cursor: pointer; }
+    .cascade-item-label {
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .cascade-expand-btn {
+      margin-left: auto;
+      padding: 0 2px;
+      border: 0;
+      background: transparent;
+      color: #8c8c8c;
+      font-size: 14px;
+      line-height: 1;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .cascade-item.active .cascade-expand-btn,
+    .cascade-item:hover .cascade-expand-btn {
+      color: #1890ff;
+    }
+    .cascade-radio {
+      display: inline-block; width: 14px; height: 14px;
+      border: 2px solid #d9d9d9; border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .cascade-radio.checked {
+      border-color: #1890ff;
+      background: radial-gradient(circle, #1890ff 40%, transparent 40%);
+    }
+    .btn-text {
+      height: 30px;
+      padding: 0 10px;
+      border: none;
+      background: none;
+      color: #1890ff;
+      font-size: 13px;
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .btn-text:hover { color: #40a9ff; }
+
+    .select-all-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: #595959;
+      margin-bottom: 8px;
+    }
+    .select-all-row input { cursor: pointer; }
+
+    .dept-tree-controls {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      padding: 10px 12px;
+      border-bottom: 1px solid #f0f0f0;
+      font-size: 13px;
+      color: #595959;
+    }
+    .dept-tree-controls .option {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .dept-tree-controls .option:hover { color: #1890ff; }
+
+    .btn {
+      height: 30px;
+      padding: 0 14px;
+      border-radius: 4px;
+      font-size: 13px;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all .2s;
+      flex-shrink: 0;
+    }
+    .btn-primary {
+      background: #1890ff;
+      color: #fff;
+      border-color: #1890ff;
+    }
+    .btn-primary:hover { background: #40a9ff; border-color: #40a9ff; }
+    .btn-default {
+      background: #fff;
+      color: #595959;
+      border-color: #d9d9d9;
+    }
+    .btn-default:hover { color: #40a9ff; border-color: #40a9ff; }
+
+    .table-wrap {
+      flex: 1;
+      overflow: auto;
+      border: 1px solid #e8e8e8;
+      border-radius: 4px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    th, td {
+      padding: 9px 12px;
+      text-align: left;
+      border-bottom: 1px solid #e8e8e8;
+      white-space: nowrap;
+    }
+    th {
+      background: #fafafa;
+      color: #262626;
+      font-weight: 600;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+    tbody tr { cursor: pointer; transition: background .15s; }
+    tbody tr:hover { background: #f0f9ff; }
+    tbody tr.selected { background: #e6f7ff; }
+    tbody tr.selected td { color: #1890ff; }
+
+    .ck {
+      width: 14px;
+      height: 14px;
+      border: 1px solid #d9d9d9;
+      border-radius: 2px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      color: #fff;
+      background: #fff;
+      cursor: pointer;
+      transition: all .15s;
+      flex-shrink: 0;
+    }
+    .ck.checked { background: #1890ff; border-color: #1890ff; }
+    .ck.checked::after { content: "\2713"; line-height: 1; }
+    .ck.indeterminate { background: #1890ff; border-color: #1890ff; }
+    .ck.indeterminate::after {
+      content: "";
+      width: 6px;
+      height: 2px;
+      background: #fff;
+    }
+
+    /* 部门树 */
+    .tree {
+      flex: 1;
+      overflow: hidden;
+      font-size: 13px;
+      color: #262626;
+      border: 1px solid #e8e8e8;
+      border-radius: 4px;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    .dept-cascade {
+      flex: 1;
+      display: flex;
+      min-height: 0;
+      overflow-x: auto;
+      overflow-y: hidden;
+    }
+    .dept-column {
+      width: 170px;
+      min-width: 170px;
+      padding: 24px 6px;
+      border-right: 1px solid #e8e8e8;
+      overflow-y: auto;
+    }
+    .dept-column:last-child { border-right: none; }
+    .dept-cascade-node {
+      height: 36px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0 8px;
+      border-radius: 4px;
+      color: #595959;
+      cursor: pointer;
+      user-select: none;
+      margin-bottom: 4px;
+    }
+    .dept-cascade-node:hover,
+    .dept-cascade-node.active { background: #eaf6ff; }
+    .dept-cascade-node.active { color: #1677ff; }
+    .dept-cascade-node:hover { color: #1677ff; }
+    .dept-cascade-node .node-text {
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .dept-cascade-node .arrow {
+      width: 14px;
+      text-align: center;
+      flex-shrink: 0;
+      font-size: 16px;
+      line-height: 1;
+      color: #8c8c8c;
+    }
+    .dept-cascade-node.active .arrow,
+    .dept-cascade-node:hover .arrow { color: #1677ff; }
+    .dept-cascade-empty {
+      padding: 8px;
+      color: #bfbfbf;
+      text-align: center;
+    }
+
+    .pagination {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      padding-top: 10px;
+      font-size: 13px;
+      color: #595959;
+    }
+    .pagination .page-btn {
+      min-width: 28px;
+      height: 28px;
+      padding: 0 8px;
+      border: 1px solid #d9d9d9;
+      background: #fff;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 13px;
+      color: #595959;
+    }
+    .pagination .page-btn:hover { color: #1890ff; border-color: #1890ff; }
+    .pagination .page-btn.active {
+      background: #262626;
+      color: #fff;
+      border-color: #262626;
+    }
+    .pagination .page-btn:disabled {
+      cursor: not-allowed;
+      color: #bfbfbf;
+      border-color: #d9d9d9;
+    }
+    .pagination select {
+      height: 28px;
+      border: 1px solid #d9d9d9;
+      border-radius: 4px;
+      padding: 0 6px;
+      font-size: 13px;
+    }
+    .pagination .jump input {
+      width: 48px;
+      height: 28px;
+      border: 1px solid #d9d9d9;
+      border-radius: 4px;
+      text-align: center;
+      margin: 0 4px;
+      font-size: 13px;
+    }
+
+    /* 右侧已选区 */
+    .selected-area {
+      width: 260px;
+      border-left: 1px solid #e8e8e8;
+      padding-left: 16px;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .selected-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+      font-size: 13px;
+    }
+    .selected-tab {
+      color: #595959;
+      cursor: pointer;
+      user-select: none;
+    }
+    .selected-tab:hover { color: #1890ff; }
+    .selected-tab.active { color: #1890ff; font-weight: 600; }
+    .selected-tab .count { color: #8c8c8c; }
+
+    .selected-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      font-size: 13px;
+      margin-top: 12px;
+      flex-shrink: 0;
+    }
+    .selected-actions span {
+      color: #1890ff;
+      cursor: pointer;
+    }
+    .selected-actions span:hover { text-decoration: underline; }
+    .selected-actions span.all-remove { color: #ff4d4f; }
+
+    .selected-list {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-wrap: wrap;
+      align-content: flex-start;
+      gap: 8px;
+    }
+    .selected-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 8px;
+      background: #f6ffed;
+      border: 1px solid #b7eb8f;
+      border-radius: 4px;
+      font-size: 13px;
+      color: #389e0d;
+      max-width: 100%;
+    }
+    .selected-tag .tag-name {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 180px;
+    }
+    .selected-tag .tag-remove {
+      color: #389e0d;
+      cursor: pointer;
+      font-size: 12px;
+      line-height: 1;
+    }
+    .selected-tag .tag-remove:hover { color: #ff4d4f; }
+    .empty-tip {
+      color: #bfbfbf;
+      font-size: 13px;
+      text-align: center;
+      width: 100%;
+      margin-top: 40px;
+    }
+
+    /* 查看已选 */
+    .selected-view {
+      flex: 1;
+      min-height: 620px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background: #fff;
+    }
+    .selected-view.hidden { display: none; }
+    .selected-view-body {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      padding: 16px 20px 0;
+      overflow: hidden;
+    }
+    .selected-view-filter {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+      flex-shrink: 0;
+    }
+    .selected-view-filter .filter-fields {
+      flex: 1;
+      display: flex;
+      gap: 10px;
+      min-width: 0;
+    }
+    .selected-view-filter .filter-item {
+      flex: 0 1 210px;
+    }
+    .selected-view-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      flex-shrink: 0;
+    }
+    .selected-view-toolbar .btn {
+      height: 30px;
+      color: #8c8c8c;
+      border-color: #d9d9d9;
+      background: #fff;
+    }
+    .selected-view-toolbar .btn:disabled {
+      cursor: not-allowed;
+      color: #bfbfbf;
+      background: #fafafa;
+    }
+    .selected-view-table {
+      flex: 1;
+      min-height: 0;
+      overflow: auto;
+      border-top: 1px solid #f0f0f0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .selected-view-table th,
+    .selected-view-table td {
+      height: 40px;
+      padding: 8px 12px;
+    }
+    .selected-view-table th {
+      background: #f5f8fb;
+      color: #595959;
+    }
+    .selected-view-table .remove-link {
+      color: #1890ff;
+      cursor: pointer;
+    }
+    .selected-view-table .remove-link:hover { text-decoration: underline; }
+    .selected-view-summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0;
+      font-size: 13px;
+      color: #595959;
+      flex-shrink: 0;
+    }
+    .selected-view-footer {
+      height: 54px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-top: 1px solid #e8e8e8;
+      flex-shrink: 0;
+    }
+    .selected-view-footer .btn { min-width: 96px; }
+
+    .modal-footer {
+      padding: 12px 20px;
+      border-top: 1px solid #e8e8e8;
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+    }
+    .modal-footer .btn { height: 34px; min-width: 120px; }
+
+    /* 人员选择弹窗角标位置修正：避免被 overflow 容器裁剪 */
+    #modalTitle.prd-anchor .prd-badge { top: -8px; right: 8px; }
+    #filterBar.prd-anchor .prd-badge { top: -8px; right: 8px; }
+    #tableContainer.prd-anchor .prd-badge { top: 4px; right: 8px; }
+    #selectedView.prd-anchor .prd-badge { top: 4px; right: 8px; }
+    #mainFooter.prd-anchor .prd-badge { top: -8px; right: 8px; }
+  </style>
+  <link rel="stylesheet" href="prd-annotation.css">
+</head>
+<body>
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="modalTitle">选择人员</h3>
+      <button class="close" onclick="closeModal()">&times;</button>
+    </div>
+
+    <div class="modal-body" id="mainBody">
+      <!-- 左侧选择区 -->
+      <div class="select-area">
+        <div class="tabs" id="mainTabs">
+          <div class="tab active" data-tab="person" onclick="switchTab('person')">选人员</div>
+          <div class="tab" data-tab="dept" onclick="switchTab('dept')">选部门</div>
+        </div>
+
+        <div class="filter-bar" id="filterBar"></div>
+
+        <div class="select-all-row" id="selectAllRow">
+          <span class="ck" id="selectAllCk" onclick="toggleSelectAll()"></span>
+          <label for="selectAllCk">全选</label>
+        </div>
+
+        <div class="table-wrap" id="tableContainer">
+          <table id="dataTable">
+            <thead id="tableHead"></thead>
+            <tbody id="tableBody"></tbody>
+          </table>
+        </div>
+
+        <div class="pagination" id="pagination"></div>
+      </div>
+
+      <!-- 右侧已选区 -->
+      <div class="selected-area">
+        <div class="selected-tabs" id="selectedTabs">
+          <span class="selected-tab active" data-type="person" onclick="switchSelectedTab('person')">人员(<span class="count" id="countPerson">0</span>)</span>
+          <span class="selected-tab" data-type="dept" onclick="switchSelectedTab('dept')">部门(<span class="count" id="countDept">0</span>)</span>
+        </div>
+        <div class="selected-list" id="selectedList"></div>
+        <div class="selected-actions">
+          <span onclick="viewSelected()">查看已选</span>
+          <span class="all-remove" onclick="removeAll()">全部移除</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="selected-view hidden" id="selectedView"></div>
+
+    <div class="modal-footer" id="mainFooter">
+      <button class="btn btn-default" onclick="closeModal()">返回</button>
+      <button class="btn btn-primary" onclick="confirmSelect()">确定</button>
+    </div>
+  </div>
+
+  <script>
+    const pickerUrlParams = new URLSearchParams(window.location.search);
+    const isEmbeddedPicker = pickerUrlParams.get('embed') === '1' || window.parent !== window;
+    if (isEmbeddedPicker) {
+      document.body.classList.add('embedded-picker');
+    }
+
+    // ================= 数据模型 =================
+    const group = {
+      id: 'root', name: '福建华电可门发电有限公司',
+      children: [
+        { id: 'd1', name: '基建部', children: [
+          { id: 'd1a', name: '基建001' },
+          { id: 'd1b', name: '基建002' }
+        ]},
+        { id: 'd2', name: '生产管理部' },
+        { id: 'd3', name: '安全管理部' },
+        { id: 'd4', name: '综合办公室' },
+        { id: 'd5', name: '技术质量部' },
+        { id: 'd6', name: '设备维护部' }
+      ]
+    };
+
+    const personMap = {
+      p1:  { id:'p1',  name:'吴华立',  company:'福建华电可门发电有限公司', dept:'基建部',       post:'部门经理', status:'在职' },
+      p2:  { id:'p2',  name:'庞柳',    company:'福建华电可门发电有限公司', dept:'基建001',      post:'工程师',   status:'在职' },
+      p3:  { id:'p3',  name:'熊丽娟',  company:'福建华电可门发电有限公司', dept:'基建002',      post:'技术员',   status:'离职' },
+      p4:  { id:'p4',  name:'熊德芳',  company:'福建华电可门发电有限公司', dept:'生产管理部',   post:'车间主任', status:'停用' },
+      p5:  { id:'p5',  name:'陈伟',    company:'福建华电可门发电有限公司', dept:'生产管理部',   post:'操作员',   status:'在职' },
+      p6:  { id:'p6',  name:'赵敏',    company:'福建华电可门发电有限公司', dept:'安全管理部',   post:'安全员',   status:'在职' },
+      p7:  { id:'p7',  name:'王磊',    company:'福建华电可门发电有限公司', dept:'综合办公室',   post:'行政主管', status:'在职' },
+      p8:  { id:'p8',  name:'李娜',    company:'福建华电可门发电有限公司', dept:'技术质量部',   post:'质检员',   status:'在职' },
+      p9:  { id:'p9',  name:'张强',    company:'福建华电可门发电有限公司', dept:'设备维护部',   post:'维护主管', status:'在职' },
+      p10: { id:'p10', name:'刘洋',    company:'福建华电可门发电有限公司', dept:'基建部',       post:'施工员',   status:'在职' },
+      p11: { id:'p11', name:'孙丽华',  company:'福建华电可门发电有限公司', dept:'综合办公室',   post:'人事专员', status:'在职' },
+      p12: { id:'p12', name:'周建国',  company:'福建华电可门发电有限公司', dept:'安全管理部',   post:'安全主管', status:'离职' },
+      p13: { id:'p13', name:'林海',    company:'福建华电可门发电有限公司', dept:'福建华电可门发电有限公司', post:'公司管理员', status:'在职' },
+      p14: { id:'p14', name:'郑雪',    company:'福建华电可门发电有限公司', dept:'福建华电可门发电有限公司', post:'培训主管',   status:'在职' }
+    };
+
+    function personById(pid) { return personMap[pid]; }
+
+    const deptPersonMap = {
+      root: ['p13','p14'],
+      d1:  ['p1','p10'],
+      d1a: ['p2'],
+      d1b: ['p3'],
+      d2:  ['p4','p5'],
+      d3:  ['p6','p12'],
+      d4:  ['p7','p11'],
+      d5:  ['p8'],
+      d6:  ['p9']
+    };
+
+    
+
+
+    // 部门 → 公司 映射（用于快速查找人员所属公司）
+    const deptToCompany = {};
+    (function() {
+      function walk(node) {
+        deptToCompany[node.id] = group.name;
+        if (node.children) for (const ch of node.children) walk(ch);
+      }
+      walk(group);
+    })();
+    const companyNames = [group.name];
+
+    function getCompanyNameForDept(deptId) {
+      return deptToCompany[deptId] || '';
+    }
+
+    function getDeptForPerson(pid) {
+      for (const [deptId, pids] of Object.entries(deptPersonMap)) {
+        if (pids.includes(pid)) return findNode(deptId)?.name || '';
+      }
+      return '';
+    }
+
+    function findNode(id, nodes = [group]) {
+      for (const n of nodes) {
+        if (n.id === id) return n;
+        if (n.children) {
+          const found = findNode(id, n.children);
+          if (found) return found;
+        }
+      }
+      return null;
+    }
+
+    let allPersons = [];
+    function sortPersonsForDefaultList(persons) {
+      const companyOrder = new Map(companyNames.map((name, index) => [name, index]));
+      const personsByCompany = new Map(companyNames.map(name => [name, []]));
+      for (const person of persons) {
+        if (!personsByCompany.has(person.company)) personsByCompany.set(person.company, []);
+        personsByCompany.get(person.company).push(person);
+      }
+
+      for (const groupPersons of personsByCompany.values()) {
+        groupPersons.sort((a, b) => parseInt(a.id.slice(1)) - parseInt(b.id.slice(1)));
+      }
+
+      return [...personsByCompany.entries()]
+        .sort((a, b) => (companyOrder.get(a[0]) ?? 999) - (companyOrder.get(b[0]) ?? 999))
+        .flatMap(([, groupPersons]) => groupPersons);
+    }
+
+    (function buildPersons() {
+      const seen = new Set();
+      const persons = [];
+      for (const pids of Object.values(deptPersonMap)) {
+        for (const pid of pids) {
+          if (!seen.has(pid)) {
+            seen.add(pid);
+            persons.push(personById(pid));
+          }
+        }
+      }
+      allPersons = sortPersonsForDefaultList(persons);
+    })();
+
+    // ================= 状态 =================
+    let currentTab = 'person';
+    let currentPage = 1;
+    let pageSize = 10;
+
+    let filters = {
+      person: { name: '', dept: '', post: '' },
+      dept: { name: '' }
+    };
+
+    let selected = {
+      person: new Set(),
+      dept: new Set()
+    };
+
+    let filterExpanded = false;
+    function escapeHTML(str) {
+      const div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    }
+    function formatScopeName(company, name) {
+      if (company && name && company !== name) return `${company}-${name}`;
+      return company || name || '';
+    }
+    let selectedTab = 'person'; // person | dept
+    let includeSubDeptEmployees = true;
+    let activeDeptPath = [];
+    let selectedViewVisible = false;
+    let externalSelectedViewMode = false;
+    let selectedViewType = 'person';
+    let selectedViewPage = 1;
+    let selectedViewPageSize = 10;
+    let pickerContextTitle = '选择人员';
+    const manualSelectAllState = { person: false };
+    let manualDeptSelectAllChecked = false;
+    const selectedViewChecked = new Set();
+    const selectedViewFilters = {
+      person: { name: '', dept: '', post: '' },
+      dept: { dept: '' }
+    };
+
+    function resetSelectedViewFilters() {
+      selectedViewFilters.person = { name: '', dept: '', post: '' };
+      selectedViewFilters.dept = { dept: '' };
+    }
+
+    function resetManualSelectAllState() {
+      manualSelectAllState.person = false;
+      manualDeptSelectAllChecked = false;
+    }
+
+    const deptNodeIds = new Set();
+    const deptParentMap = {};
+    (function collectDeptIds(nodes = [group], parentId = '') {
+      for (const n of nodes) {
+        deptNodeIds.add(n.id);
+        deptParentMap[n.id] = parentId;
+        if (n.children) collectDeptIds(n.children, n.id);
+      }
+    })();
+
+    // ================= 工具函数 =================
+    function getDeptNodeIds() { return deptNodeIds; }
+    function getDeptAndDescendantIds(node) {
+      if (!node) return [];
+      let ids = [node.id];
+      if (node.children) {
+        for (const ch of node.children) ids.push(...getDeptAndDescendantIds(ch));
+      }
+      return ids;
+    }
+    function getPersonsByDeptNode(node, includeChildren = true) {
+      const ids = includeChildren ? getDeptAndDescendantIds(node) : [node?.id];
+      const pids = new Set();
+      for (const id of ids) { if (deptPersonMap[id]) for (const pid of deptPersonMap[id]) pids.add(pid); }
+      return [...pids].map(pid => allPersons.find(p => p.id === pid)).filter(Boolean);
+    }
+    function getDeptSelectionState(node) {
+      if (!node) return 'none';
+      if (!includeSubDeptEmployees) {
+        return selected.dept.has(node.id) ? 'checked' : 'none';
+      }
+      const children = node.children || [];
+      if (!children.length) return selected.dept.has(node.id) ? 'checked' : 'none';
+
+      const childStates = children.map(child => getDeptSelectionState(child));
+      const allChildrenChecked = childStates.every(state => state === 'checked');
+      const hasSelectedChild = childStates.some(state => state !== 'none');
+      const selfChecked = selected.dept.has(node.id);
+
+      if (selfChecked && allChildrenChecked) return 'checked';
+      if (selfChecked || hasSelectedChild) return 'indeterminate';
+      return 'none';
+    }
+    function setDeptSubtreeSelected(node, checked) {
+      if (!includeSubDeptEmployees) {
+        if (checked) selected.dept.add(node.id);
+        else selected.dept.delete(node.id);
+        return;
+      }
+      for (const id of getDeptAndDescendantIds(node)) {
+        if (checked) selected.dept.add(id);
+        else selected.dept.delete(id);
+      }
+    }
+    function reconcileDeptNodeSelection(node) {
+      if (!includeSubDeptEmployees) return;
+      if (!node || !node.children || !node.children.length) return;
+      const allChildrenChecked = node.children.every(child => getDeptSelectionState(child) === 'checked');
+      if (allChildrenChecked) selected.dept.add(node.id);
+      else selected.dept.delete(node.id);
+    }
+    function syncDeptAncestors(id) {
+      if (!includeSubDeptEmployees) return;
+      let parentId = deptParentMap[id];
+      while (parentId && parentId !== group.id) {
+        const parent = findNode(parentId);
+        reconcileDeptNodeSelection(parent);
+        parentId = deptParentMap[parentId];
+      }
+    }
+    function syncAllDeptParentSelection(nodes = group.children) {
+      if (!includeSubDeptEmployees) return;
+      for (const node of nodes) {
+        if (node.children) syncAllDeptParentSelection(node.children);
+        reconcileDeptNodeSelection(node);
+      }
+    }
+    function getDeptDisplayCount(node) {
+      return getPersonsByDeptNode(node, includeSubDeptEmployees).length;
+    }
+    function getVisibleDeptNodes(nodes = [group]) {
+      const result = [];
+      for (const node of nodes) {
+        if (filters.dept.name && !node.name.includes(filters.dept.name) && !hasChildMatch(node, filters.dept.name)) continue;
+        result.push(node);
+        if (node.children) result.push(...getVisibleDeptNodes(node.children));
+      }
+      return result;
+    }
+
+    function getTabData() {
+      switch (currentTab) {
+        case 'person': return getPersonData();
+        case 'dept': return getDeptData();
+        default: return [];
+      }
+    }
+
+    function getPersonData() {
+      const f = filters.person;
+      return allPersons.filter(p => {
+        return (!f.name || p.name.includes(f.name)) &&
+               (!f.dept || p.dept.includes(f.dept)) &&
+               (!f.post || p.post === f.post);
+      });
+    }
+
+    function flattenDepts() {
+      const res = [];
+      function walk(nodes, path) {
+        for (const n of nodes) {
+          res.push({ ...n, path });
+          if (n.children) walk(n.children, [...path, n.name]);
+        }
+      }
+      walk([group], []);
+      return res;
+    }
+
+    function getDeptData() {
+      const f = filters.dept;
+      const depts = flattenDepts();
+      return depts.filter(d => {
+        return !f.name || d.name.includes(f.name);
+      });
+    }
+
+    // ================= 视图渲染 =================
+    function renderFilterBar() {
+      const bar = document.getElementById('filterBar');
+      const badge = bar.querySelector('.prd-badge');
+      bar.style.display = 'flex';
+      let html = '';
+
+      if (currentTab === 'person') {
+        html = `
+          <div class="filter-row">
+            <div class="filter-fields">
+              <div class="filter-item"><label>姓名</label><input type="text" id="f_person_name" placeholder="请输入姓名" value="${filters.person.name}"></div>
+              <div class="filter-item">
+                <label>部门名称</label>
+                <div class="cascade-dropdown" id="personDeptCascade">
+                  <div class="cascade-trigger" onclick="togglePersonDeptCascade()">
+                    <span id="personDeptCascadeText" class="${filters.person.dept ? '' : 'placeholder'}">${filters.person.dept || '请选择'}</span>
+                    <span class="arrow">&#9662;</span>
+                  </div>
+                  <div class="cascade-panel" id="personDeptCascadePanel">
+                    <div class="cascade-left">${renderSingleDeptList()}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="filter-actions">
+              <button class="btn btn-primary" onclick="applyFilter()">查询</button>
+              <button class="btn btn-default" onclick="resetFilter()">重置</button>
+              <button class="btn-text" onclick="toggleFilterExpand()">${filterExpanded ? '收起 ▲' : '展开 ▼'}</button>
+            </div>
+          </div>
+          <div class="filter-row ${filterExpanded ? '' : 'hidden'}">
+            <div class="filter-fields">
+              <div class="filter-item">
+                <label>岗位</label>
+                <div class="cascade-dropdown" id="personPostCascade">
+                  <div class="cascade-trigger" onclick="togglePersonPostCascade()">
+                    <span id="personPostCascadeText" class="${filters.person.post ? '' : 'placeholder'}">${filters.person.post || '请选择'}</span>
+                    <span class="arrow">&#9662;</span>
+                  </div>
+                  <div class="cascade-panel" id="personPostCascadePanel">
+                    <div>${renderSinglePostList()}</div>
+                  </div>
+                </div>
+              </div>
+              <div class="filter-item placeholder"></div>
+            </div>
+            <div class="filter-actions placeholder">
+              <button class="btn btn-primary">查询</button>
+              <button class="btn btn-default">重置</button>
+              <button class="btn-text">${filterExpanded ? '收起 ▲' : '展开 ▼'}</button>
+            </div>
+          </div>
+        `;
+      } else if (currentTab === 'dept') {
+        html = `
+          <div class="filter-row">
+            <div class="filter-fields">
+              <div class="filter-item"><label>部门名称</label><input type="text" id="f_dept_name" placeholder="请输入部门名称" value="${filters.dept.name}"></div>
+            </div>
+            <div class="filter-actions">
+              <button class="btn btn-primary" onclick="applyFilter()">查询</button>
+              <button class="btn btn-default" onclick="resetFilter()">重置</button>
+            </div>
+          </div>
+        `;
+      }
+      bar.innerHTML = html;
+      if (badge) bar.appendChild(badge);
+    }
+
+    function deptOptions(selectedVal) {
+      return flattenDepts().map(d => `<option value="${d.name}" ${d.name === selectedVal ? 'selected' : ''}>${d.name}</option>`).join('');
+    }
+    function postNamesByCompany(companyName) {
+      return [...new Set(allPersons
+        .filter(p => p.company === companyName)
+        .map(p => p.post))];
+    }
+    function companyOptions(selectedVal) {
+      return companyNames.map(c => `<option value="${c}" ${c === selectedVal ? 'selected' : ''}>${c}</option>`).join('');
+    }
+    function deptOptionsByCompany(companyName, selectedVal) {
+      const depts = companyName
+        ? flattenDepts().filter(d => deptToCompany[d.id] === companyName)
+        : flattenDepts();
+      return depts.map(d => `<option value="${d.name}" ${d.name === selectedVal ? 'selected' : ''}>${d.name}</option>`).join('');
+    }
+
+    function onCompanyChange(tab) {
+      const sel = document.getElementById(`f_${tab}_company`);
+      if (sel) {
+        filters[tab].company = sel.value;
+        filters[tab].dept = '';
+      }
+      renderFilterBar();
+    }
+
+    function toggleFilterExpand() {
+      filterExpanded = !filterExpanded;
+      renderFilterBar();
+    }
+
+    // ================= 人员页签部门/岗位下拉（无公司层级） =================
+    function togglePersonDeptCascade() {
+      const panel = document.getElementById('personDeptCascadePanel');
+      if (!panel) return;
+      const show = panel.classList.toggle('show');
+      if (show) {
+        const left = panel.querySelector('.cascade-left');
+        if (left) left.innerHTML = renderSingleDeptList();
+      }
+    }
+
+    function togglePersonPostCascade() {
+      const panel = document.getElementById('personPostCascadePanel');
+      if (!panel) return;
+      const show = panel.classList.toggle('show');
+      if (show) {
+        const div = panel.querySelector('div');
+        if (div) div.innerHTML = renderSinglePostList();
+      }
+    }
+
+    function renderSingleDeptList() {
+      return flattenDepts().map(d => `
+        <div class="cascade-item${d.name === filters.person.dept ? ' active' : ''}" data-dept="${escapeHTML(d.name)}">
+          <span class="cascade-radio ${d.name === filters.person.dept ? 'checked' : ''}"></span>
+          <span>${d.name}</span>
+        </div>
+      `).join('');
+    }
+
+    function renderSinglePostList() {
+      const posts = [...new Set(allPersons.map(p => p.post))].sort();
+      return posts.map(post => `
+        <div class="cascade-item${post === filters.person.post ? ' active' : ''}" data-post="${escapeHTML(post)}">
+          <span class="cascade-radio ${post === filters.person.post ? 'checked' : ''}"></span>
+          <span>${post}</span>
+        </div>
+      `).join('');
+    }
+
+    // 用事件委托处理级联面板点击
+    document.addEventListener('click', function(e) {
+      // 人员级联 - 部门选择
+      const deptItem = e.target.closest('#personDeptCascadePanel .cascade-item');
+      if (deptItem) {
+        const deptName = deptItem.dataset.dept;
+        filters.person.dept = deptName;
+        const text = document.getElementById('personDeptCascadeText');
+        if (text) { text.textContent = deptName; text.classList.remove('placeholder'); }
+        const panel = document.getElementById('personDeptCascadePanel');
+        if (panel) panel.classList.remove('show');
+        return;
+      }
+      // 人员岗位级联
+      const postItem = e.target.closest('#personPostCascadePanel .cascade-item');
+      if (postItem) {
+        const postName = postItem.dataset.post;
+        filters.person.post = postName;
+        const text = document.getElementById('personPostCascadeText');
+        if (text) { text.textContent = postName; text.classList.remove('placeholder'); }
+        const panel = document.getElementById('personPostCascadePanel');
+        if (panel) panel.classList.remove('show');
+        return;
+      }
+      // 已选视图部门下拉
+      const svDeptItem = e.target.closest('#selectedViewDeptCascadePanel .cascade-item');
+      if (svDeptItem) {
+        const deptName = svDeptItem.dataset.svDept;
+        const f = selectedViewFilters[selectedViewType];
+        if (f) f.dept = deptName;
+        const text = document.getElementById('selectedViewDeptCascadeText');
+        if (text) { text.textContent = deptName; text.classList.remove('placeholder'); }
+        const panel = document.getElementById('selectedViewDeptCascadePanel');
+        if (panel) panel.classList.remove('show');
+        return;
+      }
+    });
+
+    function closeDeptCascadeOnClickOutside(e) {
+      const personDropdown = document.getElementById('personDeptCascade');
+      if (personDropdown && personDropdown.contains(e.target)) return;
+      const personPostDropdown = document.getElementById('personPostCascade');
+      if (personPostDropdown && personPostDropdown.contains(e.target)) return;
+      const selectedViewDropdown = document.getElementById('selectedViewDeptCascade');
+      if (selectedViewDropdown && selectedViewDropdown.contains(e.target)) return;
+      const personPanel = document.getElementById('personDeptCascadePanel');
+      if (personPanel) personPanel.classList.remove('show');
+      const personPostPanel = document.getElementById('personPostCascadePanel');
+      if (personPostPanel) personPostPanel.classList.remove('show');
+      const selectedViewPanel = document.getElementById('selectedViewDeptCascadePanel');
+      if (selectedViewPanel) selectedViewPanel.classList.remove('show');
+    }
+    document.addEventListener('click', closeDeptCascadeOnClickOutside);
+
+    function renderTable() {
+      const container = document.getElementById('tableContainer');
+      const badge = container.querySelector('.prd-badge');
+
+      if (currentTab === 'dept') {
+        container.classList.add('tree');
+        container.classList.remove('table-wrap');
+        container.innerHTML = '<div id="deptTree"></div>';
+        if (badge) container.appendChild(badge);
+        renderDeptTree();
+        document.getElementById('selectAllRow').style.display = 'none';
+        document.getElementById('pagination').style.display = 'none';
+        return;
+      }
+
+      container.classList.remove('tree');
+      container.classList.add('table-wrap');
+      container.innerHTML = `
+        <table id="dataTable">
+          <thead id="tableHead"></thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      `;
+      if (badge) container.appendChild(badge);
+      document.getElementById('selectAllRow').style.display = 'flex';
+      document.getElementById('pagination').style.display = 'flex';
+
+      const head = document.getElementById('tableHead');
+      const body = document.getElementById('tableBody');
+
+      const data = getTabData();
+      const start = (currentPage - 1) * pageSize;
+      const pageData = data.slice(start, start + pageSize);
+
+      let cols = [];
+      if (currentTab === 'person') cols = [
+        { title: '姓名', key: 'name' },
+        { title: '所属部门', key: 'dept' },
+        { title: '岗位', key: 'post' }
+      ];
+
+      head.innerHTML = `<tr><th style="width:40px"><span class="ck" id="headerCk" onclick="toggleSelectAll()"></span></th>${cols.map(c => `<th>${c.title}</th>`).join('')}</tr>`;
+      if (pageData.length === 0) {
+        const colSpan = cols.length + 1;
+        let rowsHtml = `<tr><td colspan="${colSpan}" style="text-align:center;padding:9px 12px;color:#bfbfbf;">暂无数据</td></tr>`;
+        for (let i = 1; i < pageSize; i++) {
+          rowsHtml += `<tr>${Array(colSpan).fill('<td style="padding:9px 12px;">&nbsp;</td>').join('')}</tr>`;
+        }
+        body.innerHTML = rowsHtml;
+      } else {
+        body.innerHTML = pageData.map(item => {
+          const sel = selected[currentTab].has(item.id);
+          return `
+            <tr class="${sel ? 'selected' : ''}" onclick="toggleItem('${item.id}')">
+              <td onclick="event.stopPropagation();toggleItem('${item.id}')"><span class="ck ${sel ? 'checked' : ''}"></span></td>
+              ${cols.map(c => `<td>${item[c.key]}</td>`).join('')}
+            </tr>
+          `;
+        }).join('');
+      }
+
+      updateSelectAllCk();
+      renderPagination();
+    }
+    function renderDeptTree() {
+      const container = document.getElementById('deptTree');
+      const controls = document.createElement('div');
+      controls.className = 'dept-tree-controls';
+      controls.innerHTML = `
+        <span class="option" onclick="toggleDeptIncludeSub()">
+          <span class="ck ${includeSubDeptEmployees ? 'checked' : ''}"></span>
+          <span>包含下级部门员工</span>
+        </span>
+        ${includeSubDeptEmployees ? '' : `
+        <span class="option" onclick="toggleDeptSelectAll()">
+          <span class="ck ${manualDeptSelectAllChecked ? 'checked' : ''}"></span>
+          <span>全选</span>
+        </span>`}
+      `;
+      const cascade = document.createElement('div');
+      cascade.className = 'dept-cascade';
+      renderDeptCascadeColumns(cascade);
+      container.innerHTML = '';
+      container.appendChild(controls);
+      container.appendChild(cascade);
+    }
+
+    function getFilteredDeptChildren(nodes = []) {
+      return nodes.filter(node => !filters.dept.name || node.name.includes(filters.dept.name) || hasChildMatch(node, filters.dept.name));
+    }
+
+    function normalizeDeptCascadePath() {
+      let nodes = getFilteredDeptChildren([group]);
+      const path = [];
+      for (let level = 0; nodes.length; level++) {
+        const currentId = activeDeptPath[level];
+        let activeNode = nodes.find(node => node.id === currentId);
+        if (!activeNode) activeNode = nodes.find(node => node.expanded);
+        if (!activeNode) activeNode = nodes.find(node => getFilteredDeptChildren(node.children || []).length > 0) || nodes[0];
+        path.push(activeNode.id);
+        if (!activeNode.children || !activeNode.children.length) break;
+        nodes = getFilteredDeptChildren(activeNode.children);
+      }
+      activeDeptPath = path;
+    }
+
+    function renderDeptCascadeColumns(parent) {
+      normalizeDeptCascadePath();
+      let nodes = getFilteredDeptChildren([group]);
+      let level = 0;
+
+      while (nodes.length) {
+        const column = document.createElement('div');
+        column.className = 'dept-column';
+        column.innerHTML = nodes.map(node => {
+          const childNodes = getFilteredDeptChildren(node.children || []);
+          const hasChildren = childNodes.length > 0;
+          const state = getDeptSelectionState(node);
+          const active = activeDeptPath[level] === node.id;
+          const displayCount = getDeptDisplayCount(node);
+          return `
+            <div class="dept-cascade-node ${active ? 'active' : ''}" onclick="activateDeptCascadeNode('${node.id}', ${level})">
+              <span class="ck ${state === 'checked' ? 'checked' : (state === 'indeterminate' ? 'indeterminate' : '')}" onclick="event.stopPropagation();toggleDeptSelect('${node.id}')"></span>
+              <span class="node-text">${escapeHTML(node.name)}(${displayCount})</span>
+              <span class="arrow">${hasChildren ? '&#8250;' : ''}</span>
+            </div>
+          `;
+        }).join('');
+        parent.appendChild(column);
+
+        const activeNode = nodes.find(node => node.id === activeDeptPath[level]);
+        if (!activeNode || !activeNode.children || !activeNode.children.length) break;
+        nodes = getFilteredDeptChildren(activeNode.children);
+        level++;
+      }
+
+      if (!parent.children.length) {
+        parent.innerHTML = '<div class="dept-cascade-empty">暂无数据</div>';
+      }
+    }
+
+    function hasChildMatch(node, name) {
+      if (!node.children) return false;
+      return node.children.some(c => c.name.includes(name) || hasChildMatch(c, name));
+    }
+
+    function activateDeptCascadeNode(id, level) {
+      activeDeptPath = activeDeptPath.slice(0, level);
+      activeDeptPath[level] = id;
+      updateAllViews();
+    }
+
+    function toggleDeptSelect(id) {
+      const node = findNode(id);
+      const state = getDeptSelectionState(node);
+      selectedTab = 'dept';
+      setDeptSubtreeSelected(node, state !== 'checked');
+      syncDeptAncestors(id);
+      updateAllViews();
+    }
+
+    function toggleDeptIncludeSub() {
+      includeSubDeptEmployees = !includeSubDeptEmployees;
+      manualDeptSelectAllChecked = false;
+      updateAllViews();
+    }
+
+    function toggleDeptSelectAll() {
+      if (includeSubDeptEmployees) return;
+      manualDeptSelectAllChecked = !manualDeptSelectAllChecked;
+      selectedTab = 'dept';
+      const visibleDeptNodes = getVisibleDeptNodes();
+      for (const node of visibleDeptNodes) {
+        setDeptSubtreeSelected(node, manualDeptSelectAllChecked);
+      }
+      syncAllDeptParentSelection();
+      updateAllViews();
+    }
+
+    function toggleItem(id) {
+      if (selected[currentTab].has(id)) selected[currentTab].delete(id);
+      else selected[currentTab].add(id);
+
+      // 如果取消人员，同步取消对应部门勾选状态；新增人员不同步勾选部门（按需求保持部门独立选择）
+      if (currentTab === 'person') syncDeptSelection();
+      updateAllViews();
+    }
+
+    function syncDeptSelection() {
+      // 当人员选择变化时，重新评估所有已选部门：如果该部门下人员未全部选中，则取消部门选中
+      const toRemove = [];
+      for (const deptId of selected.dept) {
+        const node = findNode(deptId);
+        const pids = getPersonsByDeptNode(node, includeSubDeptEmployees).map(p => p.id);
+        if (!pids.every(pid => selected.person.has(pid))) toRemove.push(deptId);
+      }
+      for (const id of toRemove) selected.dept.delete(id);
+      syncAllDeptParentSelection();
+    }
+
+    function toggleSelectAll() {
+      manualSelectAllState[currentTab] = !manualSelectAllState[currentTab];
+      const data = getTabData();
+      const start = (currentPage - 1) * pageSize;
+      const pageData = data.slice(start, start + pageSize);
+      if (!manualSelectAllState[currentTab]) {
+        for (const item of pageData) selected[currentTab].delete(item.id);
+      } else {
+        for (const item of pageData) selected[currentTab].add(item.id);
+      }
+      if (currentTab === 'person') syncDeptSelection();
+      updateAllViews();
+    }
+
+    function updateSelectAllCk() {
+      if (currentTab === 'dept') return;
+      const checked = !!manualSelectAllState[currentTab];
+      const hck = document.getElementById('headerCk');
+      const sck = document.getElementById('selectAllCk');
+      [hck, sck].forEach(ck => {
+        if (!ck) return;
+        ck.classList.remove('checked', 'indeterminate');
+        if (checked) ck.classList.add('checked');
+      });
+    }
+
+    function renderPagination() {
+      if (currentTab === 'dept') return;
+      const total = getTabData().length;
+      const totalPages = Math.ceil(total / pageSize) || 1;
+      const pages = [];
+      const ps = Math.max(1, currentPage - 2);
+      const pe = Math.min(totalPages, currentPage + 2);
+      for (let i = ps; i <= pe; i++) pages.push(i);
+      document.getElementById('pagination').innerHTML = `
+        <button class="page-btn" ${currentPage === 1 ? 'disabled' : ''} onclick="goPage(${currentPage - 1})">&lt;</button>
+        ${pages.map(p => `<button class="page-btn ${p === currentPage ? 'active' : ''}" onclick="goPage(${p})">${p}</button>`).join('')}
+        <button class="page-btn" ${currentPage === totalPages ? 'disabled' : ''} onclick="goPage(${currentPage + 1})">&gt;</button>
+        <select onchange="changePageSize(this.value)">
+          <option value="5" ${pageSize == 5 ? 'selected' : ''}>5条/页</option>
+          <option value="10" ${pageSize == 10 ? 'selected' : ''}>10条/页</option>
+          <option value="20" ${pageSize == 20 ? 'selected' : ''}>20条/页</option>
+          <option value="50" ${pageSize == 50 ? 'selected' : ''}>50条/页</option>
+        </select>
+        <span class="jump">跳至 <input type="number" min="1" max="${totalPages}" value="${currentPage}" onchange="jumpPage(this.value, ${totalPages})"> 页</span>
+      `;
+    }
+
+    function renderSelectedArea() {
+      document.getElementById('countPerson').textContent = selected.person.size;
+      document.getElementById('countDept').textContent = selected.dept.size;
+
+      const list = document.getElementById('selectedList');
+      let items = [];
+      if (selectedTab === 'person') for (const id of selected.person) items.push({ type: 'person', id, name: allPersons.find(p => p.id === id)?.name || id });
+      if (selectedTab === 'dept') for (const id of selected.dept) {
+        const node = findNode(id);
+        items.push({ type: 'dept', id, name: node?.name || id });
+      }
+
+      if (items.length === 0) {
+        list.innerHTML = '<div class="empty-tip">暂无选择项</div>';
+      } else {
+        list.innerHTML = items.map(item => `
+          <div class="selected-tag">
+            <span class="tag-name">${item.name}</span>
+            <span class="tag-remove" onclick="removeSelected('${item.type}', '${item.id}')">&#x2715;</span>
+          </div>
+        `).join('');
+      }
+
+      // 更新已选标签高亮
+      document.querySelectorAll('.selected-tab').forEach(t => t.classList.toggle('active', t.dataset.type === selectedTab));
+    }
+
+    function getSelectedViewTitle(type) {
+      return type === 'person' ? '已选人员' : '已选部门';
+    }
+
+    function getSelectedViewRows(type) {
+      if (type === 'person') {
+        const f = selectedViewFilters.person;
+        return [...selected.person].map(id => allPersons.find(p => p.id === id)).filter(Boolean).filter(p => {
+          return (!f.name || p.name.includes(f.name)) &&
+                 (!f.dept || p.dept.includes(f.dept)) &&
+                 (!f.post || p.post.includes(f.post));
+        }).map(p => ({
+          id: p.id,
+          cells: [p.name, p.dept, p.post],
+          raw: p
+        }));
+      }
+      if (type === 'dept') {
+        const f = selectedViewFilters.dept;
+        return [...selected.dept].map(id => {
+          const node = findNode(id);
+          if (!node) return null;
+          return { id, cells: [node.name, getDeptDisplayCount(node)], raw: node };
+        }).filter(Boolean).filter(item => {
+          return (!f.dept || item.raw.name === f.dept);
+        });
+      }
+      return [];
+    }
+
+    function getSelectedViewColumns(type) {
+      if (type === 'person') return ['姓名', '所属部门', '岗位'];
+      if (type === 'dept') return ['部门名称', '人数'];
+      return [];
+    }
+
+    function renderSelectedView() {
+      if (!selectedViewVisible) return;
+      const view = document.getElementById('selectedView');
+      const title = document.getElementById('modalTitle');
+      if (!view || !title) return;
+
+      const viewBadge = view.querySelector('.prd-badge');
+      const titleBadge = title.querySelector('.prd-badge');
+
+      title.textContent = getSelectedViewTitle(selectedViewType);
+      if (titleBadge) title.appendChild(titleBadge);
+      const rows = getSelectedViewRows(selectedViewType);
+      const total = rows.length;
+      const totalPages = Math.ceil(total / selectedViewPageSize) || 1;
+      selectedViewPage = Math.min(selectedViewPage, totalPages);
+      const start = (selectedViewPage - 1) * selectedViewPageSize;
+      const pageRows = rows.slice(start, start + selectedViewPageSize);
+      const pageIds = pageRows.map(row => row.id);
+      const checkedOnPage = pageIds.filter(id => selectedViewChecked.has(id)).length;
+      const allPageChecked = pageIds.length > 0 && checkedOnPage === pageIds.length;
+      const partPageChecked = checkedOnPage > 0 && checkedOnPage < pageIds.length;
+      const columns = getSelectedViewColumns(selectedViewType);
+
+      view.classList.remove('hidden');
+      view.innerHTML = `
+        <div class="selected-view-body">
+          ${renderSelectedViewFilter()}
+          <div class="selected-view-toolbar">
+            <button class="btn btn-default" ${selectedViewChecked.size === 0 ? 'disabled' : ''} onclick="batchRemoveSelectedView()">批量删除</button>
+          </div>
+          <div class="selected-view-table">
+            <table>
+              <thead>
+                <tr>
+                  <th style="width:44px"><span class="ck ${allPageChecked ? 'checked' : (partPageChecked ? 'indeterminate' : '')}" onclick="toggleSelectedViewPageCheck()"></span></th>
+                  ${columns.map(col => `<th>${col}</th>`).join('')}
+                  <th style="width:90px">操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${pageRows.length ? pageRows.map(row => `
+                  <tr>
+                    <td><span class="ck ${selectedViewChecked.has(row.id) ? 'checked' : ''}" onclick="toggleSelectedViewCheck('${row.id}')"></span></td>
+                    ${row.cells.map(cell => `<td>${escapeHTML(String(cell))}</td>`).join('')}
+                    <td><span class="remove-link" onclick="removeSelectedViewItem('${row.id}')">移除</span></td>
+                  </tr>
+                `).join('') : `<tr><td colspan="${columns.length + 2}" style="text-align:center;color:#bfbfbf;">暂无数据</td></tr>`}
+              </tbody>
+            </table>
+          </div>
+          <div class="selected-view-summary">
+            <span>共 ${total} 项数据</span>
+            <div class="pagination">${renderSelectedViewPagination(totalPages)}</div>
+          </div>
+        </div>
+        <div class="selected-view-footer">
+          <button class="btn btn-default" onclick="closeSelectedView()">返回选择</button>
+        </div>
+      `;
+      if (viewBadge) view.appendChild(viewBadge);
+    }
+
+    function renderSelectedViewFilter() {
+      const f = selectedViewFilters[selectedViewType];
+      if (selectedViewType === 'person') {
+        return `
+          <div class="selected-view-filter">
+            <div class="filter-fields">
+              <div class="filter-item"><label>姓名</label><input id="sv_person_name" value="${escapeHTML(f.name)}" placeholder="请输入姓名搜索"></div>
+              <div class="filter-item"><label>部门</label>${renderSelectedViewDeptCascade()}</div>
+              <div class="filter-item"><label>岗位</label><input id="sv_person_post" value="${escapeHTML(f.post)}" placeholder="请输入"></div>
+            </div>
+            <div class="filter-actions">
+              <button class="btn btn-primary" onclick="applySelectedViewFilter()">查询</button>
+              <button class="btn btn-default" onclick="resetSelectedViewFilter()">重置</button>
+            </div>
+          </div>
+        `;
+      }
+      if (selectedViewType === 'dept') {
+        return `
+          <div class="selected-view-filter">
+            <div class="filter-fields">
+              <div class="filter-item"><label>部门</label>${renderSelectedViewDeptCascade()}</div>
+            </div>
+            <div class="filter-actions">
+              <button class="btn btn-primary" onclick="applySelectedViewFilter()">查询</button>
+              <button class="btn btn-default" onclick="resetSelectedViewFilter()">重置</button>
+            </div>
+          </div>
+        `;
+      }
+      return '';
+    }
+
+    function renderSelectedViewDeptCascade() {
+      const f = selectedViewFilters[selectedViewType];
+      const text = f.dept || '请选择';
+      return `
+        <div class="cascade-dropdown" id="selectedViewDeptCascade">
+          <div class="cascade-trigger" onclick="toggleSelectedViewDeptCascade()">
+            <span id="selectedViewDeptCascadeText" class="${f.dept ? '' : 'placeholder'}">${escapeHTML(text)}</span>
+            <span class="arrow">&#9662;</span>
+          </div>
+          <div class="cascade-panel" id="selectedViewDeptCascadePanel">
+            <div>${renderSelectedViewSingleDeptList()}</div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderSelectedViewSingleDeptList() {
+      const f = selectedViewFilters[selectedViewType];
+      return flattenDepts().map(d => `
+        <div class="cascade-item${d.name === f.dept ? ' active' : ''}" data-sv-dept="${escapeHTML(d.name)}">
+          <span class="cascade-radio ${d.name === f.dept ? 'checked' : ''}"></span>
+          <span>${escapeHTML(d.name)}</span>
+        </div>
+      `).join('');
+    }
+
+    function toggleSelectedViewDeptCascade() {
+      const panel = document.getElementById('selectedViewDeptCascadePanel');
+      if (!panel) return;
+      const show = panel.classList.toggle('show');
+      if (show) {
+        const div = panel.querySelector('div');
+        if (div) div.innerHTML = renderSelectedViewSingleDeptList();
+      }
+    }
+
+    function renderSelectedViewPagination(totalPages) {
+      const pages = [];
+      const ps = Math.max(1, selectedViewPage - 2);
+      const pe = Math.min(totalPages, selectedViewPage + 2);
+      for (let i = ps; i <= pe; i++) pages.push(i);
+      return `
+        <select onchange="changeSelectedViewPageSize(this.value)">
+          <option value="10" ${selectedViewPageSize == 10 ? 'selected' : ''}>10/页</option>
+          <option value="20" ${selectedViewPageSize == 20 ? 'selected' : ''}>20/页</option>
+          <option value="50" ${selectedViewPageSize == 50 ? 'selected' : ''}>50/页</option>
+        </select>
+        <button class="page-btn" ${selectedViewPage === 1 ? 'disabled' : ''} onclick="goSelectedViewPage(${selectedViewPage - 1})">&lt;</button>
+        ${pages.map(p => `<button class="page-btn ${p === selectedViewPage ? 'active' : ''}" onclick="goSelectedViewPage(${p})">${p}</button>`).join('')}
+        <button class="page-btn" ${selectedViewPage === totalPages ? 'disabled' : ''} onclick="goSelectedViewPage(${selectedViewPage + 1})">&gt;</button>
+        <span class="jump">跳至 <input type="number" min="1" max="${totalPages}" value="${selectedViewPage}" onchange="goSelectedViewPage(Math.max(1, Math.min(${totalPages}, parseInt(this.value) || 1)))"> /${totalPages} 页</span>
+      `;
+    }
+
+    function removeSelected(type, id) {
+      selected[type].delete(id);
+      if (type === 'person') syncDeptSelection();
+      updateAllViews();
+    }
+
+    function removeAll() {
+      selected.person.clear();
+      selected.dept.clear();
+      selectedViewChecked.clear();
+      updateAllViews();
+    }
+
+    function viewSelected() {
+      openSelectedView(selectedTab, false);
+    }
+
+    function openSelectedView(type, externalMode = false) {
+      selectedViewType = type;
+      selectedViewVisible = true;
+      externalSelectedViewMode = externalMode;
+      selectedViewPage = 1;
+      selectedViewChecked.clear();
+      document.getElementById('mainBody').style.display = 'none';
+      document.getElementById('mainFooter').style.display = 'none';
+      renderSelectedView();
+    }
+
+    function closeSelectedView() {
+      if (externalSelectedViewMode && isEmbeddedPicker) {
+        selectedViewVisible = false;
+        externalSelectedViewMode = false;
+        selectedViewChecked.clear();
+        window.parent.postMessage({ type: 'person-picker:close' }, '*');
+        return;
+      }
+      selectedViewVisible = false;
+      externalSelectedViewMode = false;
+      selectedViewChecked.clear();
+      document.getElementById('selectedView').classList.add('hidden');
+      document.getElementById('mainBody').style.display = 'flex';
+      document.getElementById('mainFooter').style.display = 'flex';
+      const titleEl = document.getElementById('modalTitle');
+      const titleBadge = titleEl.querySelector('.prd-badge');
+      titleEl.textContent = pickerContextTitle;
+      if (titleBadge) titleEl.appendChild(titleBadge);
+      renderSelectedArea();
+    }
+
+    function applySelectedViewFilter() {
+      if (selectedViewType === 'person') {
+        selectedViewFilters.person.name = document.getElementById('sv_person_name').value.trim();
+        selectedViewFilters.person.post = document.getElementById('sv_person_post').value.trim();
+      } else if (selectedViewType === 'dept') {
+        // 部门条件由级联控件直接写入 selectedViewFilters.dept
+      }
+      selectedViewPage = 1;
+      selectedViewChecked.clear();
+      renderSelectedView();
+    }
+
+    function resetSelectedViewFilter() {
+      if (selectedViewType === 'person') selectedViewFilters.person = { name: '', dept: '', post: '' };
+      else if (selectedViewType === 'dept') selectedViewFilters.dept = { dept: '' };
+      selectedViewPage = 1;
+      selectedViewChecked.clear();
+      renderSelectedView();
+    }
+
+    function toggleSelectedViewCheck(id) {
+      if (selectedViewChecked.has(id)) selectedViewChecked.delete(id);
+      else selectedViewChecked.add(id);
+      renderSelectedView();
+    }
+
+    function toggleSelectedViewPageCheck() {
+      const rows = getSelectedViewRows(selectedViewType);
+      const start = (selectedViewPage - 1) * selectedViewPageSize;
+      const pageRows = rows.slice(start, start + selectedViewPageSize);
+      const allChecked = pageRows.length > 0 && pageRows.every(row => selectedViewChecked.has(row.id));
+      for (const row of pageRows) {
+        if (allChecked) selectedViewChecked.delete(row.id);
+        else selectedViewChecked.add(row.id);
+      }
+      renderSelectedView();
+    }
+
+    function removeSelectedViewItem(id) {
+      selected[selectedViewType].delete(id);
+      selectedViewChecked.delete(id);
+      if (selectedViewType === 'person') syncDeptSelection();
+      updateAllViews();
+    }
+
+    function batchRemoveSelectedView() {
+      for (const id of selectedViewChecked) {
+        selected[selectedViewType].delete(id);
+      }
+      selectedViewChecked.clear();
+      if (selectedViewType === 'person') syncDeptSelection();
+      updateAllViews();
+    }
+
+    function goSelectedViewPage(page) {
+      selectedViewPage = page;
+      renderSelectedView();
+    }
+
+    function changeSelectedViewPageSize(size) {
+      selectedViewPageSize = parseInt(size);
+      selectedViewPage = 1;
+      selectedViewChecked.clear();
+      renderSelectedView();
+    }
+
+    function updateAllViews() {
+      renderFilterBar();
+      renderTable();
+      renderSelectedArea();
+      renderSelectedView();
+    }
+
+    function normalizeMainTab(tab) {
+      return ['person', 'dept'].includes(tab) ? tab : 'person';
+    }
+
+    // ================= 交互 =================
+    function switchTab(tab) {
+      tab = normalizeMainTab(tab);
+      resetManualSelectAllState();
+      currentTab = tab;
+      selectedTab = tab;
+      currentPage = 1;
+      filterExpanded = false;
+      document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+      updateAllViews();
+    }
+
+    function switchSelectedTab(type) {
+      selectedTab = ['person', 'dept'].includes(type) ? type : 'person';
+      renderSelectedArea();
+    }
+
+    function applyFilter() {
+      if (currentTab === 'person') {
+        filters.person.name = document.getElementById('f_person_name').value.trim();
+        // filters.person.dept/post 由级联下拉直接设置
+      } else if (currentTab === 'dept') {
+        filters.dept.name = document.getElementById('f_dept_name').value.trim();
+      }
+      resetManualSelectAllState();
+      currentPage = 1;
+      renderTable();
+      renderSelectedArea();
+    }
+
+    function resetFilter() {
+      if (currentTab === 'person') {
+        filters.person = { name: '', dept: '', post: '' };
+      } else {
+        filters[currentTab] = { name: '' };
+      }
+      resetManualSelectAllState();
+      currentPage = 1;
+      filterExpanded = false;
+      renderFilterBar();
+      renderTable();
+      renderSelectedArea();
+    }
+
+    function goPage(page) { resetManualSelectAllState(); currentPage = page; renderTable(); }
+    function changePageSize(size) { resetManualSelectAllState(); pageSize = parseInt(size); currentPage = 1; renderTable(); }
+    function jumpPage(value, max) { goPage(Math.max(1, Math.min(max, parseInt(value) || 1))); }
+
+    function closeModal() {
+      if (selectedViewVisible) {
+        closeSelectedView();
+        return;
+      }
+      if (isEmbeddedPicker) {
+        window.parent.postMessage({ type: 'person-picker:close' }, '*');
+        return;
+      }
+      alert('关闭弹窗');
+    }
+
+    function getResolvedSelectedPersons() {
+      const personMap = new Map();
+      const addPerson = person => {
+        if (person && person.id) personMap.set(person.id, person);
+      };
+
+      for (const id of selected.person) {
+        addPerson(allPersons.find(p => p.id === id));
+      }
+      for (const id of selected.dept) {
+        const node = findNode(id);
+        getPersonsByDeptNode(node, includeSubDeptEmployees).forEach(addPerson);
+      }
+
+      return [...personMap.values()];
+    }
+
+    function confirmSelect() {
+      const result = {
+        person: [...selected.person].map(id => allPersons.find(p => p.id === id)).filter(Boolean),
+        dept: [...selected.dept].map(id => {
+          const node = findNode(id);
+          if (!node) return null;
+          return {
+            id,
+            name: node.name,
+            company: deptToCompany[id] || node.name,
+            count: getDeptDisplayCount(node)
+          };
+        }).filter(Boolean),
+        resolvedPersons: getResolvedSelectedPersons()
+      };
+      if (isEmbeddedPicker) {
+        window.parent.postMessage({ type: 'person-picker:confirm', payload: result }, '*');
+        return;
+      }
+      alert(`已选择：人员 ${result.person.length} 人，部门 ${result.dept.length} 个`);
+    }
+
+    function getPickerContextTitle(context) {
+      return '选择人员';
+    }
+
+    function resetPickerFromHost(payload = {}) {
+      pickerContextTitle = getPickerContextTitle(payload.context);
+      const titleEl = document.getElementById('modalTitle');
+      const titleBadge = titleEl.querySelector('.prd-badge');
+      titleEl.textContent = pickerContextTitle;
+      if (titleBadge) titleEl.appendChild(titleBadge);
+
+      selected = {
+        person: new Set(payload.personIds || []),
+        dept: new Set(payload.deptIds || [])
+      };
+      resetManualSelectAllState();
+      const activeTab = normalizeMainTab(payload.activeTab);
+      selectedTab = activeTab;
+      currentTab = activeTab;
+      currentPage = 1;
+      selectedViewVisible = false;
+      externalSelectedViewMode = false;
+      selectedViewChecked.clear();
+      resetSelectedViewFilters();
+      filters = {
+        person: { name: '', dept: '', post: '' },
+        dept: { name: '' }
+      };
+      filterExpanded = false;
+      activeDeptPath = [];
+
+      const selectedView = document.getElementById('selectedView');
+      if (selectedView) selectedView.classList.add('hidden');
+      document.getElementById('mainBody').style.display = 'flex';
+      document.getElementById('mainFooter').style.display = 'flex';
+      document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === activeTab));
+      updateAllViews();
+
+      const viewSelectedType = ['person', 'dept'].includes(payload.viewSelectedType) ? payload.viewSelectedType : '';
+      if (viewSelectedType) {
+        openSelectedView(viewSelectedType, true);
+      }
+    }
+
+    window.addEventListener('message', event => {
+      const data = event.data;
+      if (!data || typeof data !== 'object') return;
+      if (data.type === 'person-picker:init') {
+        resetPickerFromHost(data.payload || {});
+      }
+    });
+
+    function init() {
+      pickerContextTitle = getPickerContextTitle(pickerUrlParams.get('context'));
+      const titleEl = document.getElementById('modalTitle');
+      const titleBadge = titleEl.querySelector('.prd-badge');
+      titleEl.textContent = pickerContextTitle;
+      if (titleBadge) titleEl.appendChild(titleBadge);
+      updateAllViews();
+    }
+
+    init();
+  </script>
+
+  <script type="application/json" id="prd-annotation-config">
+{
+  "pageTitle": "人员选择-下级单位",
+  "scope": "with_global",
+  "showPrdActions": true,
+  "pagePrd": "",
+  "globalPrd": "# 考试功能 — 整体 PRD\n\n## 1. 引言\n\n### 1.1 背景与目标\n\n\"考试功能\"是 EHS+ 企业版中对员工进行安全生产知识评测的核心模块。该模块需要支持三种不同的租户形态：\n\n- **集团（上级单位）**：跨多家子公司的人员管理形态，需要跨公司选择考试对象、查看跨公司统计数据。\n- **下级单位**：处于集团层级下的成员单位，承接上级派发的考试，同时可创建本单位内部考试。\n- **独立租户（普通租户/非集团）**：无上下级层级关系的独立组织，仅管理本租户范围内的考试。\n\n本 PRD 从全局视角定义考试功能在上述三种租户形态下的统一业务规则、数据模型、角色权限和核心流程。各页面的详细交互规格请参见对应的页面 PRD。\n\n### 1.2 用户价值\n\n| 租户类型 | 核心价值 |\n|----------|----------|\n| 集团管理员 | 跨公司统一下发安全知识考试，掌握全集团各子公司的考试进展与成绩分布。 |\n| 下级单位管理员 | 承接集团下发的考试任务，同时自主创建本单位专属考试来满足内部学习需求。 |\n| 普通租户管理员 | 自主管理本组织的考试全生命周期，从创建、发布到统计分析形成完整闭环。 |\n\n### 1.3 功能范围\n\n**包含**：\n\n| 模块 | 说明 |\n|------|------|\n| 考试列表 | 按租户类型展示对应的考试清单，支持新增、编辑、删除、复制、发布（草稿）、管理（统计入口） |\n| 新增考试 | 三步创建考试：基本信息 → 考生范围（人员/部门选择 + 免考） → 考试设置 |\n| 编辑考试 | 修改草稿考试的考生范围，覆盖人员快照 |\n| 考试统计 | 考生分析、考试记录、部门统计三个维度，含人员状态筛选和部门统计在职过滤 |\n| 人员选择 | 按租户数据范围选择考试对象（人员 + 部门） |\n| 发布校验 | 草稿发布前对人员快照与当前人员主数据的差异进行校验与确认 |\n\n**不包含**：\n\n- 试题配置与管理（考试设置步骤中的具体试题选择不属于本次范围）\n- 考生端的考试作答/提交/成绩查看\n- 移动端管理能力\n\n---\n\n## 2. 三种租户形态概览\n\n```\n┌──────────────────────────────────────────────────────────────────┐\n│                        EHS+ 考试功能                              │\n│                                                                   │\n│  ┌──────────────┐    ┌──────────────────┐    ┌───────────────┐   │\n│  │ 集团         │    │  下级单位         │    │ 独立租户      │   │\n│  │ (上级单位)    │───▶│  (子公司/分公司)   │    │ (非集团组织)   │   │\n│  │              │    │                  │    │               │   │\n│  │ • 跨公司选人  │    │ • 承接上级考试    │    │ • 自建考试    │   │\n│  │ • 自建考试    │    │ • 自建本单位考试  │    │ • 本单位数据  │   │\n│  │ • 跨公司统计  │    │ • 本单位统计     │    │ • 本单位统计  │   │\n│  └──────────────┘    └──────────────────┘    └───────────────┘   │\n│                                                                   │\n│  数据范围: 集团全部公司     数据范围: 本单位+下属部门                  │\n│  人员列: 含\"所属公司\"      人员列: 无\"所属公司\"                   无公司概念 │\n│  统计视图: 部门明细/公司汇总 统计视图: 部门明细                     同下级单位 │\n└──────────────────────────────────────────────────────────────────┘\n```\n\n### 2.1 核心差异对照表\n\n| 差异维度 | 集团 | 下级单位 | 独立租户/普通租户 |\n|----------|------|----------|-------------------|\n| 人员数据范围 | 集团内全部公司 | 本单位 + 下属部门 | 本租户内全部人员 |\n| 跨公司选人 | ✅ 支持 | ❌ 不支持 | ❌ 不涉及（无公司概念） |\n| 上级下发考试 | ❌ 不涉及 | ✅ 考试列表展示上级下发 | ❌ 不涉及 |\n| 上级下发考试操作 | — | 仅\"管理\" | — |\n| 人员列表分组 | 按公司分组 | 不分组、平铺展示 | 不分组、平铺展示 |\n| 考生分析/考试记录列表 | 含\"所属公司\"列 | 无\"所属公司\"列 | 无\"所属公司\"列 |\n| 部门筛选方式 | 公司+部门级联 | 部门下拉树 | 部门下拉树 |\n| 统计部门视图 | 部门明细 + 公司汇总 | 部门明细 | 部门明细 |\n| 人员选择器页面 | 人员选择-集团 | 人员选择-下级单位 | 人员选择-下级单位 |\n\n---\n\n## 3. 角色与权限\n\n| 角色 | 租户端 | 可创建考试 | 可选择的考试对象范围 | 可编辑考试 | 可查看统计 | 说明 |\n|------|--------|-----------|---------------------|-----------|-----------|------|\n| 集团管理员 | 集团 | ✅ | 集团全部公司的人员和部门 | ✅ 仅草稿 | ✅ 全集团 | 可跨公司管理考试全生命周期 |\n| 下级单位管理员 | 下级单位 | ✅ 本单位考试 | 本单位 + 下属部门 | ✅ 仅自建草稿 | ✅ 本单位 | 可承接上级下发考试，对其进行管理操作 |\n| 普通租户管理员 | 独立租户 | ✅ | 本租户全量人员 | ✅ 仅草稿 | ✅ 本租户 | 与下级单位类似，但无上下级关系 |\n\n### 3.1 下级单位对上级下发考试的操作权限\n\n| 操作 | 本单位自建考试 | 上级下发考试 |\n|------|:---:|:---:|\n| 查看详情（名称链接） | ✅ | ✅（查看集团版详情） |\n| 管理（进入统计） | ✅ | ✅ |\n| 预览 | ✅ | ❌ |\n| 发布 | ✅ 草稿 | ❌ |\n| 编辑 | ✅ 草稿 | ❌ |\n| 复制 | ✅ | ❌ |\n| 删除 | ✅ | ❌ |\n| 批量删除 | ✅ | ❌ |\n\n---\n\n## 4. 名词解释\n\n| 术语 | 定义 |\n|------|------|\n| **考试** | 一次完整的考试活动，包含基本信息、考生范围、考试设置、题目配置等。 |\n| **考生范围** | 考试的目标对象集合，可通过选择人员（指定用户）或部门范围来定义。 |\n| **指定用户** | 以单个人员为维度选定的考试对象。 |\n| **部门范围** | 以部门为维度选定的考试对象，选择某部门即包含该部门下（可选含下级部门）的全体人员。 |\n| **组织内全部人员** | 考试对象覆盖当前租户范围内的全部人员，无需单独选择。 |\n| **仅部分人员** | 考试对象仅为管理员选择的具体人员或部门范围内的人员。 |\n| **免考人员** | 被排除在考试要求之外的人员或部门，不计入应考人数，不影响参与率和及格率计算。 |\n| **人员快照** | 创建考试或编辑保存时对当时考试对象范围内所有人员的完整记录（含 ID、姓名、所属公司、部门、人员状态），用于发布前人员变更校验。 |\n| **人员状态** | 枚举值：在职（启用）、离职、停用（禁用）。 |\n| **草稿** | 考试创建后尚未发布的初始状态，支持编辑和发布。 |\n| **未开始** | 考试发布后但尚未到达考试开始时间的状态。 |\n| **进行中** | 考试正处于考试时间段内的状态。 |\n| **已结束** | 考试时间已过的状态。 |\n| **上级下发考试** | 由集团或上级单位创建并推送给下级单位的考试，下级单位不可编辑、删除、发布。 |\n| **自建考试** | 当前租户管理员自行创建的考试。 |\n| **公司汇总** | 集团独有的统计视图，以公司为粒度对部门数据进行扁平汇总展示。 |\n| **部门明细** | 以部门树结构展示统计数据的视图。 |\n\n---\n\n## 5. 核心业务流程图\n\n### 5.1 考试全生命周期（通用）\n\n```mermaid\nflowchart TD\n    A[创建考试] --> B[填写基本信息]\n    B --> C[选择考生范围]\n    C --> C1{考试对象模式?}\n    C1 -->|仅部分人员| C2[选择人员/部门 + 配置免考]\n    C1 -->|组织内全部人员| C3[跳过选人]\n    C2 --> D[设置考试参数]\n    C3 --> D\n    D --> E[生成人员快照]\n    E --> F{保存为草稿}\n    F --> G[草稿状态]\n    G --> H{管理员操作?}\n    H -->|编辑| I[编辑考生范围 → 覆盖快照]\n    I --> G\n    H -->|发布| J[执行发布前人员变更校验]\n    J --> K{有人员变更?}\n    K -->|否| L[直接发布]\n    K -->|是| M[展示发布弹窗]\n    M --> N{管理员确认?}\n    N -->|取消| G\n    N -->|确认发布| L\n    L --> O[未开始]\n    O --> P[进行中]\n    P --> Q[已结束]\n    G -->|删除| R[考试删除]\n```\n\n### 5.2 下级单位特殊流程：上级下发考试\n\n```mermaid\nflowchart TD\n    G[集团管理员] -->|创建并下发| S[上级下发考试]\n    S -->|出现在| SU[下级单位考试列表]\n    SU --> SU1{下级单位操作}\n    SU1 -->|点击名称| SU2[查看集团版考试详情]\n    SU1 -->|管理| SU3[进入本单位统计页]\n    SU1 -->|编辑/删除/发布/复制| SU4[❌ 不可操作]\n```\n\n### 5.3 发布前人员变更校验流程\n\n```mermaid\nflowchart TD\n    A[管理员点击发布] --> B[系统获取人员快照]\n    B --> C[获取当前人员主数据]\n    C --> D{比对快照与主数据}\n    D --> E1[已选人员离职/停用 → 移除]\n    D --> E2[部门内人员离职/停用/转出 → 移除]\n    D --> E3[部门内人员转入/启用 → 新增]\n    E1 --> F{总计变更 > 0 ?}\n    E2 --> F\n    E3 --> F\n    F -->|否| G[直接发布，状态变更为未开始]\n    F -->|是| H[展示发布弹窗]\n    H --> I[按分类查看：全部 / 移除 / 新增]\n    I --> J{管理员操作?}\n    J -->|点击发布| G\n    J -->|点击取消 / 关闭 / 遮罩| K[保持草稿，不发布]\n```\n\n---\n\n## 6. 用例图\n\n```mermaid\nflowchart LR\n    subgraph Actors\n        GA[集团管理员]\n        SA[下级单位管理员]\n        NA[普通租户管理员]\n        SYS[系统]\n    end\n\n    subgraph UC[考试功能用例]\n        direction TB\n        UC1((创建考试))\n        UC2((编辑考试))\n        UC3((发布考试))\n        UC4((查看考试列表))\n        UC5((考试统计))\n        UC6((人员选择))\n        UC7((免考配置))\n        UC8((接收上级考试))\n        UC9((发布前校验))\n        UC10((快照管理))\n    end\n\n    GA --> UC1\n    GA --> UC2\n    GA --> UC3\n    GA --> UC4\n    GA --> UC5\n    GA --> UC6\n    GA --> UC7\n    SA --> UC1\n    SA --> UC2\n    SA --> UC3\n    SA --> UC4\n    SA --> UC5\n    SA --> UC6\n    SA --> UC7\n    SA --> UC8\n    NA --> UC1\n    NA --> UC2\n    NA --> UC3\n    NA --> UC4\n    NA --> UC5\n    NA --> UC6\n    NA --> UC7\n    SYS --> UC9\n    SYS --> UC10\n```\n\n---\n\n## 7. 数据模型\n\n### 7.1 核心实体关系图\n\n```mermaid\nerDiagram\n    租户 ||--o{ 考试 : \"拥有\"\n    考试 ||--o{ 人员快照 : \"生成\"\n    考试 ||--o{ 考试记录 : \"产生\"\n    考试 ||--o{ 免考配置 : \"配置\"\n    考试 }o--|| 租户 : \"归属\"\n    考试 }o--|| 考试分类 : \"分类\"\n\n    租户 {\n        string 租户ID PK\n        string 租户名称\n        string 租户类型 \"集团 / 下级单位 / 普通租户\"\n        string 上级租户ID FK \"下级单位时有值\"\n        string 所属公司名称 \"集团/下级单位\"\n    }\n\n    考试 {\n        string 考试ID PK\n        string 所属租户ID FK\n        string 考试名称\n        string 分类ID FK\n        string 来源 \"自建 / 上级下发\"\n        string 状态 \"草稿 / 未开始 / 进行中 / 已结束\"\n        string 范围模式 \"仅部分人员 / 组织内全部人员\"\n        datetime 考试开始时间\n        datetime 考试结束时间\n        datetime 快照生成时间\n        datetime 创建时间\n        datetime 更新时间\n    }\n\n    人员快照 {\n        string 快照ID PK\n        string 考试ID FK\n        string 人员ID\n        string 姓名\n        string 所属公司 \"集团有值，下级单位/普通租户无\"\n        string 部门名称\n        string 部门全路径\n        string 人员状态 \"在职 / 离职 / 停用\"\n        datetime 快照时间\n        string 快照版本 \"创建 / 编辑\"\n    }\n\n    免考配置 {\n        string 免考配置ID PK\n        string 考试ID FK\n        string 免考类型 \"人员 / 部门\"\n        string 免考目标ID\n        string 免考目标名称\n    }\n\n    考试记录 {\n        string 考试记录ID PK\n        string 考试ID FK\n        string 考生ID\n        string 考生姓名\n        string 所属公司\n        string 部门名称\n        string 完成状态 \"已完成 / 未完成\"\n        int 分数\n        bool 是否及格\n        datetime 交卷时间\n    }\n\n    考试分类 {\n        string 分类ID PK\n        string 租户ID FK\n        string 分类名称\n        string 上级分类ID\n        string 来源 \"自建 / 上级下发（下级单位有上级下发分类节点）\"\n    }\n```\n\n### 7.2 关键字段说明\n\n#### 考试来源\n\n| 值 | 含义 | 适用租户 |\n|----|------|---------|\n| 自建 | 当前租户自建考试 | 全部 |\n| 上级下发 | 上级下发考试 | 下级单位 |\n\n#### 考试状态流转\n\n```\n草稿 → 未开始 → 进行中 → 已结束\n  │\n  └── (删除)\n```\n\n#### 人员快照版本\n\n| 值 | 生成时机 | 说明 |\n|----|---------|------|\n| 创建 | 创建考试保存时 | 考试首次创建时生成 |\n| 编辑 | 编辑考试保存时 | 覆盖旧快照，作为发布校验的最新基准 |\n\n---\n\n## 8. 非功能性需求\n\n### 8.1 性能要求\n\n| 指标 | 要求 |\n|------|------|\n| 考试列表查询响应 | ≤ 2s（1000 条以内） |\n| 人员选择器加载 | ≤ 3s（10,000 以内人员数据） |\n| 部门人数重新计算 | ≤ 3s |\n| 发布前人员变更校验 | ≤ 5s（包含三分类校验） |\n| 考试统计查询 | ≤ 3s |\n| 并发支持 | 支持 100+ 管理员同时操作 |\n\n### 8.2 安全性\n\n| 要求 | 说明 |\n|------|------|\n| 数据隔离 | 不同租户数据严格隔离，下级单位不可访问集团或平级单位数据 |\n| 操作权限 | 上级下发考试在下级单位侧仅开放\"管理\"操作，编辑/删除/发布等操作需校验考试来源为自建 |\n| 人员选择范围限制 | 下级单位人员选择器限定本单位及下属部门，不可越权访问平级或上级单位人员 |\n| 快照安全 | 人员快照为只读历史数据，持久化后不可篡改 |\n\n### 8.3 兼容性\n\n| 要求 | 说明 |\n|------|------|\n| 浏览器 | Chrome 90+、Edge 90+、Safari 14+ |\n| 分辨率 | 1366×768 及以上 |\n\n### 8.4 可维护性\n\n| 要求 | 说明 |\n|------|------|\n| 操作日志 | 考试创建、编辑、发布、删除需记录操作日志 |\n| 快照审计 | 快照生成和覆盖保留历史记录，发布校验时可回溯 |\n\n---\n\n## 9. 页面清单与关联 PRD\n\n### 9.1 集团（上级单位）\n\n| 序号 | 页面名称 | 页面 PRD 路径 | 原型文件 |\n|------|---------|--------------|---------|\n| 1 | 考试列表-集团 | `prd/考试列表-集团.md` | `考试列表-集团.html` |\n| 2 | 新增考试-集团 | `prd/新增考试-集团.md` | `新增考试-集团.html` |\n| 3 | 编辑考试-集团 | `prd/编辑考试-集团.md` | `编辑考试-集团.html` |\n| 4 | 考试统计-集团 | `prd/考试统计-集团.md` | `考试统计-集团.html` |\n| 5 | 人员选择-集团 | — | `人员选择-集团.html` |\n\n### 9.2 下级单位\n\n| 序号 | 页面名称 | 页面 PRD 路径 | 原型文件 |\n|------|---------|--------------|---------|\n| 1 | 考试列表-下级单位 | `prd/考试列表-下级单位.md` | `考试列表-下级单位.html` |\n| 2 | 新增考试-下级单位 | `prd/新增考试-下级单位.md` | `新增考试-下级单位.html` |\n| 3 | 编辑考试-下级单位 | `prd/编辑考试-下级单位.md` | `编辑考试-下级单位:独立租户.html` |\n| 4 | 考试统计-下级单位 | `prd/考试统计-下级单位.md` | `考试统计-下级单位:独立租户.html` |\n| 5 | 人员选择-下级单位：本单位 | — | `人员选择-下级单位:本单位.html` |\n| 6 | 人员选择-下级单位 | — | `人员选择-下级单位.html` |\n\n### 9.3 独立租户/普通租户\n\n| 序号 | 页面名称 | 页面 PRD 路径 | 原型文件 |\n|------|---------|--------------|---------|\n| 1 | 考试列表 | `prd/考试列表-普通租户.md` | `考试列表-普通租户.html` |\n| 2 | 新增考试 | —（参考集团/下级新增） | `新增考试-普通租户.html` |\n| 3 | 编辑考试 | —（参考下级编辑，同数据范围） | `编辑考试-下级单位:独立租户.html` |\n| 4 | 考试统计 | —（参考下级统计） | `考试统计-普通租户.html` |\n\n### 9.4 通用页面\n\n| 序号 | 页面名称 | 说明 | 原型文件 |\n|------|---------|------|---------|\n| 1 | 规则说明 | 考试功能入口的规则说明页 | `规则说明.html` |\n\n### 9.5 小程序\n\n| 序号 | 页面名称 | 说明 | 原型文件 |\n|------|---------|------|---------|\n| 1 | 考试列表 | 小程序端考试列表 | `小程序考试列表.html` |\n\n---\n\n## 10. 附录\n\n### 10.1 租户数据范围矩阵\n\n```\n┌────────────────┬──────────────────────┬──────────────────────┬──────────────────┐\n│   能力 \\ 租户   │        集团           │       下级单位         │    独立租户        │\n├────────────────┼──────────────────────┼──────────────────────┼──────────────────┤\n│ 创建考试        │ 集团跨公司            │ 本单位+下属部门        │ 本租户            │\n│ 上级下发考试     │ 不涉及（集团不下发自己） │ ✅ 列表展示+接收       │ ❌ 不涉及          │\n│ 跨公司选人       │ ✅                    │ ❌                    │ ❌ 无公司概念       │\n│ 人员按公司分组    │ ✅                    │ ❌ 平铺标签            │ ❌ 平铺标签        │\n│ 列表含所属公司列  │ ✅ 考生分析/考试记录    │ ❌                    │ ❌                │\n│ 部门筛选          │ 公司+部门级联          │ 部门下拉树            │ 部门下拉树         │\n│ 统计视图          │ 部门明细 + 公司汇总     │ 部门明细              │ 部门明细           │\n│ 人员选择器        │ 人员选择-集团          │ 人员选择-下级单位       │ 人员选择-下级单位    │\n│ 快照含公司字段    │ ✅                    │ ❌                    │ ❌                │\n│ 分类树上级下发节点 │ ❌                    │ ✅                    │ ❌                │\n└────────────────┴──────────────────────┴──────────────────────┴──────────────────┘\n```\n\n### 10.2 页面状态流转\n\n| 当前状态 | 触发操作 | 目标状态 | 前置条件 |\n|----------|---------|---------|----------|\n| — | 创建考试（保存草稿） | 草稿 | 基本信息填写完成 + 考生范围选择（部分人员模式下至少 1 人或 1 部门） |\n| 草稿 | 编辑保存 | 草稿 | 编辑后覆盖人员快照 |\n| 草稿 | 发布（无变更） | 未开始 | 无人员变更 |\n| 草稿 | 发布（有变更→确认） | 未开始 | 管理员在发布弹窗确认 |\n| 草稿 | 删除 | — | — |\n| 未开始 | 到达开始时间 | 进行中 | 系统自动 |\n| 进行中 | 到达结束时间 | 已结束 | 系统自动 |\n\n### 10.3 版本变更记录\n\n| 版本 | 日期 | 变更内容 | 作者 |\n|------|------|----------|------|\n| V1.0 | 2026-07-13 | 初版。统一定义集团/下级单位/独立租户三种形态下考试功能的全局业务规则、数据模型、角色权限、核心流程和页面清单。 | — |\n\n### 10.4 引用标准\n\n- 本 PRD 作为\"总分结构\"中的总纲，各页面详细交互/UI 规格参见对应的页面 PRD。\n- 所有页面 PRD 的编号均以本 PRD 中第 9 节的页面清单为索引。\n- 三种租户的独特规则已在各差异对照表和矩阵中明确标注。\n",
+  "annotations": [],
+  "badges": [
+    {
+      "id": "⑦-a",
+      "title": "弹窗标题栏",
+      "anchor": {
+        "selector": "#modalTitle"
+      },
+      "content": "<div class=\"prd-content-wide\"><p><strong>功能说明：</strong>人员选择器弹窗的标题栏，显示选择人员标题和关闭按钮。</p><table class=\"prd-readable-table\"><thead><tr><th>规则项</th><th>说明</th></tr></thead><tbody><tr><td>标题文案</td><td>弹窗标题统一为选择人员</td></tr><tr><td>选择范围</td><td>限定在本单位及下属部门范围内选择人员和部门，不支持跨平级单位或上级单位选择</td></tr><tr><td>关闭按钮</td><td>点击关闭按钮或取消操作时，不更新调用页面当前已选结果</td></tr><tr><td>打开入口</td><td>两个入口：考生范围选择按钮、免考人员选择按钮</td></tr><tr><td>返回数据</td><td>人员 ID、姓名、部门、人员状态（用于创建快照和发布校验）</td></tr></tbody></table></div>"
+    },
+    {
+      "id": "⑦-b",
+      "title": "选人员/选部门",
+      "anchor": {
+        "selector": "#mainTabs"
+      },
+      "content": "<div class=\"prd-content-wide\"><p><strong>功能说明：</strong>切换左侧选择区的模式，支持按人员维度或部门维度选择考试对象。</p><table class=\"prd-readable-table\"><thead><tr><th>模式</th><th>规则</th></tr></thead><tbody><tr><td>选人员</td><td>按人员维度选择考试对象；可结合姓名查询、部门名称层级搜索，选择后同步进入右侧已选人员区域</td></tr><tr><td>选部门</td><td>按部门维度选择考试对象；仅限本单位及下属部门；支持部门名称模糊搜索</td></tr><tr><td>包含下级部门员工</td><td>选部门模式下，支持包含下级部门员工，形成完整的部门考试对象范围</td></tr><tr><td>已选数量</td><td>右侧已选区域分别展示人员数量和部门数量，选择或移除后实时刷新</td></tr></tbody></table></div>"
+    },
+    {
+      "id": "⑦-c",
+      "title": "查询筛选",
+      "anchor": {
+        "selector": "#filterBar"
+      },
+      "content": "<div class=\"prd-content-wide\"><p><strong>功能说明：</strong>根据不同选择模式提供对应的查询条件，支持查询和重置。</p><table class=\"prd-readable-table\"><thead><tr><th>所在区域</th><th>查询项</th><th>查询规则</th></tr></thead><tbody><tr><td>选人员列表</td><td>姓名、部门名称、岗位</td><td>姓名、岗位支持按输入内容查询；部门名称支持按部门层级级联选择后查询</td></tr><tr><td>选部门列表</td><td>部门名称</td><td>支持按部门名称查询部门树，匹配到的部门及其上级层级需保留展示</td></tr><tr><td>查看已选人员</td><td>姓名、部门</td><td>仅在已选人员范围内查询，不影响未选人员列表</td></tr><tr><td>查看已选部门</td><td>部门</td><td>仅在已选部门范围内查询，不影响未选部门列表</td></tr><tr><td>查询按钮</td><td colspan=\"2\">点击后刷新当前列表结果、已选状态和分页</td></tr><tr><td>重置按钮</td><td colspan=\"2\">点击后清空当前查询条件，恢复列表默认结果，并保留已选结果</td></tr></tbody></table></div>"
+    },
+    {
+      "id": "⑦-d",
+      "title": "人员/部门列表",
+      "anchor": {
+        "selector": "#tableContainer"
+      },
+      "content": "<div class=\"prd-content-wide\"><p><strong>功能说明：</strong>展示可选人员列表（表格）或部门级联树，支持勾选、全选、分页。</p><table class=\"prd-readable-table\"><thead><tr><th>列表区域</th><th>展示项</th><th>展示规则</th></tr></thead><tbody><tr><td>选人员列表</td><td>勾选框、姓名、所属公司、所属部门、岗位</td><td>支持单个勾选、本页全选、分页展示；已选人员在列表中保持选中状态</td></tr><tr><td>选部门列表</td><td>勾选框、部门名称、部门人数、部门层级</td><td>以部门层级方式展示部门级联树；不跨公司展示，仅限本单位及下属部门</td></tr><tr><td>包含下级部门</td><td>勾选项</td><td>选部门时展示，勾选后选择部门时一并选择下级部门</td></tr><tr><td>空状态</td><td>暂无数据提示</td><td>当前查询或已选范围无数据时，列表展示空状态提示</td></tr></tbody></table></div>"
+    },
+    {
+      "id": "⑦-e",
+      "title": "已选标签区",
+      "anchor": {
+        "selector": "#selectedTabs"
+      },
+      "content": "<div class=\"prd-content-wide\"><p><strong>功能说明：</strong>展示已选人员和部门的标签列表、数量和操作入口。</p><table class=\"prd-readable-table\"><thead><tr><th>功能项</th><th>规则</th></tr></thead><tbody><tr><td>已选人员</td><td>展示已选人员标签和人员数量，支持从标签上移除单个人员</td></tr><tr><td>已选部门</td><td>展示已选部门标签（仅部门名称，不含公司名称）和部门数量，支持从标签上移除单个部门</td></tr><tr><td>已选数量</td><td>人员数量和部门数量在选择、取消选择或移除后实时刷新</td></tr><tr><td>单个移除</td><td>点击标签上的移除按钮，移除单个人员或部门</td></tr><tr><td>查看已选</td><td>打开查看已选视图，展示当前已选人员和部门清单，支持核对和移除</td></tr><tr><td>全部移除</td><td>清空当前范围内已选人员或部门，清空后同步刷新数量和页面回显</td></tr></tbody></table></div>"
+    },
+    {
+      "id": "⑦-f",
+      "title": "查看已选",
+      "anchor": {
+        "selector": "#selectedView"
+      },
+      "content": "<div class=\"prd-content-wide\"><p><strong>功能说明：</strong>以独立视图展示当前已选人员和部门清单，支持筛选、移除和批量删除。</p><table class=\"prd-readable-table\"><thead><tr><th>视图</th><th>规则</th></tr></thead><tbody><tr><td>已选人员列表</td><td>展示勾选框、姓名、所属公司、所属部门、岗位、操作；支持单个移除和批量删除；支持按姓名、部门筛选</td></tr><tr><td>已选部门列表</td><td>展示勾选框、部门名称、人数、操作；支持单个移除和批量删除；支持按部门筛选</td></tr><tr><td>筛选规则</td><td>仅在已选范围内查询，不影响未选人员或未选部门列表</td></tr><tr><td>返回操作</td><td>点击返回按钮，回到人员选择器主界面</td></tr><tr><td>空状态</td><td>当前范围无数据时展示空状态提示</td></tr></tbody></table></div>"
+    },
+    {
+      "id": "⑦-g",
+      "title": "确认/返回",
+      "anchor": {
+        "selector": "#mainFooter"
+      },
+      "content": "<div class=\"prd-content-wide\"><p><strong>功能说明：</strong>底部操作栏，包含返回和确定两个按钮。</p><table class=\"prd-readable-table\"><thead><tr><th>按钮</th><th>行为规则</th></tr></thead><tbody><tr><td>确定</td><td>将当前已选人员、部门以及系统解析出的人员范围返回调用页面</td></tr><tr><td>返回/取消</td><td>关闭人员选择器，不更新调用页面当前已选结果</td></tr></tbody></table><p><strong>返回数据要求：</strong></p><table class=\"prd-readable-table\"><thead><tr><th>数据类型</th><th>必须包含字段</th></tr></thead><tbody><tr><td>人员信息</td><td>人员 ID、姓名、部门、人员状态（用于创建考试时人员快照和后续发布校验）</td></tr><tr><td>部门信息</td><td>部门名称、部门范围（用于页面回显和人员范围解析）</td></tr><tr><td>页面回显</td><td>选择结果返回页面后，立即刷新指定用户、部门范围、免考人员区域的数量和标签</td></tr><tr><td>去重规则</td><td>人员和部门范围解析后，如同一人员重复命中，系统自动去重</td></tr></tbody></table></div>"
+    }
+  ]
+}
+</script>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script src="prd-annotation.js"></script>
+
+</body>
+</html>

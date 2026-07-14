@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<!-- 整体PRD参考：prd/考试功能-整体PRD.md -->
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>模块导航 · 原型预览</title>
+  <style>
+    /* ==================== 设计变量 ==================== */
+    :root {
+      --color-brand: #1570EF;
+      --color-brand-hover: #2E90FA;
+      --color-brand-active: #175CD3;
+      --color-text-primary: #444F66;
+      --color-text-secondary: #758095;
+      --color-text-placeholder: #9EA4AE;
+      --color-bg-page: #F7F8FA;
+      --color-bg-surface: #FFFFFF;
+      --color-bg-muted: #F7F8F9;
+      --color-border: #DEDFE3;
+      --color-divider: #E6E7EB;
+      --radius-component: 4px;
+      --font-family-ui: "PingFang SC", "HarmonyOS Sans SC", "Microsoft YaHei", Arial, sans-serif;
+      --shadow-topbar: 0 1px 4px rgba(31, 42, 55, .10);
+      --shadow-brand: 0 1px 5px rgba(21,112,239,.05), 0 4px 2.5px rgba(21,112,239,.08), 0 2px 2px rgba(21,112,239,.25);
+      --transition: 150ms ease;
+      --sidebar-width: 240px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      height: 100%;
+      font-family: var(--font-family-ui);
+      font-size: 14px;
+      line-height: 22px;
+      color: var(--color-text-primary);
+      background: var(--color-bg-page);
+      overflow: hidden;
+    }
+
+    button, input, textarea { font: inherit; letter-spacing: 0; }
+    button { border: 0; cursor: pointer; }
+
+    /* ===== LAYOUT ===== */
+    .app-container {
+      display: flex;
+      height: 100vh;
+      width: 100vw;
+    }
+
+    /* ==================== SIDEBAR ==================== */
+    .sidebar {
+      width: var(--sidebar-width);
+      min-width: var(--sidebar-width);
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background: var(--color-bg-surface);
+      box-shadow: 0 6px 30px 5px rgba(67, 82, 111, 0.05);
+      flex-shrink: 0;
+      user-select: none;
+      z-index: 20;
+      transition: width var(--transition), min-width var(--transition), opacity var(--transition);
+    }
+
+    .app-container.sidebar-collapsed .sidebar {
+      width: 0 !important;
+      min-width: 0 !important;
+      opacity: 0;
+      overflow: hidden;
+      pointer-events: none;
+      box-shadow: none;
+    }
+
+    .sidebar-header {
+      padding: 20px 16px 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+
+    .sidebar-logo {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-component);
+      background: var(--color-brand);
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
+    .sidebar-logo svg {
+      width: 22px;
+      height: 22px;
+      fill: #fff;
+    }
+    .sidebar-logo img {
+      width: 32px;
+      height: 32px;
+      display: block;
+    }
+    .sidebar-title {
+      color: var(--color-text-primary);
+      font-size: 16px;
+      line-height: 24px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .sidebar-title-brand { color: var(--color-brand); }
+    .sidebar-subtitle {
+      color: var(--color-text-secondary);
+      font-size: 12px;
+      line-height: 20px;
+      font-weight: 400;
+    }
+
+    /* ---- NAV LIST ---- */
+    .sidebar-nav {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding: 8px 8px 16px;
+      overflow-y: auto;
+    }
+    .sidebar-nav::-webkit-scrollbar { width: 3px; }
+    .sidebar-nav::-webkit-scrollbar-track { background: transparent; }
+    .sidebar-nav::-webkit-scrollbar-thumb {
+      border-radius: 50px;
+      background: var(--color-divider);
+    }
+
+    /* ---- GROUP HEADER ---- */
+    .nav-group-header {
+      width: 224px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 16px;
+      border-radius: var(--radius-component);
+      background: transparent;
+      color: var(--color-text-secondary);
+      cursor: pointer;
+      transition: background-color var(--transition), color var(--transition);
+    }
+    .nav-group-header:hover {
+      background: var(--color-bg-muted);
+      color: var(--color-text-primary);
+    }
+    .nav-group-header .arrow {
+      width: 16px;
+      height: 16px;
+      display: inline-grid;
+      place-items: center;
+      flex-shrink: 0;
+      transition: transform var(--transition);
+    }
+    .nav-group-header .arrow svg {
+      width: 12px;
+      height: 12px;
+      fill: currentColor;
+    }
+    .nav-group-header .arrow.open { transform: rotate(90deg); }
+    .nav-group-label {
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-weight: 500;
+    }
+    .nav-group-header .badge {
+      background: var(--color-bg-muted);
+      color: var(--color-text-secondary);
+      font-size: 11px;
+      line-height: 18px;
+      padding: 0 6px;
+      border-radius: 10px;
+      font-weight: 400;
+    }
+
+    /* ---- CHILDREN CONTAINER ---- */
+    .nav-children {
+      display: none;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .nav-children.expanded { display: flex; }
+
+    /* ---- NAV ITEM (page) ---- */
+    .nav-item {
+      width: 224px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      padding: 9px 16px;
+      border-radius: var(--radius-component);
+      background: transparent;
+      color: var(--color-text-secondary);
+      cursor: pointer;
+      gap: 10px;
+      text-align: left;
+      white-space: nowrap;
+      transition: background-color var(--transition), color var(--transition);
+    }
+    .nav-item:hover {
+      background: var(--color-bg-muted);
+      color: var(--color-text-primary);
+    }
+    .nav-item.active {
+      background: var(--color-brand);
+      color: #fff;
+      box-shadow: var(--shadow-brand);
+    }
+    .nav-item .nav-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--color-text-placeholder);
+      flex-shrink: 0;
+      transition: background var(--transition);
+    }
+    .nav-item.active .nav-dot {
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(255,255,255,0.2);
+    }
+
+    /* ---- Indentation levels ---- */
+    .nav-item.level-0 { padding-left: 16px; }
+    .nav-item.level-1 { padding-left: 32px; }
+    .nav-item.level-2 { padding-left: 48px; }
+    .nav-item.level-3 { padding-left: 60px; }
+
+    /* ---- SUBGROUP HEADER ---- */
+    .nav-subgroup-header {
+      width: 224px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 16px 9px 32px;
+      border-radius: var(--radius-component);
+      background: transparent;
+      color: var(--color-text-secondary);
+      cursor: pointer;
+      text-align: left;
+      transition: background-color var(--transition), color var(--transition);
+      font-weight: 500;
+    }
+    .nav-subgroup-header:hover {
+      background: var(--color-bg-muted);
+      color: var(--color-text-primary);
+    }
+    .nav-subgroup-header .arrow {
+      width: 14px;
+      height: 14px;
+      display: inline-grid;
+      place-items: center;
+      flex-shrink: 0;
+      transition: transform var(--transition);
+    }
+    .nav-subgroup-header .arrow svg {
+      width: 10px;
+      height: 10px;
+      fill: currentColor;
+    }
+    .nav-subgroup-header .arrow.open { transform: rotate(90deg); }
+    .nav-subgroup-header .label {
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .nav-divider {
+      width: 208px;
+      height: 1px;
+      background: var(--color-divider);
+      margin: 8px 12px;
+      flex-shrink: 0;
+    }
+
+    .sidebar-footer {
+      width: 240px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 9px 16px 9px 24px;
+      border-top: 1px solid var(--color-divider);
+      background: var(--color-bg-surface);
+      color: var(--color-text-secondary);
+      font-size: 12px;
+      flex-shrink: 0;
+    }
+
+    /* ---- RESIZER ---- */
+    .sidebar-resizer {
+      width: 4px;
+      cursor: col-resize;
+      background: transparent;
+      flex-shrink: 0;
+      transition: background var(--transition);
+      position: relative;
+      z-index: 21;
+    }
+    .sidebar-resizer:hover,
+    .sidebar-resizer:active { background: var(--color-brand); }
+
+    /* ==================== MAIN CONTENT ==================== */
+    .main-content {
+      flex: 1;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      background: var(--color-bg-page);
+      overflow: hidden;
+    }
+
+    .app-container.sidebar-collapsed .sidebar-resizer { display: none; }
+
+    .content-toolbar {
+      height: 48px;
+      min-height: 48px;
+      background: var(--color-bg-surface);
+      border-bottom: 1px solid var(--color-divider);
+      display: flex;
+      align-items: center;
+      padding: 0 24px;
+      gap: 8px;
+    }
+
+    .sidebar-toggle-btn {
+      width: 28px;
+      height: 28px;
+      flex: 0 0 28px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-component);
+      color: var(--color-text-secondary);
+      background: transparent;
+      font-size: 18px;
+      line-height: 1;
+      transition: background-color var(--transition), color var(--transition);
+    }
+
+    .sidebar-toggle-btn:hover {
+      color: var(--color-brand);
+      background: #EEF6FF;
+    }
+
+    .content-toolbar .breadcrumb {
+      font-size: 13px;
+      color: var(--color-text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .content-toolbar .breadcrumb .sep { color: var(--color-text-placeholder); }
+    .content-toolbar .breadcrumb .current { color: var(--color-text-primary); font-weight: 500; }
+
+    .content-frame-wrapper {
+      flex: 1;
+      overflow: hidden;
+      position: relative;
+    }
+    .content-frame-wrapper iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      background: var(--color-bg-surface);
+    }
+    .content-placeholder {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 12px;
+      color: var(--color-text-placeholder);
+      font-size: 14px;
+      pointer-events: none;
+    }
+    .content-placeholder svg {
+      width: 64px;
+      height: 64px;
+      opacity: 0.15;
+    }
+    .content-placeholder.hidden { display: none; }
+  </style>
+</head>
+<body>
+
+<div class="app-container" id="appContainer">
+
+  <!-- ==================== SIDEBAR ==================== -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo"><img src="assets/CodeBuddyAssets/696_1660/14.svg" alt=""></div>
+      <div>
+        <div class="sidebar-title">环慧慧<span class="sidebar-title-brand">EHS+</span></div>
+        <div class="sidebar-subtitle">Enterprise Edition</div>
+      </div>
+    </div>
+
+    <!-- 动态菜单容器 -->
+    <nav class="sidebar-nav" id="menuContainer"></nav>
+
+    <div class="sidebar-footer">环慧慧EHS+ © 2026</div>
+  </aside>
+
+  <!-- resizer -->
+  <div class="sidebar-resizer" id="resizer"></div>
+
+  <!-- ==================== MAIN CONTENT ==================== -->
+  <main class="main-content">
+    <div class="content-toolbar">
+      <button class="sidebar-toggle-btn" id="sidebarToggle" type="button" onclick="toggleSidebar()" title="收起左侧导航" aria-label="收起左侧导航">←</button>
+      <div class="breadcrumb">
+        环慧慧EHS+ <span class="sep">›</span>
+        <span id="breadcrumb-platform" class="current">请选择</span>
+        <span class="sep">›</span>
+        <span id="breadcrumb-page" class="current">页面</span>
+      </div>
+    </div>
+
+    <div class="content-frame-wrapper">
+      <div class="content-placeholder" id="placeholder">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/>
+        </svg>
+        <span>请从左侧菜单选择页面查看</span>
+      </div>
+      <iframe id="content-frame" style="display:block;"></iframe>
+    </div>
+  </main>
+
+</div>
+
+<script>
+  // =================================================================
+  // 配置数据（由 Index Generator Skill 自动生成）
+  // =================================================================
+  const menuConfig = [
+    {
+      type: 'group',
+      id: 'pc',
+      label: '电脑端',
+      children: [
+        { type: 'page', label: '规则说明', file: '规则说明.html' },
+        {
+          type: 'group',
+          id: 'pc-group',
+          label: '集团（上级单位）',
+          children: [
+            { type: 'page', label: '考试列表-集团', file: '考试列表-集团.html' },
+            { type: 'page', label: '新增考试-集团', file: '新增考试-集团.html' },
+            { type: 'page', label: '编辑考试-集团', file: '编辑考试-集团.html' },
+            { type: 'page', label: '考试统计-集团', file: '考试统计-集团.html' }
+          ]
+        },
+        {
+          type: 'group',
+          id: 'pc-subordinate',
+          label: '下级单位',
+          children: [
+            { type: 'page', label: '考试列表-下级单位', file: '考试列表-下级单位.html' },
+            { type: 'page', label: '新增考试-下级单位', file: '新增考试-下级单位.html' },
+            { type: 'page', label: '编辑考试-下级单位', file: '编辑考试-下级单位:独立租户.html' },
+            { type: 'page', label: '考试统计-下级单位', file: '考试统计-下级单位:独立租户.html' }
+          ]
+        },
+        {
+          type: 'group',
+          id: 'pc-normal',
+          label: '普通租户（非集团）',
+          children: [
+            { type: 'page', label: '考试列表', file: '考试列表-普通租户.html' },
+            { type: 'page', label: '新增考试', file: '新增考试-普通租户.html' },
+            { type: 'page', label: '编辑考试', file: '编辑考试-下级单位:独立租户.html' },
+            { type: 'page', label: '考试统计', file: '考试统计-下级单位:独立租户.html' }
+          ]
+        }
+      ]
+    },
+    {
+      type: 'group',
+      id: 'mini',
+      label: '小程序',
+      children: [
+        { type: 'page', label: '考试列表', file: '小程序考试列表.html' }
+      ]
+    }
+  ];
+
+  // 默认展开的分组ID
+  const defaultExpandedGroups = ['pc', 'pc-group', 'pc-subordinate', 'pc-normal', 'mini'];
+
+  // =================================================================
+  // 渲染逻辑（保持不变）
+  // =================================================================
+
+  /** 递归构建菜单树 */
+  function renderMenu(config, container, level = 0) {
+    config.forEach(item => {
+      if (item.type === 'page') {
+        const div = document.createElement('div');
+        div.className = `nav-item level-${level}`;
+        div.setAttribute('data-file', item.file);
+        div.setAttribute('data-label', item.label);
+        div.innerHTML = `<span class="nav-dot"></span>${item.label}`;
+        div.addEventListener('click', () => switchPage(div));
+        container.appendChild(div);
+      } else if (item.type === 'group') {
+        const groupId = item.id || 'g-' + Math.random().toString(36).substr(2, 6);
+        const header = document.createElement('div');
+        header.className = 'nav-subgroup-header';
+        header.dataset.groupId = groupId;
+        header.innerHTML = `
+          <span class="arrow open">
+            <svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
+          </span>
+          <span class="label">${item.label}</span>
+        `;
+        const childContainer = document.createElement('div');
+        childContainer.className = 'nav-children expanded';
+        childContainer.id = 'children-' + groupId;
+
+        // 判断是否默认展开
+        const shouldExpand = defaultExpandedGroups.includes(groupId);
+        if (!shouldExpand) {
+          childContainer.classList.remove('expanded');
+          header.querySelector('.arrow').classList.remove('open');
+        }
+
+        header.addEventListener('click', () => {
+          const isExpanded = childContainer.classList.toggle('expanded');
+          header.querySelector('.arrow').classList.toggle('open');
+        });
+
+        container.appendChild(header);
+        container.appendChild(childContainer);
+
+        // 递归渲染子项，层级+1
+        renderMenu(item.children, childContainer, level + 1);
+      }
+    });
+  }
+
+  // ===== 页面切换 =====
+  function switchPage(el) {
+    document.querySelectorAll('.nav-item.active').forEach(item => item.classList.remove('active'));
+    el.classList.add('active');
+
+    const pageName = el.getAttribute('data-label');
+    const fileName = el.getAttribute('data-file');
+
+    document.getElementById('placeholder').classList.add('hidden');
+    const frame = document.getElementById('content-frame');
+    frame.style.display = 'block';
+    frame.src = fileName;
+
+    // 查找父级分组标签
+    let parentGroupLabel = '电脑端';
+    const parentGroup = el.closest('.nav-children');
+    if (parentGroup) {
+      const groupHeader = parentGroup.previousElementSibling;
+      if (groupHeader && groupHeader.classList.contains('nav-subgroup-header')) {
+        const labelEl = groupHeader.querySelector('.label');
+        if (labelEl) parentGroupLabel = labelEl.textContent;
+      }
+    }
+
+    document.getElementById('breadcrumb-platform').textContent = parentGroupLabel;
+    document.getElementById('breadcrumb-page').textContent = pageName;
+
+    // 持久化
+    localStorage.setItem('nav-active-page', fileName);
+    localStorage.setItem('nav-active-page-name', pageName);
+    localStorage.setItem('nav-active-platform', parentGroupLabel);
+  }
+
+  // ===== 初始化 =====
+  function init() {
+    // 渲染菜单
+    const container = document.getElementById('menuContainer');
+    renderMenu(menuConfig, container);
+    setSidebarCollapsed(localStorage.getItem('nav-sidebar-collapsed') === 'true');
+
+    // 尝试恢复上次选中的页面
+    const savedFile = localStorage.getItem('nav-active-page');
+    const savedName = localStorage.getItem('nav-active-page-name');
+    const savedPlatform = localStorage.getItem('nav-active-platform');
+    if (savedFile && savedName) {
+      const target = document.querySelector(`.nav-item[data-file="${savedFile}"]`);
+      if (target) {
+        document.querySelectorAll('.nav-item.active').forEach(item => item.classList.remove('active'));
+        target.classList.add('active');
+        document.getElementById('placeholder').classList.add('hidden');
+        const frame = document.getElementById('content-frame');
+        frame.style.display = 'block';
+        frame.src = savedFile;
+        document.getElementById('breadcrumb-page').textContent = savedName;
+        if (savedPlatform) document.getElementById('breadcrumb-platform').textContent = savedPlatform;
+      }
+    }
+  }
+
+  function setSidebarCollapsed(collapsed) {
+    const app = document.getElementById('appContainer');
+    const toggle = document.getElementById('sidebarToggle');
+    if (!app || !toggle) return;
+
+    app.classList.toggle('sidebar-collapsed', collapsed);
+    toggle.textContent = collapsed ? '→' : '←';
+    toggle.title = collapsed ? '展开左侧导航' : '收起左侧导航';
+    toggle.setAttribute('aria-label', toggle.title);
+  }
+
+  function toggleSidebar() {
+    const app = document.getElementById('appContainer');
+    if (!app) return;
+
+    const collapsed = !app.classList.contains('sidebar-collapsed');
+    setSidebarCollapsed(collapsed);
+    localStorage.setItem('nav-sidebar-collapsed', String(collapsed));
+  }
+
+  // ===== RESIZER =====
+  (function() {
+    const resizer = document.getElementById('resizer');
+    const sidebar = document.querySelector('.sidebar');
+    let startX, startWidth;
+
+    resizer.addEventListener('mousedown', function(e) {
+      if (document.getElementById('appContainer')?.classList.contains('sidebar-collapsed')) return;
+      startX = e.clientX;
+      startWidth = sidebar.offsetWidth;
+      document.addEventListener('mousemove', onMouseMove);
+      document.addEventListener('mouseup', onMouseUp);
+      document.body.style.cursor = 'col-resize';
+      document.body.style.userSelect = 'none';
+    });
+
+    function onMouseMove(e) {
+      const dx = e.clientX - startX;
+      const newWidth = startWidth + dx;
+      if (newWidth >= 200 && newWidth <= 400) {
+        sidebar.style.width = newWidth + 'px';
+        sidebar.style.minWidth = newWidth + 'px';
+        document.documentElement.style.setProperty('--sidebar-width', newWidth + 'px');
+      }
+    }
+
+    function onMouseUp() {
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+    }
+  })();
+
+  // 页面加载后执行
+  init();
+</script>
+
+</body>
+</html>

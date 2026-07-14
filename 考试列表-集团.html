@@ -1,0 +1,1929 @@
+<!DOCTYPE html>
+<!-- 整体PRD参考：prd/考试功能-整体PRD.md -->
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>考试列表-下级单位 - 环慧慧 EHS+</title>
+  <style>
+    :root {
+      --brand: #1677FF;
+      --brand-dark: #0A63E8;
+      --topbar: #00254A;
+      --sidebar: #092B50;
+      --sidebar-deep: #062542;
+      --text-main: #303847;
+      --text-weak: #667085;
+      --text-light: #98A2B3;
+      --border: #E4E7EC;
+      --bg: #F4F7FA;
+      --surface: #FFFFFF;
+      --row-hover: #F8FBFF;
+      --blue-soft: #EAF4FF;
+      --danger: #F04438;
+      --sidebar-width: 256px;
+      --font: "PingFang SC", "HarmonyOS Sans SC", "Microsoft YaHei", Arial, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      color: var(--text-main);
+      background: var(--bg);
+      font-family: var(--font);
+      font-size: 14px;
+      line-height: 22px;
+      letter-spacing: 0;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+      letter-spacing: 0;
+    }
+
+    button {
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+    }
+
+    .app {
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+      background: var(--bg);
+    }
+
+    .topbar {
+      position: fixed;
+      z-index: 30;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      background: var(--topbar);
+      color: #fff;
+    }
+
+    .brand {
+      width: var(--sidebar-width);
+      height: 64px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding-left: 28px;
+      background: var(--topbar);
+      box-shadow: inset -24px 0 44px rgba(0, 0, 0, 0.14);
+      flex: 0 0 var(--sidebar-width);
+    }
+
+    .brand-mark {
+      width: 48px;
+      height: 48px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: transparent;
+    }
+
+    .brand-mark img { width: 48px; height: 48px; display: block; }
+
+    .brand-text {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      line-height: 1;
+    }
+
+    .brand-name {
+      font-size: 20px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .brand-name b { color: #38BDF8; }
+
+    .brand-sub {
+      margin-top: 6px;
+      color: rgba(255, 255, 255, 0.68);
+      font-size: 12px;
+      font-style: normal;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+    }
+
+    .top-nav {
+      height: 64px;
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      padding: 0 16px;
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+
+    .top-nav button {
+      height: 64px;
+      color: rgba(255, 255, 255, 0.95);
+      font-size: 14px;
+      border-bottom: 2px solid transparent;
+      white-space: nowrap;
+    }
+
+    .top-nav button.active { border-bottom-color: var(--brand); }
+
+    .top-actions {
+      height: 64px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding-right: 20px;
+      color: rgba(255, 255, 255, 0.88);
+      flex: 0 0 auto;
+    }
+
+    .top-icon {
+      width: 20px;
+      height: 20px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255, 255, 255, 0.9);
+      position: relative;
+    }
+
+    .badge {
+      position: absolute;
+      top: -8px;
+      right: -12px;
+      min-width: 28px;
+      height: 18px;
+      padding: 0 6px;
+      border-radius: 999px;
+      background: #FF4D4F;
+      color: #fff;
+      font-size: 11px;
+      line-height: 18px;
+      text-align: center;
+    }
+
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #D9A173;
+      color: #5F371C;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      margin-left: 4px;
+    }
+
+    .user-info {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.25;
+      min-width: 140px;
+    }
+
+    .user-info strong {
+      font-size: 13px;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .user-info span {
+      margin-top: 2px;
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.55);
+    }
+
+    .sidebar {
+      position: fixed;
+      z-index: 20;
+      top: 64px;
+      left: 0;
+      bottom: 0;
+      width: var(--sidebar-width);
+      background: var(--sidebar);
+      color: #fff;
+      overflow: hidden auto;
+    }
+
+    .side-section {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      background: var(--sidebar);
+    }
+
+    .side-group {
+      height: 56px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 16px;
+      color: rgba(255, 255, 255, 0.92);
+      font-size: 14px;
+    }
+
+    .side-group .arrow {
+      margin-left: auto;
+      color: rgba(255, 255, 255, 0.72);
+      font-size: 14px;
+    }
+
+    .side-children {
+      padding: 0 7px 12px;
+      background: var(--sidebar-deep);
+    }
+
+    .side-child {
+      width: 100%;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 28px;
+      border-radius: 4px;
+      color: rgba(255, 255, 255, 0.92);
+      font-size: 14px;
+      text-align: left;
+    }
+
+    .side-child:hover { background: rgba(255, 255, 255, 0.08); }
+
+    .side-child.active {
+      background: #2B7BFA;
+      color: #fff;
+    }
+
+    .side-dot {
+      width: 15px;
+      height: 15px;
+      border: 2px solid currentColor;
+      border-radius: 50%;
+      flex: 0 0 auto;
+    }
+
+    .main {
+      height: 100vh;
+      margin-left: var(--sidebar-width);
+      padding-top: 64px;
+      overflow: hidden;
+      background: var(--bg);
+    }
+
+    .tabs-bar {
+      height: 48px;
+      display: flex;
+      align-items: flex-end;
+      gap: 0;
+      padding: 0 38px;
+      border-bottom: 1px solid #E7EAF0;
+      background: #fff;
+      box-shadow: 0 2px 10px rgba(16, 24, 40, 0.04);
+    }
+
+    .tab-home,
+    .tab-page {
+      height: 36px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 14px;
+      color: #344054;
+      font-size: 14px;
+      white-space: nowrap;
+    }
+
+    .tab-page {
+      color: var(--brand);
+      background: var(--blue-soft);
+      border-radius: 8px 8px 0 0;
+    }
+
+    .workspace {
+      height: calc(100vh - 104px);
+      display: grid;
+      grid-template-columns: 284px minmax(0, 1fr);
+      gap: 0;
+      padding: 12px 12px 12px 10px;
+      overflow: hidden;
+      background: var(--bg);
+    }
+
+    .category-panel {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background: #fff;
+      border-right: 1px solid var(--border);
+    }
+
+    .category-header {
+      padding: 18px 22px 12px;
+      flex: 0 0 auto;
+    }
+
+    .category-title {
+      margin: 0 0 14px;
+      color: #1F2937;
+      font-size: 17px;
+      line-height: 24px;
+      font-weight: 700;
+    }
+
+    .category-search {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tree-search {
+      height: 34px;
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0 10px;
+      border: 1px solid #D8DDE6;
+      border-radius: 4px;
+      color: #98A2B3;
+    }
+
+    .tree-search input {
+      width: 100%;
+      border: 0;
+      outline: 0;
+      color: #344054;
+      font-size: 13px;
+    }
+
+    .tree-search input::placeholder { color: #B5BBC6; }
+
+    .tree-add {
+      width: 32px;
+      height: 32px;
+      border-radius: 4px;
+      background: #2B7BFA;
+      color: #fff;
+      font-size: 24px;
+      line-height: 30px;
+    }
+
+    .tree-body {
+      flex: 1 1 auto;
+      min-height: 0;
+      padding: 0 22px 18px;
+      overflow: auto;
+      color: #475467;
+    }
+
+    .tree-tools {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 8px;
+      color: #2B7BFA;
+      font-size: 13px;
+    }
+
+    .tree-node {
+      min-height: 32px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 8px;
+      border-radius: 4px;
+      color: #4B5565;
+      cursor: pointer;
+    }
+
+    .tree-node:hover { background: #F5F9FF; color: var(--brand); }
+
+    .tree-node.active {
+      color: var(--brand);
+      background: #EEF6FF;
+      font-weight: 600;
+    }
+
+    .tree-node.system-root {
+      margin-bottom: 6px;
+      color: #175CD3;
+      background: #ECF5FF;
+      font-weight: 600;
+      border: 1px solid #B9DDFF;
+    }
+
+    .tree-node.system-root.active {
+      background: #DDEEFF;
+      border-color: #8BC5FF;
+    }
+
+    .tree-node.child { padding-left: 34px; }
+
+    .tree-caret {
+      width: 12px;
+      color: #98A2B3;
+      flex: 0 0 12px;
+    }
+
+    .tree-icon {
+      width: 16px;
+      height: 16px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: currentColor;
+      flex: 0 0 auto;
+    }
+
+    .tree-label {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .content-panel {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .filter-panel {
+      flex: 0 0 auto;
+      padding: 18px 24px 16px;
+      border-bottom: 1px solid var(--border);
+      background: #fff;
+    }
+
+    .filter-grid {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .filter-extra {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .filter-panel.is-collapsed .filter-extra { display: none; }
+
+    .filter-item {
+      height: 34px;
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid #D8DDE6;
+      border-radius: 4px;
+      background: #fff;
+      overflow: hidden;
+    }
+
+    .filter-label {
+      width: 78px;
+      height: 32px;
+      display: inline-flex;
+      align-items: center;
+      padding: 0 10px;
+      border-right: 1px solid #E4E7EC;
+      color: #4B5565;
+      background: #fff;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .filter-control {
+      width: 148px;
+      height: 32px;
+      padding: 0 10px;
+      border: 0;
+      outline: 0;
+      color: #344054;
+      background: #fff;
+      font-size: 13px;
+    }
+
+    .filter-control::placeholder { color: #A8AFBA; }
+
+    select.filter-control { color: #98A2B3; }
+
+    .date-control {
+      width: 145px;
+      color: #98A2B3;
+    }
+
+    .range-sep {
+      padding: 0 10px;
+      color: #98A2B3;
+    }
+
+    .filter-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-left: auto;
+    }
+
+    .btn {
+      height: 32px;
+      min-width: 78px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 0 14px;
+      border-radius: 4px;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      border: 1px solid var(--brand);
+      color: #fff;
+      background: var(--brand);
+    }
+
+    .btn-primary:hover { background: var(--brand-dark); }
+
+    .btn-ghost {
+      border: 1px solid var(--brand);
+      color: var(--brand);
+      background: #fff;
+    }
+
+    .btn-neutral {
+      border: 1px solid #C9CED8;
+      color: #344054;
+      background: #fff;
+    }
+
+    .btn-soft {
+      color: var(--brand);
+      background: #F0F7FF;
+    }
+
+    .btn-danger {
+      border: 1px solid #C9CED8;
+      color: #344054;
+      background: #fff;
+    }
+
+    .table-toolbar {
+      height: 66px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex: 0 0 66px;
+      padding: 0 24px;
+      background: #fff;
+    }
+
+    .table-shell {
+      flex: 1 1 auto;
+      min-height: 0;
+      margin: 0 24px;
+      overflow: auto;
+      background: #fff;
+      scrollbar-color: #C4CAD4 #EEF0F3;
+      scrollbar-width: thin;
+    }
+
+    .table-shell::-webkit-scrollbar { width: 8px; height: 8px; }
+    .table-shell::-webkit-scrollbar-track { background: #EEF0F3; }
+    .table-shell::-webkit-scrollbar-thumb { background: #C4CAD4; border-radius: 999px; }
+
+    .exam-table {
+      width: 1450px;
+      border-collapse: collapse;
+      table-layout: fixed;
+      font-size: 13px;
+      color: #5B6472;
+    }
+
+    .exam-table th,
+    .exam-table td {
+      height: 44px;
+      padding: 0 12px;
+      border-bottom: 1px solid #E7EAF0;
+      text-align: left;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      background: #fff;
+    }
+
+    .exam-table th {
+      height: 45px;
+      color: #667085;
+      font-weight: 500;
+      background: #F5F7FA;
+    }
+
+    .exam-table tbody tr:hover td { background: var(--row-hover); }
+
+    .exam-table tr.group-row td {
+      background: #F8FBFF;
+    }
+
+    .exam-table tr.group-row:hover td {
+      background: #EEF7FF;
+    }
+
+    .checkbox-cell {
+      width: 34px;
+      text-align: center;
+    }
+
+    .ck {
+      width: 14px;
+      height: 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #D6DAE2;
+      border-radius: 2px;
+      background: #fff;
+      vertical-align: middle;
+    }
+
+    .ck.checked {
+      background: var(--brand);
+      border-color: var(--brand);
+      color: #fff;
+    }
+
+    .ck.checked::after {
+      content: "✓";
+      font-size: 11px;
+      line-height: 1;
+    }
+
+    .ck.disabled {
+      background: #F2F4F7;
+      border-color: #D0D5DD;
+      cursor: not-allowed;
+    }
+
+    .exam-link {
+      color: #2B7BFA;
+      text-decoration: none;
+    }
+
+    .exam-link:hover { text-decoration: underline; }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .status::before {
+      content: "i";
+      width: 14px;
+      height: 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      color: #fff;
+      background: #2B7BFA;
+      font-size: 10px;
+      font-family: Arial, sans-serif;
+      font-weight: 700;
+    }
+
+    .status.draft::before { background: #98A2B3; }
+    .status.pending::before { background: #F79009; }
+    .status.end::before { background: #12B76A; }
+
+    .op-cell {
+      position: sticky;
+      right: 0;
+      z-index: 2;
+      background: #fff;
+      box-shadow: -8px 0 14px rgba(16, 24, 40, 0.08);
+    }
+
+    .exam-table th.op-cell {
+      z-index: 3;
+      background: #F5F7FA;
+    }
+
+    .op-actions {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--brand);
+    }
+
+    .op-link {
+      color: var(--brand);
+      padding: 0;
+      font-size: 13px;
+    }
+
+    .op-link:hover { color: #175CD3; }
+
+    .op-link.disabled {
+      color: #B3B9C4;
+      cursor: not-allowed;
+    }
+
+    .more-wrap {
+      position: relative;
+      display: inline-flex;
+    }
+
+    .more-btn {
+      width: 24px;
+      height: 24px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--brand);
+      border-radius: 4px;
+      font-size: 18px;
+      line-height: 1;
+    }
+
+    .more-menu {
+      position: fixed;
+      z-index: 50;
+      width: 120px;
+      display: none;
+      padding: 8px 0;
+      border-radius: 4px;
+      background: #fff;
+      box-shadow: 0 8px 24px rgba(16, 24, 40, 0.16);
+      border: 1px solid #E4E7EC;
+    }
+
+    .more-menu.show { display: block; }
+
+    .more-menu::before {
+      content: "";
+      position: absolute;
+      top: -7px;
+      right: 28px;
+      width: 12px;
+      height: 12px;
+      transform: rotate(45deg);
+      background: #fff;
+      border-left: 1px solid #E4E7EC;
+      border-top: 1px solid #E4E7EC;
+    }
+
+    .more-item {
+      width: 100%;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      padding: 0 14px;
+      color: #475467;
+      font-size: 13px;
+      text-align: left;
+    }
+
+    .more-item:hover { background: #F5F8FF; color: var(--brand); }
+    .more-item.danger:hover { color: var(--danger); background: #FFF5F5; }
+
+    .footer {
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 18px;
+      flex: 0 0 70px;
+      padding: 0 32px 18px;
+      color: #667085;
+      font-size: 13px;
+      background: #fff;
+    }
+
+    .pager {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .page-size {
+      width: 120px;
+      height: 32px;
+      padding: 0 10px;
+      border: 1px solid #D8DDE6;
+      border-radius: 4px;
+      color: #667085;
+      background: #fff;
+      outline: 0;
+    }
+
+    .page-btn {
+      min-width: 32px;
+      height: 32px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+      color: #475467;
+      background: #F2F4F7;
+      font-size: 13px;
+    }
+
+    .page-btn.active {
+      color: #fff;
+      background: #2B7BFA;
+    }
+
+    .page-btn:disabled {
+      color: #C4CAD4;
+      cursor: not-allowed;
+    }
+
+    .jump {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .jump input {
+      width: 56px;
+      height: 32px;
+      border: 1px solid #D8DDE6;
+      border-radius: 4px;
+      color: #475467;
+      text-align: center;
+      outline: 0;
+    }
+
+    .empty {
+      height: 240px;
+      color: #98A2B3;
+      text-align: center;
+    }
+
+    .publish-modal-mask {
+      position: fixed;
+      inset: 0;
+      z-index: 11000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 28px;
+      background: rgba(16, 24, 40, 0.45);
+    }
+
+    .publish-modal-mask.show { display: flex; }
+
+    .publish-modal {
+      width: min(1120px, calc(100vw - 56px));
+      height: min(860px, calc(100vh - 56px));
+      max-height: calc(100vh - 56px);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      border-radius: 6px;
+      background: #fff;
+      box-shadow: 0 24px 72px rgba(16, 24, 40, 0.24);
+    }
+
+    .publish-modal-head {
+      height: 88px;
+      flex: 0 0 88px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+      border-bottom: 1px solid #E4E7EC;
+    }
+
+    .publish-modal-title {
+      margin: 0;
+      color: #1D2939;
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    .publish-close {
+      width: 34px;
+      height: 34px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #8A8F98;
+      font-size: 32px;
+      line-height: 1;
+    }
+
+    .publish-close:hover { color: #475467; }
+
+    .publish-modal-body {
+      min-height: 0;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 28px 32px 0;
+      overflow: hidden;
+    }
+
+    .publish-alert {
+      margin: 0 0 22px;
+      color: #555B66;
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 1.6;
+    }
+
+    .change-panel {
+      min-height: 0;
+      flex: 1 1 auto;
+      display: flex;
+      flex-direction: column;
+      padding: 16px;
+      border-radius: 6px;
+      background: #F5F7FA;
+    }
+
+    .change-tabs {
+      display: inline-flex;
+      overflow: hidden;
+      margin-bottom: 14px;
+      border: 1px solid #D0D5DD;
+      border-radius: 4px;
+      background: #fff;
+    }
+
+    .change-tab {
+      min-width: 144px;
+      height: 40px;
+      padding: 0 20px;
+      color: #555B66;
+      border-right: 1px solid #D0D5DD;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .change-tab:last-child { border-right: 0; }
+
+    .change-tab.active {
+      color: #fff;
+      border-color: var(--brand);
+      background: var(--brand);
+    }
+
+    .operation-type {
+      display: inline-flex;
+      align-items: center;
+      height: 26px;
+      padding: 0 10px;
+      border-radius: 3px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .operation-type.remove {
+      color: #fff;
+      background: #F04438;
+    }
+
+    .operation-type.add {
+      color: #027A48;
+      background: #D1FADF;
+    }
+
+    .change-table-wrap {
+      min-height: 0;
+      flex: 1 1 auto;
+      overflow: auto;
+      background: #fff;
+    }
+
+    .change-table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+      color: #1D2939;
+      font-size: 16px;
+    }
+
+    .change-table th,
+    .change-table td {
+      height: 56px;
+      padding: 0 24px;
+      border-bottom: 1px solid #EAECF0;
+      text-align: left;
+      vertical-align: middle;
+    }
+
+    .change-table th {
+      color: #667085;
+      font-weight: 700;
+      background: #fff;
+    }
+
+    .change-table .person-status {
+      margin-left: 8px;
+      color: #F04438;
+      font-weight: 700;
+    }
+
+    .change-empty {
+      height: 180px;
+      color: #98A2B3;
+      text-align: center;
+    }
+
+    .change-pagination {
+      flex: 0 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+      padding: 14px 0 0;
+      color: #667085;
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .change-page-btn {
+      min-width: 36px;
+      height: 34px;
+      padding: 0 10px;
+      border: 1px solid #D0D5DD;
+      border-radius: 4px;
+      color: #344054;
+      background: #fff;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .change-page-btn.active {
+      color: #fff;
+      border-color: var(--brand);
+      background: var(--brand);
+    }
+
+    .change-page-btn:disabled {
+      color: #98A2B3;
+      cursor: not-allowed;
+      background: #F9FAFB;
+    }
+
+    .change-page-size {
+      min-width: 72px;
+      height: 34px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #D0D5DD;
+      border-radius: 4px;
+      background: #fff;
+    }
+
+    .publish-notes {
+      flex: 0 0 auto;
+      margin: 20px 0 0;
+      padding: 18px 0 0;
+      border-top: 1px solid #E4E7EC;
+      color: #667085;
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 1.8;
+    }
+
+    .publish-modal-foot {
+      height: 96px;
+      flex: 0 0 96px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 22px;
+      border-top: 1px solid #E4E7EC;
+      background: #fff;
+    }
+
+    .publish-action {
+      min-width: 120px;
+      height: 48px;
+      padding: 0 36px;
+      border-radius: 5px;
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .publish-action.cancel {
+      color: #667085;
+      border: 1px solid #D0D5DD;
+      background: #fff;
+    }
+
+    .publish-action.primary {
+      color: #fff;
+      background: var(--brand);
+    }
+
+    .toast {
+      position: fixed;
+      z-index: 100;
+      left: 50%;
+      top: 82px;
+      transform: translateX(-50%) translateY(-10px);
+      display: none;
+      min-width: 220px;
+      padding: 10px 16px;
+      border-radius: 4px;
+      color: #344054;
+      background: #fff;
+      box-shadow: 0 10px 30px rgba(16, 24, 40, 0.18);
+      border: 1px solid #E4E7EC;
+      text-align: center;
+    }
+
+    .toast.show {
+      display: block;
+      animation: toastIn 160ms ease forwards;
+    }
+
+    @keyframes toastIn {
+      to { transform: translateX(-50%) translateY(0); }
+    }
+
+    @media (max-width: 1200px) {
+      .top-nav { gap: 20px; padding: 0 20px; }
+      .workspace { grid-template-columns: 270px minmax(0, 1fr); }
+      .filter-actions { margin-left: 0; }
+    }
+
+  </style>
+  <link rel="stylesheet" href="prd-annotation.css">
+</head>
+<body>
+  <div class="app">
+    <header class="topbar" aria-label="顶部导航">
+      <div class="brand">
+        <span class="brand-mark"><img src="assets/CodeBuddyAssets/696_1660/14.svg" alt=""></span>
+        <span class="brand-text">
+          <span class="brand-name">环慧慧 · <b>EHS+</b></span>
+          <span class="brand-sub">Enterprise Edition</span>
+        </span>
+      </div>
+      <nav class="top-nav" aria-label="一级模块">
+        <button type="button">环境</button>
+        <button type="button">安全</button>
+        <button type="button">EHS教育</button>
+        <button class="active" type="button">培训</button>
+        <button type="button">系统管理</button>
+        <button type="button">外委管理</button>
+      </nav>
+      <div class="top-actions">
+        <span class="top-icon" title="全屏">⛶</span>
+        <span class="top-icon" title="刷新">↻</span>
+        <span class="top-icon" title="消息">▣<span class="badge">99+</span></span>
+        <span class="avatar">庞</span>
+        <span class="user-info">
+          <strong>庞柳(系统管理员)</strong>
+          <span>福建华电可门发电有限公司</span>
+        </span>
+        <span>⌄</span>
+      </div>
+    </header>
+
+    <aside class="sidebar" aria-label="左侧导航">
+      <section class="side-section">
+        <div class="side-group">▣ 资源管理 <span class="arrow">⌃</span></div>
+        <div class="side-children">
+          <button class="side-child" type="button"><span class="side-dot"></span>课件管理</button>
+          <button class="side-child" type="button"><span class="side-dot"></span>试题管理</button>
+          <button class="side-child" type="button"><span class="side-dot"></span>试卷管理</button>
+        </div>
+      </section>
+      <section class="side-section">
+        <div class="side-group">▣ 配置管理 <span class="arrow">⌄</span></div>
+      </section>
+      <section class="side-section">
+        <div class="side-group">▣ 学习中心 <span class="arrow">⌃</span></div>
+        <div class="side-children">
+          <button class="side-child active" type="button"><span class="side-dot"></span>考试管理</button>
+          <button class="side-child" type="button"><span class="side-dot"></span>课程管理</button>
+          <button class="side-child" type="button"><span class="side-dot"></span>培训类别</button>
+          <button class="side-child" type="button"><span class="side-dot"></span>考试设置</button>
+          <button class="side-child" type="button"><span class="side-dot"></span>三级安全培训</button>
+          <button class="side-child" type="button"><span class="side-dot"></span>课程设置</button>
+        </div>
+      </section>
+    </aside>
+
+    <main class="main">
+      <div class="tabs-bar" aria-label="标签页">
+        <button class="tab-home" type="button">⌂ 安全首页</button>
+        <button class="tab-page" type="button">☰ 考试管理 ×</button>
+      </div>
+
+      <section class="workspace">
+        <aside class="category-panel" aria-label="考试分类">
+          <div class="category-header">
+            <h2 class="category-title">考试分类</h2>
+            <div class="category-search">
+              <label class="tree-search">
+                <span>⌕</span>
+                <input id="treeSearch" type="text" placeholder="请输入名称回车搜索" onkeydown="handleTreeSearch(event)">
+              </label>
+              <button class="tree-add" type="button" onclick="showToast('新增分类')">+</button>
+            </div>
+          </div>
+          <div class="tree-body">
+            <div class="tree-tools">
+              <button type="button" onclick="setTreeFold(true)">☷ 全部收起</button>
+            </div>
+            <div class="tree-node active" data-category="全部分类" onclick="selectCategory('全部分类')">
+              <span class="tree-caret" id="allTreeCaret">⌄</span>
+              <span class="tree-icon">☰</span>
+              <span class="tree-label">全部分类</span>
+            </div>
+            <div id="treeChildren">
+              <div class="tree-node child" data-category="新员工培训" onclick="selectCategory('新员工培训')">
+                <span class="tree-label">新员工培训</span>
+              </div>
+              <div class="tree-node child" data-category="上岗考试" onclick="selectCategory('上岗考试')">
+                <span class="tree-label">上岗考试</span>
+              </div>
+              <div class="tree-node child" data-category="特种作业培训" onclick="selectCategory('特种作业培训')">
+                <span class="tree-label">特种作业培训</span>
+              </div>
+            </div>
+          </div>
+        </aside>
+
+        <section class="content-panel" aria-label="考试列表">
+          <div class="filter-panel is-collapsed" id="filterPanel">
+            <div class="filter-grid">
+              <label class="filter-item">
+                <span class="filter-label">考试名称</span>
+                <input class="filter-control" id="filterName" type="text" placeholder="请输入">
+              </label>
+              <label class="filter-item">
+                <span class="filter-label">考试类型</span>
+                <select class="filter-control" id="filterType">
+                  <option value="">请选择</option>
+                  <option value="正式考试">正式考试</option>
+                  <option value="模拟考试">模拟考试</option>
+                </select>
+              </label>
+              <label class="filter-item">
+                <span class="filter-label">状态</span>
+                <select class="filter-control" id="filterStatus">
+                  <option value="">请选择</option>
+                  <option value="草稿">草稿</option>
+                  <option value="进行中">进行中</option>
+                  <option value="未开始">未开始</option>
+                  <option value="已结束">已结束</option>
+                </select>
+              </label>
+              <div class="filter-actions">
+                <button class="btn btn-ghost" type="button" onclick="applyFilter()">查询</button>
+                <button class="btn btn-neutral" type="button" onclick="resetFilter()">重置</button>
+                <button class="btn btn-soft" id="foldBtn" type="button" onclick="toggleFilter()">展开 ⌄</button>
+              </div>
+            </div>
+            <div class="filter-extra">
+              <label class="filter-item">
+                <span class="filter-label">考试时间</span>
+                <input class="filter-control date-control" id="filterDateStart" type="text" placeholder="起">
+                <span class="range-sep">-</span>
+                <input class="filter-control date-control" id="filterDateEnd" type="text" placeholder="止">
+              </label>
+            </div>
+          </div>
+
+          <div class="table-toolbar">
+            <button class="btn btn-primary" type="button" onclick="openAddPage()">＋ 新增<span id="badge-ref-2" style="position:relative;display:inline-block;width:0;height:0"></span></button>
+            <button class="btn btn-danger" type="button" onclick="batchDelete()">▣批量删除</button>
+          </div>
+
+          <div class="table-shell">
+            <table class="exam-table">
+              <colgroup>
+                <col style="width:38px">
+                <col style="width:72px">
+                <col style="width:210px">
+                <col style="width:170px">
+                <col style="width:110px">
+                <col style="width:210px">
+                <col style="width:90px">
+                <col style="width:104px">
+                <col style="width:110px">
+                <col style="width:120px">
+                <col style="width:100px">
+                <col style="width:180px">
+                <col style="width:100px">
+                <col style="width:180px">
+                <col style="width:178px">
+              </colgroup>
+              <thead>
+                <tr>
+                  <th class="checkbox-cell"><span class="ck" id="checkAll" onclick="toggleAllNormal()"></span></th>
+                  <th>序号<span id="badge-ref-1" style="position:relative;display:inline-block;width:0;height:0"></span></th>
+                  <th>考试名称</th>
+                  <th>所属分类</th>
+                  <th>考试类型</th>
+                  <th>考试时间</th>
+                  <th>状态</th>
+                  <th>考试人数</th>
+                  <th>及格/总分</th>
+                  <th>时长（分钟）</th>
+                  <th>创建人</th>
+                  <th>创建时间</th>
+                  <th>更新人</th>
+                  <th>更新时间</th>
+                  <th class="op-cell">操作<span id="badge-ref-3" style="position:relative;display:inline-block;width:0;height:0"></span></th>
+                </tr>
+              </thead>
+              <tbody id="examRows"></tbody>
+            </table>
+          </div>
+
+          <div class="footer">
+            <span id="totalText">共 0 条</span>
+            <div class="pager">
+              <select class="page-size" aria-label="每页条数">
+                <option>20条/页</option>
+                <option>50条/页</option>
+                <option>100条/页</option>
+              </select>
+              <button class="page-btn" type="button" disabled>‹</button>
+              <button class="page-btn active" type="button">1</button>
+              <button class="page-btn" type="button">2</button>
+              <button class="page-btn" type="button">3</button>
+              <button class="page-btn" type="button">›</button>
+              <span class="jump">前往 <input type="text" value="1" aria-label="跳转页码"> 页</span>
+            </div>
+          </div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <div class="more-menu" id="moreMenu" role="menu"></div>
+  <div class="publish-modal-mask" id="publishModal" aria-hidden="true" onclick="handlePublishModalMask(event)">
+    <section class="publish-modal" role="dialog" aria-modal="true" aria-labelledby="publishModalTitle">
+      <header class="publish-modal-head">
+        <h2 class="publish-modal-title" id="publishModalTitle">发布<span id="badge-ref-4" style="position:relative;display:inline-block;width:0;height:0"></span></h2>
+        <button class="publish-close" type="button" aria-label="关闭" onclick="closePublishModal()">×</button>
+      </header>
+      <div class="publish-modal-body">
+        <p class="publish-alert">【系统检测】与您创建/编辑考试时相比，人员列表已产生变更，变更信息如下：</p>
+        <div class="change-panel">
+          <div class="change-tabs" id="publishChangeTabs"></div>
+          <div class="change-table-wrap">
+            <table class="change-table">
+              <colgroup>
+                <col style="width:90px">
+                <col style="width:18%">
+                <col style="width:28%">
+                <col style="width:28%">
+                <col style="width:130px">
+              </colgroup>
+              <thead>
+                <tr>
+                  <th>序号</th>
+                  <th>姓名</th>
+                  <th>所属公司</th>
+                  <th>部门</th>
+                  <th>操作类型</th>
+                </tr>
+              </thead>
+              <tbody id="publishChangeRows"></tbody>
+            </table>
+          </div>
+          <div class="change-pagination" id="publishChangePager"></div>
+        </div>
+        <p class="publish-notes"><strong>考试发布后，新入职的人员不自动纳入考试中。考试发布后，离职人员不影响考试流程，但会影响应考人数。</strong></p>
+      </div>
+      <footer class="publish-modal-foot">
+        <button class="publish-action cancel" type="button" onclick="closePublishModal()">取消</button>
+        <button class="publish-action primary" type="button" onclick="confirmPublishExam()">发布</button>
+      </footer>
+    </section>
+  </div>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const exams = [];
+
+    (function initExams() {
+      const categories = ['安全生产', '消防安全', '职业健康', '环境保护'];
+      const types = ['专项题', '精品课', '2025'];
+      const statuses = ['草稿', '未开始', '进行中', '已结束', '草稿', '未开始', '进行中', '已结束'];
+      const companies = ['福建华电可门发电有限公司', '华电集团新能源有限公司', '国电燃料集团有限公司', '华电福建分公司', '华电浙江分公司'];
+      const creators = ['张管理', '李安全', '王环保', '赵质检', '陈运维'];
+      const names = [
+        '2026年安全生产知识统考', '消防应急演练考试', '职业健康防护知识测评', '环境保护法规考核',
+        '新员工入职安全培训考试', '高风险作业安全考试', '化学品安全管理考试', '电气安全操作考试',
+        '应急救援知识考试', '特种设备操作考试', '交通安全知识考试', '夏季防暑降温知识考试',
+        '冬季防火安全考试', '职业病防治法考试', '双重预防机制考试', '安全生产标准化考试'
+      ];
+      for (let i = 0; i < 16; i++) {
+        const status = statuses[i];
+        const startDate = new Date(2026, 6, 1 + i * 2);
+        const startStr = startDate.getFullYear() + '-' + String(startDate.getMonth() + 1).padStart(2, '0') + '-' + String(startDate.getDate()).padStart(2, '0');
+        const endDate = new Date(startDate);
+        endDate.setDate(endDate.getDate() + (status === '草稿' ? 30 : 7));
+        const endStr = endDate.getFullYear() + '-' + String(endDate.getMonth() + 1).padStart(2, '0') + '-' + String(endDate.getDate()).padStart(2, '0');
+        exams.push({
+          id: 'e' + (i + 1),
+          name: names[i],
+          category: categories[i % 4],
+          type: types[i % 3],
+          status: status,
+          time: startStr + ' 09:00~' + endStr + ' 18:00',
+          people: Math.floor(Math.random() * 200) + 50,
+          score: '100分',
+          duration: (Math.floor(Math.random() * 3) + 1) * 30 + '分钟',
+          creator: creators[i % 5],
+          createTime: startStr + ' ' + (8 + i % 4) + ':00',
+          updater: creators[(i + 1) % 5],
+          updateTime: startStr + ' ' + (10 + i % 6) + ':30',
+          personnelChanges: status === '草稿' ? {
+            removed: [
+              { name: '张三', company: '福建华电可门发电有限公司', department: '生产部/一车间', status: '离职' },
+              { name: '李四', company: '华电集团新能源有限公司', department: '生产部/二车间', status: '离职' },
+              { name: '王五', company: '国电燃料集团有限公司', department: '安全环保部', status: '停用' }
+            ],
+            added: [
+              { name: '赵六', company: '华电福建分公司', department: '生产部/一车间', status: '在职' },
+              { name: '钱七', company: '华电浙江分公司', department: '技术部/研发组', status: '在职' }
+            ]
+          } : null
+        });
+      }
+    })();
+
+    let activeCategory = '全部分类';
+    let selectedIds = new Set();
+    let filterCollapsed = true;
+    let menuExamId = '';
+    let publishExamId = '';
+    let publishChangeTab = 'all';
+    let publishPage = 1;
+    const publishPageSize = 5;
+
+    const examRows = document.getElementById('examRows');
+    const moreMenu = document.getElementById('moreMenu');
+    const publishModal = document.getElementById('publishModal');
+    const publishChangeTabs = document.getElementById('publishChangeTabs');
+    const publishChangeRows = document.getElementById('publishChangeRows');
+    const publishChangePager = document.getElementById('publishChangePager');
+
+    function escapeHTML(value) {
+      const div = document.createElement('div');
+      div.textContent = String(value ?? '');
+      return div.innerHTML;
+    }
+
+    function getStatusClass(status) {
+      if (status === '草稿') return 'draft';
+      if (status === '未开始') return 'pending';
+      if (status === '已结束') return 'end';
+      return '';
+    }
+
+    function getVisibleExams() {
+      const name = document.getElementById('filterName').value.trim();
+      const type = document.getElementById('filterType').value;
+      const status = document.getElementById('filterStatus').value;
+      return exams.filter(exam => {
+        const categoryMatch = activeCategory === '全部分类' || exam.category === activeCategory;
+        return categoryMatch &&
+          (!name || exam.name.includes(name)) &&
+          (!type || exam.type === type) &&
+          (!status || exam.status === status);
+      });
+    }
+
+    function renderRows() {
+      const rows = getVisibleExams();
+      document.getElementById('totalText').textContent = '共 ' + rows.length + ' 条';
+      if (!rows.length) {
+        examRows.innerHTML = '<tr><td class="empty" colspan="15">暂无数据</td></tr>';
+        updateCheckAll(rows);
+        return;
+      }
+
+      examRows.innerHTML = rows.map((exam, index) => {
+        const checked = selectedIds.has(exam.id);
+        const statusClass = getStatusClass(exam.status);
+        const publishAction = exam.status === '草稿'
+          ? `<button class="op-link" type="button" onclick="publishExam('${exam.id}')">发布</button>`
+          : '';
+        return `
+          <tr>
+            <td class="checkbox-cell">
+              <span class="ck ${checked ? 'checked' : ''}" title="选择" onclick="toggleRow('${exam.id}')"></span>
+            </td>
+            <td>${index + 1}</td>
+            <td>
+              <a class="exam-link" href="javascript:void(0)" onclick="previewExam('${exam.id}')">${escapeHTML(exam.name)}</a>
+            </td>
+            <td>${escapeHTML(exam.category)}</td>
+            <td>${escapeHTML(exam.type)}</td>
+            <td>${escapeHTML(exam.time)}</td>
+            <td><span class="status ${statusClass}">${escapeHTML(exam.status)}</span></td>
+            <td>${exam.people}</td>
+            <td>${escapeHTML(exam.score)}</td>
+            <td>${exam.duration}</td>
+            <td>${escapeHTML(exam.creator)}</td>
+            <td>${escapeHTML(exam.createTime)}</td>
+            <td>${escapeHTML(exam.updater)}</td>
+            <td>${escapeHTML(exam.updateTime)}</td>
+            <td class="op-cell">
+              <span class="op-actions">
+                <button class="op-link" type="button" onclick="previewExam('${exam.id}')">预览</button>
+                ${publishAction}
+                <button class="op-link" type="button" onclick="copyExam('${exam.id}')">复制</button>
+                <span class="more-wrap"><button class="more-btn" type="button" onclick="toggleMoreMenu(event, '${exam.id}')">...</button></span>
+              </span>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      updateCheckAll(rows);
+    }
+
+    function updateCheckAll(rows) {
+      const normalRows = rows;
+      const checkedCount = normalRows.filter(exam => selectedIds.has(exam.id)).length;
+      const checkAll = document.getElementById('checkAll');
+      checkAll.classList.toggle('checked', normalRows.length > 0 && checkedCount === normalRows.length);
+      checkAll.classList.toggle('disabled', normalRows.length === 0);
+      checkAll.title = normalRows.length ? '全选本页可删除考试' : '当前无可批量删除的考试';
+    }
+
+    function toggleRow(id) {
+      if (selectedIds.has(id)) selectedIds.delete(id);
+      else selectedIds.add(id);
+      renderRows();
+    }
+
+    function toggleAllNormal() {
+      const rows = getVisibleExams();
+      if (!rows.length) return;
+      const allChecked = rows.every(exam => selectedIds.has(exam.id));
+      rows.forEach(exam => {
+        if (allChecked) selectedIds.delete(exam.id);
+        else selectedIds.add(exam.id);
+      });
+      renderRows();
+    }
+
+    function selectCategory(category) {
+      activeCategory = category;
+      selectedIds.clear();
+      document.querySelectorAll('.tree-node').forEach(node => {
+        node.classList.toggle('active', node.dataset.category === category);
+      });
+      closeMoreMenu();
+      renderRows();
+    }
+
+    function setTreeFold(folded) {
+      const children = document.getElementById('treeChildren');
+      const caret = document.getElementById('allTreeCaret');
+      children.style.display = folded ? 'none' : 'block';
+      caret.textContent = folded ? '›' : '⌄';
+    }
+
+    function handleTreeSearch(event) {
+      if (event.key !== 'Enter') return;
+      const keyword = event.currentTarget.value.trim();
+      if (!keyword) {
+        setTreeFold(false);
+        return;
+      }
+      const matched = [...document.querySelectorAll('.tree-node')].find(node => node.dataset.category && node.dataset.category.includes(keyword));
+      if (matched) selectCategory(matched.dataset.category);
+      else showToast('未找到匹配分类');
+    }
+
+    function toggleFilter() {
+      filterCollapsed = !filterCollapsed;
+      document.getElementById('filterPanel').classList.toggle('is-collapsed', filterCollapsed);
+      document.getElementById('foldBtn').innerHTML = filterCollapsed ? '展开 ⌄' : '折叠 ⌃';
+    }
+
+    function applyFilter() {
+      selectedIds.clear();
+      closeMoreMenu();
+      renderRows();
+    }
+
+    function resetFilter() {
+      document.getElementById('filterName').value = '';
+      document.getElementById('filterType').value = '';
+      document.getElementById('filterStatus').value = '';
+      document.getElementById('filterDateStart').value = '';
+      document.getElementById('filterDateEnd').value = '';
+      selectedIds.clear();
+      renderRows();
+    }
+
+    function openAddPage() {
+      window.location.href = '新增考试-集团.html';
+    }
+
+    function previewExam(id) {
+      const exam = exams.find(item => item.id === id);
+      showToast('预览：' + (exam ? exam.name : '考试'));
+    }
+
+    function getPersonnelChangeGroups(exam) {
+      const changes = exam && exam.personnelChanges ? exam.personnelChanges : {};
+      return {
+        removed: Array.isArray(changes.removed) ? changes.removed : [],
+        added: Array.isArray(changes.added) ? changes.added : []
+      };
+    }
+
+    function getPersonnelChangeRows(exam, tab = publishChangeTab) {
+      const groups = getPersonnelChangeGroups(exam);
+      const removed = groups.removed.map(person => ({ ...person, operation: '移除' }));
+      const added = groups.added.map(person => ({ ...person, operation: '新增' }));
+      if (tab === 'removed') return removed;
+      if (tab === 'added') return added;
+      return [...removed, ...added];
+    }
+
+    function hasPersonnelChanges(exam) {
+      return getPersonnelChangeRows(exam, 'all').length > 0;
+    }
+
+    function renderPublishPager(totalRows, totalPages) {
+      if (!publishChangePager) return;
+      if (!totalRows) {
+        publishChangePager.innerHTML = '';
+        return;
+      }
+      const pages = Array.from({ length: totalPages }, (_, index) => index + 1).map(page => `
+        <button class="change-page-btn ${publishPage === page ? 'active' : ''}" type="button" onclick="changePublishPage(${page})">${page}</button>
+      `).join('');
+      publishChangePager.innerHTML = `
+        <span>共 ${totalRows} 人</span>
+        <button class="change-page-btn" type="button" ${publishPage <= 1 ? 'disabled' : ''} onclick="changePublishPage(${publishPage - 1})">&lt;</button>
+        ${pages}
+        <button class="change-page-btn" type="button" ${publishPage >= totalPages ? 'disabled' : ''} onclick="changePublishPage(${publishPage + 1})">&gt;</button>
+        <span class="change-page-size">${publishPageSize}条/页</span>
+      `;
+    }
+
+    function renderPublishModal() {
+      const exam = exams.find(item => item.id === publishExamId);
+      if (!exam) return;
+      const groups = getPersonnelChangeGroups(exam);
+      const tabItems = [
+        { key: 'all', label: '全部', count: groups.removed.length + groups.added.length },
+        { key: 'removed', label: '移除', count: groups.removed.length },
+        { key: 'added', label: '新增', count: groups.added.length }
+      ];
+      publishChangeTabs.innerHTML = tabItems.map(tab => `
+        <button class="change-tab ${publishChangeTab === tab.key ? 'active' : ''}" type="button" onclick="switchPublishTab('${tab.key}')">
+          ${tab.label}（${tab.count}人）
+        </button>
+      `).join('');
+      const rows = getPersonnelChangeRows(exam);
+      const totalPages = Math.max(1, Math.ceil(rows.length / publishPageSize));
+      if (publishPage > totalPages) publishPage = totalPages;
+      const startIndex = (publishPage - 1) * publishPageSize;
+      const currentRows = rows.slice(startIndex, startIndex + publishPageSize);
+      publishChangeRows.innerHTML = rows.length ? currentRows.map((person, index) => `
+        <tr>
+          <td>${startIndex + index + 1}</td>
+          <td>${escapeHTML(person.name)}${person.status === '离职' || person.status === '停用' ? '<span class="person-status">（离职）</span>' : ''}</td>
+          <td>${escapeHTML(person.company)}</td>
+          <td>${escapeHTML(person.department)}</td>
+          <td><span class="operation-type ${person.operation === '新增' ? 'add' : 'remove'}">${escapeHTML(person.operation)}</span></td>
+        </tr>
+      `).join('') : '<tr><td class="change-empty" colspan="5">暂无人员变更</td></tr>';
+      renderPublishPager(rows.length, totalPages);
+    }
+
+    function openPublishModal(id) {
+      /* 弹窗打开时隐藏页面级角标 1/2/3 */
+      document.body.classList.add('modal-open');
+
+      publishExamId = id;
+      publishChangeTab = 'all';
+      publishPage = 1;
+      renderPublishModal();
+      publishModal.classList.add('show');
+      publishModal.setAttribute('aria-hidden', 'false');
+    }
+
+    function closePublishModal() {
+      document.body.classList.remove('modal-open');
+
+      publishModal.classList.remove('show');
+      publishModal.setAttribute('aria-hidden', 'true');
+      publishExamId = '';
+      publishPage = 1;
+    }
+
+    function handlePublishModalMask(event) {
+      if (event.target === publishModal) closePublishModal();
+    }
+
+    function changePublishPage(page) {
+      publishPage = Math.max(1, page);
+      renderPublishModal();
+    }
+
+    function switchPublishTab(tab) {
+      publishChangeTab = tab;
+      publishPage = 1;
+      renderPublishModal();
+    }
+
+    function formatDateTime(date) {
+      const pad = value => String(value).padStart(2, '0');
+      return date.getFullYear() + '-' + pad(date.getMonth() + 1) + '-' + pad(date.getDate()) + ' ' +
+        pad(date.getHours()) + ':' + pad(date.getMinutes()) + ':' + pad(date.getSeconds());
+    }
+
+    function publishExam(id) {
+      const exam = exams.find(item => item.id === id);
+      closeMoreMenu();
+      if (!exam) {
+        showToast('未找到考试');
+        return;
+      }
+      if (exam.status !== '草稿') {
+        showToast('仅草稿状态支持发布');
+        return;
+      }
+      if (hasPersonnelChanges(exam)) {
+        openPublishModal(id);
+        return;
+      }
+      finishPublishExam(exam);
+    }
+
+    function confirmPublishExam() {
+      const exam = exams.find(item => item.id === publishExamId);
+      if (!exam) {
+        closePublishModal();
+        showToast('未找到考试');
+        return;
+      }
+      closePublishModal();
+      exam.personnelChanges = null;
+      finishPublishExam(exam);
+    }
+
+    function finishPublishExam(exam) {
+      exam.status = '未开始';
+      exam.updateTime = formatDateTime(new Date());
+      selectedIds.delete(exam.id);
+      renderRows();
+      showToast('已发布：' + exam.name);
+    }
+
+    function copyExam(id) {
+      const exam = exams.find(item => item.id === id);
+      showToast('已复制考试：' + (exam ? exam.name : '考试'));
+    }
+
+    function deleteExam(id) {
+      const exam = exams.find(item => item.id === id);
+      closeMoreMenu();
+      showToast('已删除：' + (exam ? exam.name : '考试'));
+    }
+
+    function batchDelete() {
+      const ids = [...selectedIds].filter(id => exams.some(exam => exam.id === id));
+      if (!ids.length) {
+        showToast('请选择可删除的下级单位考试');
+        return;
+      }
+      showToast('已批量删除 ' + ids.length + ' 条下级单位考试');
+      selectedIds.clear();
+      renderRows();
+    }
+
+    function toggleMoreMenu(event, id) {
+      event.stopPropagation();
+      if (menuExamId === id && moreMenu.classList.contains('show')) {
+        closeMoreMenu();
+        return;
+      }
+      menuExamId = id;
+      const exam = exams.find(item => item.id === id);
+      const publishAction = exam && exam.status === '草稿'
+        ? `<button class="more-item" type="button" onclick="publishExam('${id}')">发布</button>`
+        : '';
+      const rect = event.currentTarget.getBoundingClientRect();
+      moreMenu.style.left = Math.max(12, rect.right - 112) + 'px';
+      moreMenu.style.top = (rect.bottom + 8) + 'px';
+      moreMenu.innerHTML = `
+        <button class="more-item" type="button" onclick="showToast('管理考试')">管理</button>
+        <button class="more-item" type="button" onclick="showToast('分享考试')">分享</button>
+        <button class="more-item" type="button" onclick="showToast('编辑考试')">编辑</button>
+        ${publishAction}
+        <button class="more-item danger" type="button" onclick="deleteExam('${id}')">删除</button>
+      `;
+      moreMenu.classList.add('show');
+    }
+
+    function closeMoreMenu() {
+      moreMenu.classList.remove('show');
+      menuExamId = '';
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.classList.add('show');
+      clearTimeout(showToast.timer);
+      showToast.timer = setTimeout(() => toast.classList.remove('show'), 1800);
+    }
+
+    document.addEventListener('click', event => {
+      if (!moreMenu.contains(event.target)) closeMoreMenu();
+    });
+
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape') {
+        closeMoreMenu();
+        closePublishModal();
+      }
+    });
+
+    renderRows();
+  </script>
+
+  <script type="application/json" id="prd-annotation-config">
+{
+  "pageTitle": "考试列表-集团",
+  "scope": "with_global",
+  "showPrdActions": true,
+  "pagePrd": "# 考试列表-集团 PRD\n\n## 1. 文档范围\n\n本文档仅描述“考试列表-集团”本次新增功能范围，包括集团自建考试口径、草稿考试发布、发布前人员变更校验和发布弹窗展示规则。\n\n原有列表查询、分页、复制、删除、批量删除、管理、统计等基础能力沿用既有规则，本文不重复说明。\n\n> 本页面PRD需配合[《考试功能-整体PRD》](./考试功能-整体PRD.md)阅读，全局业务规则、数据模型、角色权限定义和核心流程参见整体PRD。\n\n## 2. 使用角色\n\n- 集团管理员：在集团端查看集团自建考试，对草稿考试执行发布，并确认发布前人员变更信息。\n- 系统：在草稿发布前比对当前考试对象与创建或编辑考试时的人员快照，并给出人员变更结果。\n\n## 3. 功能清单\n\n| 模块 | 功能 | 功能描述 |\n|------|------|----------|\n| 考试列表 | 集团自建考试展示 | 列表展示集团端自建考试，作为集团考试管理入口。 |\n| 行内操作 | 草稿发布 | 草稿状态考试展示“发布”操作，非草稿考试不展示草稿发布入口。 |\n| 发布校验 | 人员快照比对 | 点击发布后，系统比对当前考试对象与创建或编辑考试时的人员快照。 |\n| 发布弹窗 | 人员变更确认 | 存在人员变更时展示发布弹窗，管理员确认后继续发布。 |\n| 发布弹窗 | 变更分类查看 | 支持按“全部 / 移除 / 新增”查看人员变更及人数。 |\n| 发布弹窗 | 分页查看 | 人员变更列表支持分页展示，发布说明需固定在当前弹窗可视区域内。 |\n\n## 4. 需求说明\n\n### 4.1 考试列表新增规则\n\n- 页面数据范围为集团自建考试。\n- 草稿考试支持发布操作。\n- 点击“新增”进入集团新增考试页面。\n- 点击“编辑”进入集团编辑考试页面。\n\n### 4.2 草稿发布规则\n\n- 仅草稿状态考试支持发布。\n- 点击“发布”后，系统先执行人员快照校验。\n- 校验基准为创建考试或最近一次编辑考试后生成的人员快照。\n- 如果未检测到人员变更，考试可直接发布。\n- 如果检测到人员变更，需先展示发布弹窗，管理员点击弹窗内“发布”后才正式发布。\n- 管理员点击取消、关闭弹窗或点击遮罩关闭时，不发布考试，考试保持草稿状态。\n- 发布成功后，考试进入已发布后的业务流程；列表状态更新为未开始。\n\n### 4.3 发布前人员变更校验\n\n发布前需覆盖以下校验规则：\n\n| 变更类型 | 考试对象 | 触发条件 | 展示要求 |\n|----------|----------|----------|----------|\n| 移除 | 按人员 | 已选人员存在离职或停用人员 | 展示系统即将移除的人员列表和数量。 |\n| 移除 | 按部门范围 | 部门内存在离职、停用或转出部门人员 | 展示系统即将移除的人员列表和数量。 |\n| 新增 | 按部门范围 | 部门内存在转入部门人员或启用人员 | 展示新进入考试对象的人员列表和数量。 |\n\n### 4.4 发布弹窗展示规则\n\n#### 4.4.1 弹窗基础信息\n\n| 项目 | 展示规则 |\n|------|----------|\n| 弹窗标题 | 展示为“发布”。 |\n| 检测提示 | 固定展示：`【系统检测】与您创建/编辑考试时相比，人员列表已产生变更，变更信息如下：` |\n| 操作按钮 | 底部展示“取消”和“发布”。点击“取消”关闭弹窗并保留草稿状态；点击“发布”确认发布考试。 |\n\n#### 4.4.2 变更分类切换\n\n| 分类 | 展示内容 | 人数统计 |\n|------|----------|----------|\n| 全部 | 展示移除和新增的全部人员变更。 | 展示全部变更人员数量。 |\n| 移除 | 展示系统即将移除的人员。 | 展示移除人员数量。 |\n| 新增 | 展示新进入考试对象的人员。 | 展示新增人员数量。 |\n\n切换分类后，列表内容和分页状态同步刷新，页码回到第一页。\n\n#### 4.4.3 人员变更列表\n\n| 展示项 | 展示规则 |\n|--------|----------|\n| 序号 | 按当前分类下的结果顺序连续展示。 |\n| 姓名 | 展示人员姓名。离职、停用人员姓名后标注“（离职）”。 |\n| 所属公司 | 展示人员所属公司名称。 |\n| 部门 | 展示人员所属部门。 |\n| 操作类型 | 展示“移除”或“新增”。 |\n\n转入部门、转出部门、启用人员不展示姓名状态标识。\n\n#### 4.4.4 分页与空状态\n\n| 场景 | 展示规则 |\n|------|----------|\n| 分页展示 | 人员变更列表支持分页，默认每页展示 5 条。 |\n| 分页切换 | 分页切换后，序号按当前分类下的全部结果顺序连续展示。 |\n| 无数据 | 当前分类下无人员变更时，列表展示“暂无人员变更”。 |\n\n### 4.5 发布说明\n\n发布弹窗下方需固定展示以下说明，翻页时不被列表内容挤出当前弹窗可视区域：\n\n**考试发布后，新入职的人员不自动纳入考试中。考试发布后，离职人员不影响考试流程，但会影响应考人数。**\n\n## 5. 交互设计\n\n### 5.1 发布按钮\n\n- 草稿考试行内展示“发布”入口。\n- 点击发布后先执行发布前人员变更校验。\n\n### 5.2 发布弹窗\n\n- 点击发布且存在人员变更时打开弹窗。\n- 点击弹窗右上角关闭、底部取消或遮罩区域，关闭弹窗且不改变考试状态。\n- 点击弹窗底部“发布”后，确认发布考试，并刷新列表状态。\n- 弹窗内切换“全部 / 移除 / 新增”时，只改变弹窗内列表展示，不直接改变考试状态。\n- 弹窗分页只影响当前分类下的人员变更列表，不影响发布说明和底部操作按钮展示。\n\n## 6. 异常处理\n\n| 异常场景 | 处理方式 |\n|----------|----------|\n| 发布弹窗关闭 | 不发布考试，考试继续保持草稿状态。 |\n| 当前分类无人员变更 | 变更列表展示“暂无人员变更”。 |\n\n## 7. 验收标准\n\n| 验收项 | 验收标准 |\n|--------|----------|\n| 集团列表范围 | 页面展示集团自建考试。 |\n| 草稿发布入口 | 草稿考试展示“发布”操作，点击后先执行人员快照校验。 |\n| 无变更发布 | 未检测到人员变更时，可直接发布考试。 |\n| 有变更弹窗 | 检测到人员变更时，必须展示发布弹窗。 |\n| 分类切换 | 发布弹窗支持“全部 / 移除 / 新增”切换，并展示各分类人数。 |\n| 校验规则 | 发布前校验必须覆盖按人员移除、按部门范围移除、按部门范围新增三类场景。 |\n| 人员标识 | 仅离职、停用人员姓名后展示“（离职）”。 |\n| 所属公司字段 | 发布弹窗人员变更列表展示“所属公司”字段。 |\n| 分页展示 | 发布弹窗人员变更列表支持分页，默认每页 5 条。 |\n| 固定说明 | 发布说明在弹窗当前可视区域内固定可见。 |\n| 取消发布 | 取消或关闭弹窗后，考试保持草稿状态。 |\n| 确认发布 | 点击弹窗“发布”后，考试发布成功，列表状态更新。 |\n\n## 8. 版本变更记录\n\n| 版本 | 日期 | 变更内容 |\n|------|------|----------|\n| V1.0 | 2026-07-13 | 新增集团考试列表草稿发布、人员快照校验和发布弹窗 PRD。 |\n",
+  "globalPrd": "# 考试功能 — 整体 PRD\n\n## 1. 引言\n\n### 1.1 背景与目标\n\n\"考试功能\"是 EHS+ 企业版中对员工进行安全生产知识评测的核心模块。该模块需要支持三种不同的租户形态：\n\n- **集团（上级单位）**：跨多家子公司的人员管理形态，需要跨公司选择考试对象、查看跨公司统计数据。\n- **下级单位**：处于集团层级下的成员单位，承接上级派发的考试，同时可创建本单位内部考试。\n- **独立租户（普通租户/非集团）**：无上下级层级关系的独立组织，仅管理本租户范围内的考试。\n\n本 PRD 从全局视角定义考试功能在上述三种租户形态下的统一业务规则、数据模型、角色权限和核心流程。各页面的详细交互规格请参见对应的页面 PRD。\n\n### 1.2 用户价值\n\n| 租户类型 | 核心价值 |\n|----------|----------|\n| 集团管理员 | 跨公司统一下发安全知识考试，掌握全集团各子公司的考试进展与成绩分布。 |\n| 下级单位管理员 | 承接集团下发的考试任务，同时自主创建本单位专属考试来满足内部学习需求。 |\n| 普通租户管理员 | 自主管理本组织的考试全生命周期，从创建、发布到统计分析形成完整闭环。 |\n\n### 1.3 功能范围\n\n**包含**：\n\n| 模块 | 说明 |\n|------|------|\n| 考试列表 | 按租户类型展示对应的考试清单，支持新增、编辑、删除、复制、发布（草稿）、管理（统计入口） |\n| 新增考试 | 三步创建考试：基本信息 → 考生范围（人员/部门选择 + 免考） → 考试设置 |\n| 编辑考试 | 修改草稿考试的考生范围，覆盖人员快照 |\n| 考试统计 | 考生分析、考试记录、部门统计三个维度，含人员状态筛选和部门统计在职过滤 |\n| 人员选择 | 按租户数据范围选择考试对象（人员 + 部门） |\n| 发布校验 | 草稿发布前对人员快照与当前人员主数据的差异进行校验与确认 |\n\n**不包含**：\n\n- 试题配置与管理（考试设置步骤中的具体试题选择不属于本次范围）\n- 考生端的考试作答/提交/成绩查看\n- 移动端管理能力\n\n---\n\n## 2. 三种租户形态概览\n\n```\n┌──────────────────────────────────────────────────────────────────┐\n│                        EHS+ 考试功能                              │\n│                                                                   │\n│  ┌──────────────┐    ┌──────────────────┐    ┌───────────────┐   │\n│  │ 集团         │    │  下级单位         │    │ 独立租户      │   │\n│  │ (上级单位)    │───▶│  (子公司/分公司)   │    │ (非集团组织)   │   │\n│  │              │    │                  │    │               │   │\n│  │ • 跨公司选人  │    │ • 承接上级考试    │    │ • 自建考试    │   │\n│  │ • 自建考试    │    │ • 自建本单位考试  │    │ • 本单位数据  │   │\n│  │ • 跨公司统计  │    │ • 本单位统计     │    │ • 本单位统计  │   │\n│  └──────────────┘    └──────────────────┘    └───────────────┘   │\n│                                                                   │\n│  数据范围: 集团全部公司     数据范围: 本单位+下属部门                  │\n│  人员列: 含\"所属公司\"      人员列: 无\"所属公司\"                   无公司概念 │\n│  统计视图: 部门明细/公司汇总 统计视图: 部门明细                     同下级单位 │\n└──────────────────────────────────────────────────────────────────┘\n```\n\n### 2.1 核心差异对照表\n\n| 差异维度 | 集团 | 下级单位 | 独立租户/普通租户 |\n|----------|------|----------|-------------------|\n| 人员数据范围 | 集团内全部公司 | 本单位 + 下属部门 | 本租户内全部人员 |\n| 跨公司选人 | ✅ 支持 | ❌ 不支持 | ❌ 不涉及（无公司概念） |\n| 上级下发考试 | ❌ 不涉及 | ✅ 考试列表展示上级下发 | ❌ 不涉及 |\n| 上级下发考试操作 | — | 仅\"管理\" | — |\n| 人员列表分组 | 按公司分组 | 不分组、平铺展示 | 不分组、平铺展示 |\n| 考生分析/考试记录列表 | 含\"所属公司\"列 | 无\"所属公司\"列 | 无\"所属公司\"列 |\n| 部门筛选方式 | 公司+部门级联 | 部门下拉树 | 部门下拉树 |\n| 统计部门视图 | 部门明细 + 公司汇总 | 部门明细 | 部门明细 |\n| 人员选择器页面 | 人员选择-集团 | 人员选择-下级单位 | 人员选择-下级单位 |\n\n---\n\n## 3. 角色与权限\n\n| 角色 | 租户端 | 可创建考试 | 可选择的考试对象范围 | 可编辑考试 | 可查看统计 | 说明 |\n|------|--------|-----------|---------------------|-----------|-----------|------|\n| 集团管理员 | 集团 | ✅ | 集团全部公司的人员和部门 | ✅ 仅草稿 | ✅ 全集团 | 可跨公司管理考试全生命周期 |\n| 下级单位管理员 | 下级单位 | ✅ 本单位考试 | 本单位 + 下属部门 | ✅ 仅自建草稿 | ✅ 本单位 | 可承接上级下发考试，对其进行管理操作 |\n| 普通租户管理员 | 独立租户 | ✅ | 本租户全量人员 | ✅ 仅草稿 | ✅ 本租户 | 与下级单位类似，但无上下级关系 |\n\n### 3.1 下级单位对上级下发考试的操作权限\n\n| 操作 | 本单位自建考试 | 上级下发考试 |\n|------|:---:|:---:|\n| 查看详情（名称链接） | ✅ | ✅（查看集团版详情） |\n| 管理（进入统计） | ✅ | ✅ |\n| 预览 | ✅ | ❌ |\n| 发布 | ✅ 草稿 | ❌ |\n| 编辑 | ✅ 草稿 | ❌ |\n| 复制 | ✅ | ❌ |\n| 删除 | ✅ | ❌ |\n| 批量删除 | ✅ | ❌ |\n\n---\n\n## 4. 名词解释\n\n| 术语 | 定义 |\n|------|------|\n| **考试** | 一次完整的考试活动，包含基本信息、考生范围、考试设置、题目配置等。 |\n| **考生范围** | 考试的目标对象集合，可通过选择人员（指定用户）或部门范围来定义。 |\n| **指定用户** | 以单个人员为维度选定的考试对象。 |\n| **部门范围** | 以部门为维度选定的考试对象，选择某部门即包含该部门下（可选含下级部门）的全体人员。 |\n| **组织内全部人员** | 考试对象覆盖当前租户范围内的全部人员，无需单独选择。 |\n| **仅部分人员** | 考试对象仅为管理员选择的具体人员或部门范围内的人员。 |\n| **免考人员** | 被排除在考试要求之外的人员或部门，不计入应考人数，不影响参与率和及格率计算。 |\n| **人员快照** | 创建考试或编辑保存时对当时考试对象范围内所有人员的完整记录（含 ID、姓名、所属公司、部门、人员状态），用于发布前人员变更校验。 |\n| **人员状态** | 枚举值：在职（启用）、离职、停用（禁用）。 |\n| **草稿** | 考试创建后尚未发布的初始状态，支持编辑和发布。 |\n| **未开始** | 考试发布后但尚未到达考试开始时间的状态。 |\n| **进行中** | 考试正处于考试时间段内的状态。 |\n| **已结束** | 考试时间已过的状态。 |\n| **上级下发考试** | 由集团或上级单位创建并推送给下级单位的考试，下级单位不可编辑、删除、发布。 |\n| **自建考试** | 当前租户管理员自行创建的考试。 |\n| **公司汇总** | 集团独有的统计视图，以公司为粒度对部门数据进行扁平汇总展示。 |\n| **部门明细** | 以部门树结构展示统计数据的视图。 |\n\n---\n\n## 5. 核心业务流程图\n\n### 5.1 考试全生命周期（通用）\n\n```mermaid\nflowchart TD\n    A[创建考试] --> B[填写基本信息]\n    B --> C[选择考生范围]\n    C --> C1{考试对象模式?}\n    C1 -->|仅部分人员| C2[选择人员/部门 + 配置免考]\n    C1 -->|组织内全部人员| C3[跳过选人]\n    C2 --> D[设置考试参数]\n    C3 --> D\n    D --> E[生成人员快照]\n    E --> F{保存为草稿}\n    F --> G[草稿状态]\n    G --> H{管理员操作?}\n    H -->|编辑| I[编辑考生范围 → 覆盖快照]\n    I --> G\n    H -->|发布| J[执行发布前人员变更校验]\n    J --> K{有人员变更?}\n    K -->|否| L[直接发布]\n    K -->|是| M[展示发布弹窗]\n    M --> N{管理员确认?}\n    N -->|取消| G\n    N -->|确认发布| L\n    L --> O[未开始]\n    O --> P[进行中]\n    P --> Q[已结束]\n    G -->|删除| R[考试删除]\n```\n\n### 5.2 下级单位特殊流程：上级下发考试\n\n```mermaid\nflowchart TD\n    G[集团管理员] -->|创建并下发| S[上级下发考试]\n    S -->|出现在| SU[下级单位考试列表]\n    SU --> SU1{下级单位操作}\n    SU1 -->|点击名称| SU2[查看集团版考试详情]\n    SU1 -->|管理| SU3[进入本单位统计页]\n    SU1 -->|编辑/删除/发布/复制| SU4[❌ 不可操作]\n```\n\n### 5.3 发布前人员变更校验流程\n\n```mermaid\nflowchart TD\n    A[管理员点击发布] --> B[系统获取人员快照]\n    B --> C[获取当前人员主数据]\n    C --> D{比对快照与主数据}\n    D --> E1[已选人员离职/停用 → 移除]\n    D --> E2[部门内人员离职/停用/转出 → 移除]\n    D --> E3[部门内人员转入/启用 → 新增]\n    E1 --> F{总计变更 > 0 ?}\n    E2 --> F\n    E3 --> F\n    F -->|否| G[直接发布，状态变更为未开始]\n    F -->|是| H[展示发布弹窗]\n    H --> I[按分类查看：全部 / 移除 / 新增]\n    I --> J{管理员操作?}\n    J -->|点击发布| G\n    J -->|点击取消 / 关闭 / 遮罩| K[保持草稿，不发布]\n```\n\n---\n\n## 6. 用例图\n\n```mermaid\nflowchart LR\n    subgraph Actors\n        GA[集团管理员]\n        SA[下级单位管理员]\n        NA[普通租户管理员]\n        SYS[系统]\n    end\n\n    subgraph UC[考试功能用例]\n        direction TB\n        UC1((创建考试))\n        UC2((编辑考试))\n        UC3((发布考试))\n        UC4((查看考试列表))\n        UC5((考试统计))\n        UC6((人员选择))\n        UC7((免考配置))\n        UC8((接收上级考试))\n        UC9((发布前校验))\n        UC10((快照管理))\n    end\n\n    GA --> UC1\n    GA --> UC2\n    GA --> UC3\n    GA --> UC4\n    GA --> UC5\n    GA --> UC6\n    GA --> UC7\n    SA --> UC1\n    SA --> UC2\n    SA --> UC3\n    SA --> UC4\n    SA --> UC5\n    SA --> UC6\n    SA --> UC7\n    SA --> UC8\n    NA --> UC1\n    NA --> UC2\n    NA --> UC3\n    NA --> UC4\n    NA --> UC5\n    NA --> UC6\n    NA --> UC7\n    SYS --> UC9\n    SYS --> UC10\n```\n\n---\n\n## 7. 数据模型\n\n### 7.1 核心实体关系图\n\n```mermaid\nerDiagram\n    租户 ||--o{ 考试 : \"拥有\"\n    考试 ||--o{ 人员快照 : \"生成\"\n    考试 ||--o{ 考试记录 : \"产生\"\n    考试 ||--o{ 免考配置 : \"配置\"\n    考试 }o--|| 租户 : \"归属\"\n    考试 }o--|| 考试分类 : \"分类\"\n\n    租户 {\n        string 租户ID PK\n        string 租户名称\n        string 租户类型 \"集团 / 下级单位 / 普通租户\"\n        string 上级租户ID FK \"下级单位时有值\"\n        string 所属公司名称 \"集团/下级单位\"\n    }\n\n    考试 {\n        string 考试ID PK\n        string 所属租户ID FK\n        string 考试名称\n        string 分类ID FK\n        string 来源 \"自建 / 上级下发\"\n        string 状态 \"草稿 / 未开始 / 进行中 / 已结束\"\n        string 范围模式 \"仅部分人员 / 组织内全部人员\"\n        datetime 考试开始时间\n        datetime 考试结束时间\n        datetime 快照生成时间\n        datetime 创建时间\n        datetime 更新时间\n    }\n\n    人员快照 {\n        string 快照ID PK\n        string 考试ID FK\n        string 人员ID\n        string 姓名\n        string 所属公司 \"集团有值，下级单位/普通租户无\"\n        string 部门名称\n        string 部门全路径\n        string 人员状态 \"在职 / 离职 / 停用\"\n        datetime 快照时间\n        string 快照版本 \"创建 / 编辑\"\n    }\n\n    免考配置 {\n        string 免考配置ID PK\n        string 考试ID FK\n        string 免考类型 \"人员 / 部门\"\n        string 免考目标ID\n        string 免考目标名称\n    }\n\n    考试记录 {\n        string 考试记录ID PK\n        string 考试ID FK\n        string 考生ID\n        string 考生姓名\n        string 所属公司\n        string 部门名称\n        string 完成状态 \"已完成 / 未完成\"\n        int 分数\n        bool 是否及格\n        datetime 交卷时间\n    }\n\n    考试分类 {\n        string 分类ID PK\n        string 租户ID FK\n        string 分类名称\n        string 上级分类ID\n        string 来源 \"自建 / 上级下发（下级单位有上级下发分类节点）\"\n    }\n```\n\n### 7.2 关键字段说明\n\n#### 考试来源\n\n| 值 | 含义 | 适用租户 |\n|----|------|---------|\n| 自建 | 当前租户自建考试 | 全部 |\n| 上级下发 | 上级下发考试 | 下级单位 |\n\n#### 考试状态流转\n\n```\n草稿 → 未开始 → 进行中 → 已结束\n  │\n  └── (删除)\n```\n\n#### 人员快照版本\n\n| 值 | 生成时机 | 说明 |\n|----|---------|------|\n| 创建 | 创建考试保存时 | 考试首次创建时生成 |\n| 编辑 | 编辑考试保存时 | 覆盖旧快照，作为发布校验的最新基准 |\n\n---\n\n## 8. 非功能性需求\n\n### 8.1 性能要求\n\n| 指标 | 要求 |\n|------|------|\n| 考试列表查询响应 | ≤ 2s（1000 条以内） |\n| 人员选择器加载 | ≤ 3s（10,000 以内人员数据） |\n| 部门人数重新计算 | ≤ 3s |\n| 发布前人员变更校验 | ≤ 5s（包含三分类校验） |\n| 考试统计查询 | ≤ 3s |\n| 并发支持 | 支持 100+ 管理员同时操作 |\n\n### 8.2 安全性\n\n| 要求 | 说明 |\n|------|------|\n| 数据隔离 | 不同租户数据严格隔离，下级单位不可访问集团或平级单位数据 |\n| 操作权限 | 上级下发考试在下级单位侧仅开放\"管理\"操作，编辑/删除/发布等操作需校验考试来源为自建 |\n| 人员选择范围限制 | 下级单位人员选择器限定本单位及下属部门，不可越权访问平级或上级单位人员 |\n| 快照安全 | 人员快照为只读历史数据，持久化后不可篡改 |\n\n### 8.3 兼容性\n\n| 要求 | 说明 |\n|------|------|\n| 浏览器 | Chrome 90+、Edge 90+、Safari 14+ |\n| 分辨率 | 1366×768 及以上 |\n\n### 8.4 可维护性\n\n| 要求 | 说明 |\n|------|------|\n| 操作日志 | 考试创建、编辑、发布、删除需记录操作日志 |\n| 快照审计 | 快照生成和覆盖保留历史记录，发布校验时可回溯 |\n\n---\n\n## 9. 页面清单与关联 PRD\n\n### 9.1 集团（上级单位）\n\n| 序号 | 页面名称 | 页面 PRD 路径 | 原型文件 |\n|------|---------|--------------|---------|\n| 1 | 考试列表-集团 | `prd/考试列表-集团.md` | `考试列表-集团.html` |\n| 2 | 新增考试-集团 | `prd/新增考试-集团.md` | `新增考试-集团.html` |\n| 3 | 编辑考试-集团 | `prd/编辑考试-集团.md` | `编辑考试-集团.html` |\n| 4 | 考试统计-集团 | `prd/考试统计-集团.md` | `考试统计-集团.html` |\n| 5 | 人员选择-集团 | — | `人员选择-集团.html` |\n\n### 9.2 下级单位\n\n| 序号 | 页面名称 | 页面 PRD 路径 | 原型文件 |\n|------|---------|--------------|---------|\n| 1 | 考试列表-下级单位 | `prd/考试列表-下级单位.md` | `考试列表-下级单位.html` |\n| 2 | 新增考试-下级单位 | `prd/新增考试-下级单位.md` | `新增考试-下级单位.html` |\n| 3 | 编辑考试-下级单位 | `prd/编辑考试-下级单位.md` | `编辑考试-下级单位:独立租户.html` |\n| 4 | 考试统计-下级单位 | `prd/考试统计-下级单位.md` | `考试统计-下级单位:独立租户.html` |\n| 5 | 人员选择-下级单位：本单位 | — | `人员选择-下级单位:本单位.html` |\n| 6 | 人员选择-下级单位 | — | `人员选择-下级单位.html` |\n\n### 9.3 独立租户/普通租户\n\n| 序号 | 页面名称 | 页面 PRD 路径 | 原型文件 |\n|------|---------|--------------|---------|\n| 1 | 考试列表 | `prd/考试列表-普通租户.md` | `考试列表-普通租户.html` |\n| 2 | 新增考试 | —（参考集团/下级新增） | `新增考试-普通租户.html` |\n| 3 | 编辑考试 | —（参考下级编辑，同数据范围） | `编辑考试-下级单位:独立租户.html` |\n| 4 | 考试统计 | —（参考下级统计） | `考试统计-普通租户.html` |\n\n### 9.4 通用页面\n\n| 序号 | 页面名称 | 说明 | 原型文件 |\n|------|---------|------|---------|\n| 1 | 规则说明 | 考试功能入口的规则说明页 | `规则说明.html` |\n\n### 9.5 小程序\n\n| 序号 | 页面名称 | 说明 | 原型文件 |\n|------|---------|------|---------|\n| 1 | 考试列表 | 小程序端考试列表 | `小程序考试列表.html` |\n\n---\n\n## 10. 附录\n\n### 10.1 租户数据范围矩阵\n\n```\n┌────────────────┬──────────────────────┬──────────────────────┬──────────────────┐\n│   能力 \\ 租户   │        集团           │       下级单位         │    独立租户        │\n├────────────────┼──────────────────────┼──────────────────────┼──────────────────┤\n│ 创建考试        │ 集团跨公司            │ 本单位+下属部门        │ 本租户            │\n│ 上级下发考试     │ 不涉及（集团不下发自己） │ ✅ 列表展示+接收       │ ❌ 不涉及          │\n│ 跨公司选人       │ ✅                    │ ❌                    │ ❌ 无公司概念       │\n│ 人员按公司分组    │ ✅                    │ ❌ 平铺标签            │ ❌ 平铺标签        │\n│ 列表含所属公司列  │ ✅ 考生分析/考试记录    │ ❌                    │ ❌                │\n│ 部门筛选          │ 公司+部门级联          │ 部门下拉树            │ 部门下拉树         │\n│ 统计视图          │ 部门明细 + 公司汇总     │ 部门明细              │ 部门明细           │\n│ 人员选择器        │ 人员选择-集团          │ 人员选择-下级单位       │ 人员选择-下级单位    │\n│ 快照含公司字段    │ ✅                    │ ❌                    │ ❌                │\n│ 分类树上级下发节点 │ ❌                    │ ✅                    │ ❌                │\n└────────────────┴──────────────────────┴──────────────────────┴──────────────────┘\n```\n\n### 10.2 页面状态流转\n\n| 当前状态 | 触发操作 | 目标状态 | 前置条件 |\n|----------|---------|---------|----------|\n| — | 创建考试（保存草稿） | 草稿 | 基本信息填写完成 + 考生范围选择（部分人员模式下至少 1 人或 1 部门） |\n| 草稿 | 编辑保存 | 草稿 | 编辑后覆盖人员快照 |\n| 草稿 | 发布（无变更） | 未开始 | 无人员变更 |\n| 草稿 | 发布（有变更→确认） | 未开始 | 管理员在发布弹窗确认 |\n| 草稿 | 删除 | — | — |\n| 未开始 | 到达开始时间 | 进行中 | 系统自动 |\n| 进行中 | 到达结束时间 | 已结束 | 系统自动 |\n\n### 10.3 版本变更记录\n\n| 版本 | 日期 | 变更内容 | 作者 |\n|------|------|----------|------|\n| V1.0 | 2026-07-13 | 初版。统一定义集团/下级单位/独立租户三种形态下考试功能的全局业务规则、数据模型、角色权限、核心流程和页面清单。 | — |\n\n### 10.4 引用标准\n\n- 本 PRD 作为\"总分结构\"中的总纲，各页面详细交互/UI 规格参见对应的页面 PRD。\n- 所有页面 PRD 的编号均以本 PRD 中第 9 节的页面清单为索引。\n- 三种租户的独特规则已在各差异对照表和矩阵中明确标注。\n",
+  "annotations": [],
+  "badges": [
+    {
+      "id": 1,
+      "title": "考试列表规则",
+      "anchor": {
+        "selector": "#badge-ref-1"
+      },
+      "content": "<div class=\"prd-content-wide\"><p><strong>对应 PRD：4.1 考试列表新增规则</strong></p><table class=\"prd-readable-table\"><thead><tr><th>规则项</th><th>说明</th></tr></thead><tbody><tr><td>列表范围</td><td>展示集团自建考试数据。</td></tr><tr><td>草稿发布</td><td>草稿状态考试支持发布操作。</td></tr><tr><td>新增入口</td><td>点击\"新增\"进入集团新增考试页面。</td></tr><tr><td>编辑入口</td><td>点击\"编辑\"进入集团编辑考试页面。</td></tr><tr><td>基础能力</td><td>查询、分页、复制、删除、批量删除、管理、统计沿用既有规则，本文不重复说明。</td></tr></tbody></table></div>"
+    },
+    {
+      "id": 2,
+      "title": "新增按钮",
+      "anchor": {
+        "selector": "#badge-ref-2"
+      },
+      "content": "<div class=\"prd-content-wide\"><p><strong>对应 PRD：4.1 考试列表新增规则</strong></p><table class=\"prd-readable-table\"><thead><tr><th>规则项</th><th>说明</th></tr></thead><tbody><tr><td>触发动作</td><td>点击\"新增\"按钮。</td></tr><tr><td>跳转目标</td><td>进入集团新增考试页面（新增考试-集团.html）。</td></tr><tr><td>页面能力</td><td>支持跨公司创建考试，选择指定用户/部门，保存草稿并生成人员快照。</td></tr></tbody></table></div>"
+    },
+    {
+      "id": 3,
+      "title": "发布按钮",
+      "anchor": {
+        "selector": "#badge-ref-3"
+      },
+      "content": "<div class=\"prd-content-wide\"><p><strong>对应 PRD：4.2 草稿发布规则、5.1 发布按钮</strong></p><table class=\"prd-readable-table\"><thead><tr><th>规则项</th><th>说明</th></tr></thead><tbody><tr><td>入口展示</td><td>仅草稿状态考试行内展示\"发布\"入口。</td></tr><tr><td>触发动作</td><td>点击发布后系统先执行人员快照校验。</td></tr><tr><td>校验基准</td><td>以创建考试或最近一次编辑考试后生成的人员快照为基准。</td></tr><tr><td>无人员变更</td><td>未检测到人员变更时，考试可直接发布，列表状态更新为\"未开始\"。</td></tr><tr><td>有人员变更</td><td>检测到人员变更时，先展示发布弹窗，管理员在弹窗内确认后才正式发布。</td></tr><tr><td>取消发布</td><td>点击取消、关闭弹窗或遮罩关闭时，不发布考试，考试保持草稿状态。</td></tr></tbody></table></div>"
+    },
+    {
+      "id": 4,
+      "title": "发布弹窗",
+      "anchor": {
+        "selector": "#badge-ref-4"
+      },
+      "content": "<div class=\"prd-content-wide\"><p><strong>对应 PRD：4.3 发布前人员变更校验、4.4 发布弹窗展示规则、4.5 发布说明、5.2 发布弹窗、6 异常处理</strong></p><table class=\"prd-readable-table\"><thead><tr><th>项目</th><th>规则</th></tr></thead><tbody><tr><td>弹窗标题</td><td>展示为\"发布\"。</td></tr><tr><td>检测提示</td><td>【系统检测】与您创建/编辑考试时相比，人员列表已产生变更，变更信息如下：</td></tr><tr><td>底部按钮</td><td>\"取消\"（关闭弹窗保留草稿状态）和\"发布\"（确认发布考试）。</td></tr></tbody></table><br/><strong>变更分类Tab</strong><table class=\"prd-readable-table\"><thead><tr><th>分类</th><th>展示内容</th><th>人数统计</th></tr></thead><tbody><tr><td>全部</td><td>展示移除和新增的全部人员变更。</td><td>全部变更人员数量。</td></tr><tr><td>移除</td><td>展示系统即将移除的人员。</td><td>移除人员数量。</td></tr><tr><td>新增</td><td>展示新进入考试对象的人员。</td><td>新增人员数量。</td></tr></tbody></table><br/><strong>人员变更校验规则</strong><table class=\"prd-readable-table\"><thead><tr><th>变更类型</th><th>考试对象</th><th>触发条件</th></tr></thead><tbody><tr><td>移除</td><td>按人员</td><td>已选人员存在离职或停用人员。</td></tr><tr><td>移除</td><td>按部门范围</td><td>部门内存在离职、停用或转出部门人员。</td></tr><tr><td>新增</td><td>按部门范围</td><td>部门内存在转入部门人员或启用人员。</td></tr></tbody></table><br/><strong>人员变更列表字段</strong><table class=\"prd-readable-table\"><thead><tr><th>展示项</th><th>展示规则</th></tr></thead><tbody><tr><td>序号</td><td>按当前分类下结果顺序连续展示。</td></tr><tr><td>姓名</td><td>展示人员姓名，离职、停用人员标注\"（离职）\"。</td></tr><tr><td>所属公司</td><td>展示人员所属公司。</td></tr><tr><td>部门</td><td>展示人员所属部门。</td></tr><tr><td>操作类型</td><td>展示\"移除\"或\"新增\"。</td></tr></tbody></table><br/><strong>分页与空状态</strong><table class=\"prd-readable-table\"><thead><tr><th>场景</th><th>规则</th></tr></thead><tbody><tr><td>分页展示</td><td>默认每页展示 5 条，翻页不影响发布说明和底部按钮。</td></tr><tr><td>切换分类</td><td>列表和分页同步刷新，页码回到第一页。</td></tr><tr><td>无数据</td><td>展示\"暂无人员变更\"。</td></tr></tbody></table><br/><strong>固定发布说明</strong><p>考试发布后，新入职的人员不自动纳入考试中。考试发布后，离职人员不影响考试流程，但会影响应考人数。</p><br/><strong>关闭/取消</strong><p>点击右上角关闭、底部取消或遮罩区域，关闭弹窗且不改变考试状态。</p></div>"
+    }
+  ]
+}
+</script>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script src="prd-annotation.js"></script>
+
+</body>
+</html>

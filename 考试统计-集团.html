@@ -1,0 +1,1699 @@
+<!DOCTYPE html>
+<!-- 整体PRD参考：prd/考试功能-整体PRD.md -->
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>考试统计-集团 - 环慧慧 EHS+</title>
+  <style>
+    :root {
+      --brand: #1677FF;
+      --brand-dark: #0A63E8;
+      --cyan: #2EC7C9;
+      --orange: #FF8A4C;
+      --topbar: #00254A;
+      --sidebar: #092B50;
+      --sidebar-deep: #062542;
+      --text-main: #263241;
+      --text-weak: #667085;
+      --text-light: #98A2B3;
+      --border: #E4E7EC;
+      --bg: #F4F7FA;
+      --surface: #FFFFFF;
+      --row-hover: #F8FBFF;
+      --blue-soft: #EAF4FF;
+      --sidebar-width: 256px;
+      --font: "PingFang SC", "HarmonyOS Sans SC", "Microsoft YaHei", Arial, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      color: var(--text-main);
+      background: var(--bg);
+      font-family: var(--font);
+      font-size: 14px;
+      line-height: 22px;
+      letter-spacing: 0;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+      letter-spacing: 0;
+    }
+
+    button {
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+    }
+
+    .app {
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+      background: var(--bg);
+    }
+
+    .topbar {
+      position: fixed;
+      z-index: 30;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      background: var(--topbar);
+      color: #fff;
+    }
+
+    .brand {
+      width: var(--sidebar-width);
+      height: 64px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding-left: 28px;
+      background: var(--topbar);
+      box-shadow: inset -24px 0 44px rgba(0, 0, 0, 0.14);
+      flex: 0 0 var(--sidebar-width);
+    }
+
+    .brand-mark {
+      width: 48px;
+      height: 48px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: transparent;
+    }
+
+    .brand-mark img { width: 48px; height: 48px; display: block; }
+
+    .brand-text {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      line-height: 1;
+    }
+
+    .brand-name {
+      font-size: 20px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .brand-name b { color: #38BDF8; }
+
+    .brand-sub {
+      margin-top: 6px;
+      color: rgba(255, 255, 255, 0.68);
+      font-size: 12px;
+      font-style: normal;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+    }
+
+    .top-nav {
+      height: 64px;
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      padding: 0 16px;
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+
+    .top-nav button {
+      height: 64px;
+      color: rgba(255, 255, 255, 0.95);
+      font-size: 14px;
+      border-bottom: 2px solid transparent;
+      white-space: nowrap;
+    }
+
+    .top-nav button.active { border-bottom-color: var(--brand); }
+
+    .top-actions {
+      height: 64px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding-right: 20px;
+      color: rgba(255, 255, 255, 0.88);
+      flex: 0 0 auto;
+    }
+
+    .top-icon {
+      width: 20px;
+      height: 20px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255, 255, 255, 0.9);
+      position: relative;
+    }
+
+    .badge {
+      position: absolute;
+      top: -8px;
+      right: -12px;
+      min-width: 28px;
+      height: 18px;
+      padding: 0 6px;
+      border-radius: 999px;
+      background: #FF4D4F;
+      color: #fff;
+      font-size: 11px;
+      line-height: 18px;
+      text-align: center;
+    }
+
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #D9A173;
+      color: #5F371C;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      margin-left: 4px;
+    }
+
+    .user-info {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.25;
+      min-width: 140px;
+    }
+
+    .user-info strong {
+      font-size: 13px;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .user-info span {
+      margin-top: 2px;
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.55);
+    }
+
+    .sidebar {
+      position: fixed;
+      z-index: 20;
+      top: 64px;
+      left: 0;
+      bottom: 0;
+      width: var(--sidebar-width);
+      background: var(--sidebar);
+      color: #fff;
+      overflow: hidden auto;
+    }
+
+    .side-section {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      background: var(--sidebar);
+    }
+
+    .side-group {
+      height: 56px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 16px;
+      color: rgba(255, 255, 255, 0.92);
+      font-size: 14px;
+    }
+
+    .side-group .arrow {
+      margin-left: auto;
+      color: rgba(255, 255, 255, 0.72);
+      font-size: 14px;
+    }
+
+    .side-children {
+      padding: 0 7px 12px;
+      background: var(--sidebar-deep);
+    }
+
+    .side-child {
+      width: 100%;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 28px;
+      border-radius: 4px;
+      color: rgba(255, 255, 255, 0.92);
+      font-size: 14px;
+      text-align: left;
+    }
+
+    .side-child:hover { background: rgba(255, 255, 255, 0.08); }
+
+    .side-child.active {
+      background: #2B7BFA;
+      color: #fff;
+    }
+
+    .side-dot {
+      width: 15px;
+      height: 15px;
+      border: 2px solid currentColor;
+      border-radius: 50%;
+      flex: 0 0 auto;
+    }
+
+    .main {
+      height: 100vh;
+      margin-left: var(--sidebar-width);
+      padding-top: 64px;
+      overflow: hidden;
+      background: var(--bg);
+    }
+
+    .tabs-bar {
+      height: 48px;
+      display: flex;
+      align-items: flex-end;
+      gap: 0;
+      padding: 0 38px;
+      border-bottom: 1px solid #E7EAF0;
+      background: #fff;
+      box-shadow: 0 2px 10px rgba(16, 24, 40, 0.04);
+    }
+
+    .tab-home,
+    .tab-page {
+      height: 36px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 14px;
+      color: #344054;
+      font-size: 14px;
+      white-space: nowrap;
+    }
+
+    .tab-page {
+      color: var(--brand);
+      background: var(--blue-soft);
+      border-radius: 8px 8px 0 0;
+    }
+
+    .workbench {
+      height: calc(100vh - 104px);
+      padding: 10px 10px 12px;
+      overflow: hidden;
+      background: var(--bg);
+    }
+
+    .page-panel {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .page-titlebar {
+      height: 54px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 28px;
+      border-bottom: 1px solid var(--border);
+      background: #fff;
+      flex: 0 0 54px;
+    }
+
+    .back-icon {
+      width: 18px;
+      height: 18px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #475467;
+      font-size: 18px;
+    }
+
+    .page-titlebar h1 {
+      margin: 0;
+      color: #1F2937;
+      font-size: 16px;
+      font-weight: 500;
+    }
+
+    .scroll-body {
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow: auto;
+      padding: 24px 24px 10px;
+      background: #fff;
+      scrollbar-width: thin;
+      scrollbar-color: #C4CAD4 #EEF0F3;
+    }
+
+    .scroll-body::-webkit-scrollbar { width: 8px; height: 8px; }
+    .scroll-body::-webkit-scrollbar-track { background: #EEF0F3; }
+    .scroll-body::-webkit-scrollbar-thumb { background: #C4CAD4; border-radius: 999px; }
+
+    .exam-heading {
+      margin-bottom: 18px;
+    }
+
+    .exam-name {
+      height: 34px;
+      display: flex;
+      align-items: center;
+      margin: 0 0 8px;
+      padding: 0 18px;
+      color: #182230;
+      background: #FAFAFB;
+      font-size: 24px;
+      line-height: 32px;
+      font-weight: 700;
+    }
+
+    .exam-time {
+      color: #475467;
+      font-size: 14px;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 20px;
+    }
+
+    .summary-card {
+      height: 132px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      padding: 18px 28px;
+      border: 1px solid #D9DEE7;
+      border-radius: 6px;
+      background: #fff;
+    }
+
+    .summary-card.score-card {
+      grid-template-columns: 1fr;
+      padding: 28px 36px;
+    }
+
+    .gauge-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .gauge {
+      width: 116px;
+      height: 70px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .gauge-track,
+    .gauge-bar {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 116px;
+      height: 116px;
+      border-radius: 50%;
+      border: 14px solid #EEF0F4;
+      border-bottom-color: transparent;
+      border-left-color: #EEF0F4;
+      transform: rotate(0deg);
+    }
+
+    .gauge-bar {
+      border-color: var(--cyan);
+      border-right-color: transparent;
+      border-bottom-color: transparent;
+      transform: rotate(-4deg);
+    }
+
+    .gauge.blue .gauge-bar { border-color: #2878F0; border-right-color: transparent; border-bottom-color: transparent; }
+
+    .gauge-text {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 26px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: var(--text-weak);
+      font-size: 14px;
+      line-height: 20px;
+    }
+
+    .gauge-text strong {
+      color: var(--cyan);
+      font-size: 22px;
+      line-height: 24px;
+      font-weight: 700;
+    }
+
+    .gauge.blue .gauge-text strong { color: #2878F0; }
+
+    .stat-label {
+      margin-bottom: 12px;
+      color: #667085;
+      font-size: 14px;
+    }
+
+    .stat-value {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 88px;
+      height: 40px;
+      padding: 0 18px;
+      color: #101828;
+      background: #FAFAFB;
+      font-size: 22px;
+    }
+
+    .score-lines {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px 24px;
+    }
+
+    .score-line {
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      color: #667085;
+      background: #F6F7FA;
+      border-radius: 3px;
+    }
+
+    .score-line.full {
+      grid-column: 1 / -1;
+    }
+
+    .score-line strong {
+      color: #475467;
+      font-size: 16px;
+      font-weight: 500;
+    }
+
+    .stats-tabs {
+      height: 44px;
+      display: flex;
+      align-items: flex-end;
+      gap: 28px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 16px;
+    }
+
+    .stats-tab {
+      height: 44px;
+      display: inline-flex;
+      align-items: center;
+      padding: 0;
+      color: #667085;
+      font-size: 14px;
+      border-bottom: 2px solid transparent;
+    }
+
+    .stats-tab.active {
+      color: #344054;
+      border-bottom-color: var(--brand);
+    }
+
+    .filter-bar {
+      min-height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .filter-fields {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      min-width: 0;
+      flex: 1 1 auto;
+    }
+
+    .filter-item {
+      height: 32px;
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid #D8DDE6;
+      border-radius: 4px;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .filter-label {
+      width: 58px;
+      height: 30px;
+      display: inline-flex;
+      align-items: center;
+      padding: 0 10px;
+      border-right: 1px solid #E4E7EC;
+      color: #4B5565;
+      background: #fff;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .filter-label.long { width: 76px; }
+
+    .filter-control {
+      width: 160px;
+      height: 30px;
+      padding: 0 10px;
+      border: 0;
+      outline: 0;
+      color: #344054;
+      background: #fff;
+      font-size: 13px;
+    }
+
+    .filter-control::placeholder { color: #A8AFBA; }
+
+    select.filter-control { color: #98A2B3; }
+
+    .dept-cascade-filter {
+      overflow: visible;
+      position: relative;
+    }
+
+    .cascade-dropdown {
+      position: relative;
+      width: 260px;
+      height: 30px;
+      flex: 0 0 auto;
+    }
+
+    .cascade-trigger {
+      width: 100%;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 0 8px;
+      color: #344054;
+      background: #fff;
+      font-size: 13px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .cascade-trigger .placeholder { color: #A8AFBA; }
+
+    .cascade-trigger .arrow {
+      color: #98A2B3;
+      font-size: 12px;
+      flex: 0 0 auto;
+    }
+
+    .cascade-panel {
+      position: absolute;
+      z-index: 80;
+      top: 34px;
+      left: -58px;
+      width: 440px;
+      min-width: 440px;
+      display: none;
+      border: 1px solid #D8DDE6;
+      border-radius: 4px;
+      background: #fff;
+      box-shadow: 0 4px 12px rgba(16, 24, 40, 0.14);
+    }
+
+    .cascade-panel.show { display: flex; }
+
+    .cascade-left,
+    .cascade-right {
+      flex: 1;
+      max-height: 280px;
+      overflow-y: auto;
+      padding: 6px 0;
+    }
+
+    .cascade-left { border-right: 1px solid #E4E7EC; }
+
+    .cascade-item {
+      min-height: 34px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 12px;
+      color: #344054;
+      font-size: 13px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .cascade-item:hover { background: #F5F8FF; }
+
+    .cascade-item.active {
+      color: #1677FF;
+      background: #EAF6FF;
+    }
+
+    .cascade-radio {
+      width: 14px;
+      height: 14px;
+      border: 2px solid #D0D5DD;
+      border-radius: 50%;
+      flex: 0 0 auto;
+    }
+
+    .cascade-radio.checked {
+      border-color: #1677FF;
+      background: radial-gradient(circle, #1677FF 40%, transparent 42%);
+    }
+
+    .range-inputs {
+      display: inline-flex;
+      align-items: center;
+      height: 30px;
+      background: #fff;
+    }
+
+    .range-inputs input {
+      width: 86px;
+      height: 30px;
+      padding: 0 8px;
+      border: 0;
+      outline: 0;
+      color: #344054;
+      font-size: 13px;
+    }
+
+    .range-inputs span {
+      color: #98A2B3;
+      padding: 0 4px;
+    }
+
+    .filter-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex: 0 0 auto;
+    }
+
+    .active-only-filter {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      height: 32px;
+      color: #475467;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .active-only-filter input {
+      width: 14px;
+      height: 14px;
+      accent-color: var(--brand);
+    }
+
+    .btn {
+      height: 32px;
+      min-width: 80px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 0 14px;
+      border-radius: 4px;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      border: 1px solid var(--brand);
+      color: var(--brand);
+      background: #fff;
+    }
+
+    .btn-neutral {
+      border: 1px solid #C9CED8;
+      color: #344054;
+      background: #fff;
+    }
+
+    .btn-text {
+      min-width: auto;
+      color: var(--brand);
+      background: transparent;
+    }
+
+    .btn-export {
+      min-width: 80px;
+      margin-bottom: 16px;
+      border: 1px solid #C9CED8;
+      color: #344054;
+      background: #fff;
+    }
+
+    .view-switch {
+      display: inline-flex;
+      align-items: center;
+      gap: 0;
+      margin: 0 0 16px;
+      border: 1px solid #D8DDE6;
+      border-radius: 6px;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .view-switch-btn {
+      min-width: 120px;
+      height: 34px;
+      padding: 0 16px;
+      border: 0;
+      border-right: 1px solid #E4E7EC;
+      color: #667085;
+      background: #fff;
+      font-size: 13px;
+    }
+
+    .view-switch-btn:last-child {
+      border-right: 0;
+    }
+
+    .view-switch-btn.active {
+      color: #175CD3;
+      background: #EEF4FF;
+      font-weight: 600;
+    }
+
+    .view-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin: 0 0 16px;
+    }
+
+    .table-wrap {
+      overflow: auto;
+      background: #fff;
+      scrollbar-color: #C4CAD4 #EEF0F3;
+      scrollbar-width: thin;
+    }
+
+    .table-wrap::-webkit-scrollbar { width: 8px; height: 8px; }
+    .table-wrap::-webkit-scrollbar-track { background: #EEF0F3; }
+    .table-wrap::-webkit-scrollbar-thumb { background: #C4CAD4; border-radius: 999px; }
+
+    .data-table {
+      width: 100%;
+      min-width: 1180px;
+      border-collapse: collapse;
+      table-layout: fixed;
+      color: #5B6472;
+      font-size: 13px;
+    }
+
+    .data-table th,
+    .data-table td {
+      height: 44px;
+      padding: 0 14px;
+      border-bottom: 1px solid #E7EAF0;
+      text-align: left;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      background: #fff;
+    }
+
+    .data-table th {
+      height: 44px;
+      color: #667085;
+      font-weight: 500;
+      background: #F5F7FA;
+    }
+
+    .data-table tbody tr:hover td { background: var(--row-hover); }
+
+    .candidate-table {
+      min-width: 1040px;
+      font-size: 12px;
+    }
+
+    .candidate-table th,
+    .candidate-table td {
+      height: 40px;
+      padding: 0 8px;
+    }
+
+    .record-table {
+      min-width: 1040px;
+      font-size: 12px;
+    }
+
+    .record-table th,
+    .record-table td {
+      height: 40px;
+      padding: 0 8px;
+    }
+
+    .dept-table {
+      min-width: 1040px;
+      font-size: 12px;
+    }
+
+    .dept-table th,
+    .dept-table td {
+      height: 40px;
+      padding: 0 8px;
+    }
+
+    .org-name {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      max-width: 100%;
+      vertical-align: middle;
+    }
+
+    .org-caret {
+      width: 16px;
+      height: 16px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #667085;
+      flex: 0 0 auto;
+      transition: transform 150ms ease;
+    }
+
+    .company-row {
+      cursor: default;
+    }
+
+    .company-row td {
+      background: #F8FBFF;
+      font-weight: 600;
+      color: #344054;
+    }
+
+    .company-row:hover td { background: #EEF7FF; }
+
+    .company-row.is-collapsed .org-caret { transform: rotate(-90deg); }
+
+    .dept-row .org-name { color: #5B6472; }
+
+    .person-state {
+      display: inline-flex;
+      align-items: center;
+      height: 24px;
+      padding: 0 8px;
+      border-radius: 3px;
+      color: #027A48;
+      background: #D1FADF;
+      font-weight: 600;
+    }
+
+    .person-state.left {
+      color: #B42318;
+      background: #FEE4E2;
+    }
+
+    .person-state.disabled {
+      color: #B54708;
+      background: #FEF0C7;
+    }
+
+    .ck {
+      width: 14px;
+      height: 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #D6DAE2;
+      border-radius: 2px;
+      background: #fff;
+      vertical-align: middle;
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .status::before {
+      content: "";
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: inset 0 0 0 4px var(--cyan);
+      flex: 0 0 auto;
+    }
+
+    .status.pending::before { background: var(--orange); box-shadow: inset 0 0 0 4px var(--orange); }
+
+    .op-link {
+      color: var(--brand);
+      padding: 0;
+      font-size: 13px;
+    }
+
+    .op-link:hover { color: #175CD3; }
+
+    .tab-pane { display: none; }
+    .tab-pane.active { display: block; }
+
+    .toast {
+      position: fixed;
+      z-index: 100;
+      left: 50%;
+      top: 82px;
+      transform: translateX(-50%) translateY(-10px);
+      display: none;
+      min-width: 220px;
+      padding: 10px 16px;
+      border-radius: 4px;
+      color: #344054;
+      background: #fff;
+      box-shadow: 0 10px 30px rgba(16, 24, 40, 0.18);
+      border: 1px solid #E4E7EC;
+      text-align: center;
+    }
+
+    .toast.show {
+      display: block;
+      animation: toastIn 160ms ease forwards;
+    }
+
+    @keyframes toastIn {
+      to { transform: translateX(-50%) translateY(0); }
+    }
+
+    @media (max-width: 1320px) {
+      .summary-grid { grid-template-columns: 1fr; }
+      .summary-card { height: 122px; }
+      .filter-bar { align-items: flex-start; flex-direction: column; }
+      .filter-actions { width: 100%; justify-content: flex-end; }
+    }
+  </style>
+  <link rel="stylesheet" href="prd-annotation.css">
+</head>
+<body>
+  <div class="app">
+    <header class="topbar" aria-label="顶部导航">
+      <div class="brand">
+        <span class="brand-mark"><img src="assets/CodeBuddyAssets/696_1660/14.svg" alt=""></span>
+        <span class="brand-text">
+          <span class="brand-name">环慧慧 · <b>EHS+</b></span>
+          <span class="brand-sub">Enterprise Edition</span>
+        </span>
+      </div>
+      <nav class="top-nav" aria-label="一级模块">
+        <button type="button">环境</button>
+        <button type="button">安全</button>
+        <button type="button">EHS教育</button>
+        <button class="active" type="button">培训</button>
+        <button type="button">系统管理</button>
+        <button type="button">外委管理</button>
+      </nav>
+      <div class="top-actions">
+        <span class="top-icon" title="全屏">⛶</span>
+        <span class="top-icon" title="刷新">↻</span>
+        <span class="top-icon" title="消息">▣<span class="badge">99+</span></span>
+        <span class="avatar">庞</span>
+        <span class="user-info">
+          <strong>庞柳(系统管理员)</strong>
+          <span>福建华电可门发电有限公司</span>
+        </span>
+        <span>⌄</span>
+      </div>
+    </header>
+
+    <aside class="sidebar" aria-label="左侧导航">
+      <section class="side-section">
+        <div class="side-group">▣ 资源管理 <span class="arrow">⌃</span></div>
+        <div class="side-children">
+          <button class="side-child" type="button"><span class="side-dot"></span>课件管理</button>
+          <button class="side-child" type="button"><span class="side-dot"></span>试题管理</button>
+          <button class="side-child" type="button"><span class="side-dot"></span>试卷管理</button>
+        </div>
+      </section>
+      <section class="side-section">
+        <div class="side-group">▣ 配置管理 <span class="arrow">⌄</span></div>
+      </section>
+      <section class="side-section">
+        <div class="side-group">▣ 学习中心 <span class="arrow">⌃</span></div>
+        <div class="side-children">
+          <button class="side-child active" type="button"><span class="side-dot"></span>考试管理</button>
+          <button class="side-child" type="button"><span class="side-dot"></span>课程管理</button>
+          <button class="side-child" type="button"><span class="side-dot"></span>培训类别</button>
+          <button class="side-child" type="button"><span class="side-dot"></span>考试设置</button>
+          <button class="side-child" type="button"><span class="side-dot"></span>三级安全培训</button>
+          <button class="side-child" type="button"><span class="side-dot"></span>课程设置</button>
+        </div>
+      </section>
+    </aside>
+
+    <main class="main">
+      <div class="tabs-bar" aria-label="标签页">
+        <button class="tab-home" type="button">⌂ 安全首页</button>
+        <button class="tab-page" type="button">☰ 考试统计 ×</button>
+      </div>
+
+      <section class="workbench">
+        <div class="page-panel">
+          <div class="page-titlebar">
+            <button class="back-icon" type="button" onclick="showToast('返回考试列表')">↶</button>
+            <h1>统计分析</h1>
+          </div>
+
+          <div class="scroll-body">
+            <section class="exam-heading">
+              <h2 class="exam-name">集团安全生产统考</h2>
+              <div class="exam-time">考试时间：2026-07-07～2026-08-01</div>
+            </section>
+
+            <section class="summary-grid" aria-label="考试概览">
+              <div class="summary-card">
+                <div class="gauge-wrap">
+                  <div class="gauge">
+                    <span class="gauge-track"></span>
+                    <span class="gauge-bar"></span>
+                    <span class="gauge-text"><strong>33%</strong><span>及格率</span></span>
+                  </div>
+                </div>
+                <div>
+                  <div class="stat-label">及格/实考人数</div>
+                  <div class="stat-value">1/3</div>
+                </div>
+              </div>
+
+              <div class="summary-card">
+                <div class="gauge-wrap">
+                  <div class="gauge blue">
+                    <span class="gauge-track"></span>
+                    <span class="gauge-bar"></span>
+                    <span class="gauge-text"><strong>50%</strong><span>参与率</span></span>
+                  </div>
+                </div>
+                <div>
+                  <div class="stat-label">实考/缺考/应考人数</div>
+                  <div class="stat-value">3/3/6</div>
+                </div>
+              </div>
+
+              <div class="summary-card score-card">
+                <div class="score-lines">
+                  <div class="score-line"><span>最高分</span><strong>60</strong></div>
+                  <div class="score-line"><span>最低分</span><strong>20</strong></div>
+                  <div class="score-line full"><span>平均分</span><strong>40</strong></div>
+                </div>
+              </div>
+            </section>
+
+            <nav class="stats-tabs" aria-label="统计页签">
+              <button class="stats-tab active" type="button" data-tab="candidate" onclick="switchStatsTab('candidate')">考生分析</button>
+              <button class="stats-tab" type="button" data-tab="record" onclick="switchStatsTab('record')">考试记录</button>
+              <button class="stats-tab" type="button" data-tab="dept" onclick="switchStatsTab('dept')">部门统计</button>
+            </nav>
+
+            <section class="tab-pane active" id="pane-candidate">
+              <div class="filter-bar">
+                <div class="filter-fields">
+                  <label class="filter-item"><span class="filter-label">姓名</span><input class="filter-control" type="text" placeholder="请输入"></label>
+                  <label class="filter-item dept-cascade-filter">
+                    <span class="filter-label">部门</span>
+                    <span class="cascade-dropdown" id="candidateDeptCascade">
+                      <span class="cascade-trigger" onclick="toggleDeptCascade('candidate')">
+                        <span id="candidateDeptCascadeText" class="placeholder">请选择</span>
+                        <span class="arrow">⌄</span>
+                      </span>
+                      <span class="cascade-panel" id="candidateDeptCascadePanel">
+                        <span class="cascade-left" id="candidateCascadeLeft"></span>
+                        <span class="cascade-right" id="candidateCascadeRight"></span>
+                      </span>
+                    </span>
+                  </label>
+                  <label class="filter-item"><span class="filter-label long">人员状态</span><select class="filter-control"><option>请选择</option><option>在职</option><option>离职</option><option>停用</option></select></label>
+                  <label class="filter-item"><span class="filter-label long">完成状态</span><select class="filter-control"><option>请选择</option><option>已完成</option><option>未完成</option></select></label>
+                  <label class="filter-item"><span class="filter-label long">是否及格</span><select class="filter-control"><option>请选择</option><option>及格</option><option>未及格</option></select></label>
+                  <label class="filter-item"><span class="filter-label long">最佳成绩</span><span class="range-inputs"><input type="text" placeholder="请输入"><span>至</span><input type="text" placeholder="请输入"></span></label>
+                </div>
+                <div class="filter-actions">
+                  <button class="btn btn-primary" type="button" onclick="showToast('查询考生分析')">查询</button>
+                  <button class="btn btn-neutral" type="button" onclick="showToast('重置查询')">重置</button>
+                  <button class="btn btn-text" type="button">展开⌄</button>
+                </div>
+              </div>
+              <button class="btn btn-export" type="button" onclick="showToast('导出考生分析')">导出⌄</button>
+              <div class="table-wrap candidate-table-wrap">
+                <table class="data-table candidate-table">
+                  <colgroup>
+                    <col style="width:36px"><col style="width:50px"><col style="width:88px"><col style="width:154px"><col style="width:108px"><col style="width:112px"><col style="width:74px"><col style="width:78px"><col style="width:68px"><col style="width:72px"><col style="width:72px"><col style="width:58px">
+                  </colgroup>
+                  <thead>
+                    <tr>
+                      <th><span class="ck"></span></th>
+                      <th>序号</th>
+                      <th>姓名</th>
+                      <th>所属公司</th>
+                      <th>部门</th>
+                      <th>手机号</th>
+                      <th>人员状态</th>
+                      <th>完成状态</th>
+                      <th>是否及格</th>
+                      <th>最佳成绩</th>
+                      <th>作答次数</th>
+                      <th>操作</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><td><span class="ck"></span></td><td>1</td><td>吴华立</td><td>福建华电可门发电有限公司</td><td>基建部</td><td>13800001101</td><td><span class="person-state">在职</span></td><td><span class="status">已完成</span></td><td>及格</td><td>60</td><td>2</td><td><button class="op-link" type="button" onclick="showToast('查看明细')">明细</button></td></tr>
+                    <tr><td><span class="ck"></span></td><td>2</td><td>庞柳</td><td>福建华电可门发电有限公司</td><td>基建001</td><td>13800001102</td><td><span class="person-state">在职</span></td><td><span class="status">已完成</span></td><td>未及格</td><td>40</td><td>2</td><td><button class="op-link" type="button" onclick="showToast('查看明细')">明细</button></td></tr>
+                    <tr><td><span class="ck"></span></td><td>3</td><td>熊丽娟</td><td>华电集团新能源有限公司</td><td>基建1</td><td>13800001103</td><td><span class="person-state left">离职</span></td><td><span class="status">已完成</span></td><td>未及格</td><td>20</td><td>2</td><td><button class="op-link" type="button" onclick="showToast('查看明细')">明细</button></td></tr>
+                    <tr><td><span class="ck"></span></td><td>4</td><td>熊德芳1</td><td>华电集团新能源有限公司</td><td>反措计划部门</td><td>13800001104</td><td><span class="person-state disabled">停用</span></td><td><span class="status pending">未完成</span></td><td>-</td><td>-</td><td>0</td><td></td></tr>
+                    <tr><td><span class="ck"></span></td><td>5</td><td>熊</td><td>国电燃料集团有限公司</td><td>采购部1</td><td>13800001105</td><td><span class="person-state left">离职</span></td><td><span class="status pending">未完成</span></td><td>-</td><td>-</td><td>0</td><td></td></tr>
+                    <tr><td><span class="ck"></span></td><td>6</td><td>吴华立</td><td>福建华电可门发电有限公司</td><td>测试到岗到位</td><td>13800001106</td><td><span class="person-state">在职</span></td><td><span class="status pending">未完成</span></td><td>-</td><td>-</td><td>0</td><td></td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+
+            <section class="tab-pane" id="pane-record">
+              <div class="filter-bar">
+                <div class="filter-fields">
+                  <label class="filter-item"><span class="filter-label">姓名</span><input class="filter-control" type="text" placeholder="请输入"></label>
+                  <label class="filter-item dept-cascade-filter">
+                    <span class="filter-label">部门</span>
+                    <span class="cascade-dropdown" id="recordDeptCascade">
+                      <span class="cascade-trigger" onclick="toggleDeptCascade('record')">
+                        <span id="recordDeptCascadeText" class="placeholder">请选择</span>
+                        <span class="arrow">⌄</span>
+                      </span>
+                      <span class="cascade-panel" id="recordDeptCascadePanel">
+                        <span class="cascade-left" id="recordCascadeLeft"></span>
+                        <span class="cascade-right" id="recordCascadeRight"></span>
+                      </span>
+                    </span>
+                  </label>
+                  <label class="filter-item"><span class="filter-label long">人员状态</span><select class="filter-control"><option>请选择</option><option>在职</option><option>离职</option><option>停用</option></select></label>
+                  <label class="filter-item"><span class="filter-label long">考试状态</span><select class="filter-control"><option>请选择</option><option>已提交</option><option>未提交</option></select></label>
+                  <label class="filter-item"><span class="filter-label long">是否及格</span><select class="filter-control"><option>请选择</option><option>及格</option><option>未及格</option></select></label>
+                  <label class="filter-item"><span class="filter-label long">考试成绩</span><span class="range-inputs"><input type="text" placeholder="请输入"><span>至</span><input type="text" placeholder="请输入"></span></label>
+                  <label class="filter-item"><span class="filter-label long">开始时间</span><span class="range-inputs"><input type="text" placeholder="起"><span>-</span><input type="text" placeholder="止"></span></label>
+                </div>
+                <div class="filter-actions">
+                  <button class="btn btn-primary" type="button" onclick="showToast('查询考试记录')">查询</button>
+                  <button class="btn btn-neutral" type="button" onclick="showToast('重置查询')">重置</button>
+                  <button class="btn btn-text" type="button">展开⌄</button>
+                </div>
+              </div>
+              <button class="btn btn-export" type="button" onclick="showToast('导出考试记录')">导出⌄</button>
+              <div class="table-wrap record-table-wrap">
+                <table class="data-table record-table">
+                  <colgroup>
+                    <col style="width:36px"><col style="width:50px"><col style="width:88px"><col style="width:154px"><col style="width:108px"><col style="width:74px"><col style="width:90px"><col style="width:78px"><col style="width:68px"><col style="width:72px"><col style="width:88px"><col style="width:74px">
+                  </colgroup>
+                  <thead>
+                    <tr>
+                      <th><span class="ck"></span></th>
+                      <th>序号</th>
+                      <th>姓名</th>
+                      <th>所属公司</th>
+                      <th>部门</th>
+                      <th>人员状态</th>
+                      <th>当次作答次数</th>
+                      <th>考试状态</th>
+                      <th>是否及格</th>
+                      <th>考试成绩</th>
+                      <th>作答时长(分钟)</th>
+                      <th>操作</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><td><span class="ck"></span></td><td>1</td><td>吴华立</td><td>福建华电可门发电有限公司</td><td>基建部</td><td><span class="person-state">在职</span></td><td>1</td><td><span class="status">已提交</span></td><td>及格</td><td>60</td><td>7分42秒</td><td><button class="op-link" type="button" onclick="showToast('查看答卷')">查看答卷</button></td></tr>
+                    <tr><td><span class="ck"></span></td><td>2</td><td>吴华立</td><td>福建华电可门发电有限公司</td><td>基建部</td><td><span class="person-state">在职</span></td><td>2</td><td><span class="status">已提交</span></td><td>未及格</td><td>0</td><td>0分37秒</td><td><button class="op-link" type="button" onclick="showToast('查看答卷')">查看答卷</button></td></tr>
+                    <tr><td><span class="ck"></span></td><td>3</td><td>庞柳</td><td>福建华电可门发电有限公司</td><td>基建001</td><td><span class="person-state">在职</span></td><td>1</td><td><span class="status">已提交</span></td><td>未及格</td><td>40</td><td>0分13秒</td><td><button class="op-link" type="button" onclick="showToast('查看答卷')">查看答卷</button></td></tr>
+                    <tr><td><span class="ck"></span></td><td>4</td><td>熊丽娟</td><td>华电集团新能源有限公司</td><td>基建1</td><td><span class="person-state left">离职</span></td><td>1</td><td><span class="status">已提交</span></td><td>未及格</td><td>20</td><td>0分20秒</td><td><button class="op-link" type="button" onclick="showToast('查看答卷')">查看答卷</button></td></tr>
+                    <tr><td><span class="ck"></span></td><td>5</td><td>熊丽娟</td><td>华电集团新能源有限公司</td><td>基建1</td><td><span class="person-state left">离职</span></td><td>2</td><td><span class="status">已提交</span></td><td>未及格</td><td>20</td><td>0分18秒</td><td><button class="op-link" type="button" onclick="showToast('查看答卷')">查看答卷</button></td></tr>
+                    <tr><td><span class="ck"></span></td><td>6</td><td>庞柳</td><td>福建华电可门发电有限公司</td><td>基建001</td><td><span class="person-state disabled">停用</span></td><td>2</td><td><span class="status">已提交</span></td><td>未及格</td><td>30</td><td>0分56秒</td><td><button class="op-link" type="button" onclick="showToast('查看答卷')">查看答卷</button></td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+
+            <section class="tab-pane" id="pane-dept">
+              <div class="filter-bar">
+                <div class="filter-fields">
+                  <label class="filter-item"><span class="filter-label" id="deptKeywordLabel">部门名称</span><input class="filter-control" type="text" id="deptKeywordFilter" placeholder="请输入"></label>
+                  <label class="active-only-filter"><input type="checkbox" checked onclick="showToast(this.checked ? '只统计在职人员' : '统计全部人员')">只统计在职人员</label>
+                  <span class="filter-actions" style="margin-left:auto;">
+                    <button class="btn btn-primary" type="button" onclick="applyDeptAnalysisFilter()">查询</button>
+                    <button class="btn btn-neutral" type="button" onclick="resetDeptAnalysisFilter()">重置</button>
+                  </span>
+                </div>
+              </div>
+              <div class="view-toolbar">
+                <div class="view-switch" aria-label="部门统计视图切换">
+                  <button class="view-switch-btn active" type="button" id="deptViewDetailBtn" onclick="switchDeptAnalysisView('detail')">部门明细</button>
+                  <button class="view-switch-btn" type="button" id="deptViewCompanyBtn" onclick="switchDeptAnalysisView('company')">公司汇总</button>
+                </div>
+                <button class="btn btn-export" type="button" onclick="showToast('导出部门统计')">导出⌄</button>
+              </div>
+              <div class="table-wrap dept-table-wrap">
+                <table class="data-table dept-table">
+                  <colgroup>
+                    <col style="width:36px"><col style="width:180px"><col style="width:70px"><col style="width:70px"><col style="width:70px"><col style="width:70px"><col style="width:70px"><col style="width:64px"><col style="width:64px"><col style="width:60px"><col style="width:60px"><col style="width:60px"><col style="width:100px">
+                  </colgroup>
+                  <thead>
+                    <tr>
+                      <th><span class="ck"></span></th>
+                      <th id="deptAnalysisNameHeader">部门名称</th>
+                      <th>应考人数</th>
+                      <th>实考人数</th>
+                      <th>缺考人数</th>
+                      <th>及格人数</th>
+                      <th>答题人次</th>
+                      <th>参与率</th>
+                      <th>及格率</th>
+                      <th>最高分</th>
+                      <th>最低分</th>
+                      <th>平均分</th>
+                      <th>平均做答时长</th>
+                    </tr>
+                  </thead>
+                  <tbody id="deptAnalysisBody"></tbody>
+                </table>
+              </div>
+            </section>
+
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const deptCascadeOptions = {
+      '福建华电可门发电有限公司': ['基建部', '基建001', '生产管理部', '运行一部', '安环部'],
+      '华电集团新能源有限公司': ['运维部', '运维一班', '安全监察部', '人力资源部'],
+      '国电燃料集团有限公司': ['采购部', '质检部', '仓储部'],
+      '华电福建分公司': ['综合部', '工程部', '消防管理部'],
+      '华电浙江分公司': ['运行部', '安环部', '技术部']
+    };
+    const deptCascadeState = {
+      candidate: { company: '', dept: '' },
+      record: { company: '', dept: '' }
+    };
+    let deptAnalysisView = 'detail';
+    const companyBaseMetrics = ['0', '0', '0', '0', '0', '0%', '0%', '0', '100', '0', '0'];
+    const deptAnalysisTree = [
+      {
+        type: 'company',
+        name: '福建华电可门发电有限公司',
+        metrics: companyBaseMetrics,
+        children: [
+          {
+            type: 'dept',
+            name: '基建部',
+            metrics: ['3', '2', '1', '2', '3', '67%', '100%', '96', '60', '78', '520'],
+            children: [
+              { type: 'dept', name: '基建001', metrics: ['1', '1', '0', '0', '2', '100%', '0%', '58', '46', '52', '410'] }
+            ]
+          },
+          { type: 'dept', name: '生产管理部', metrics: ['4', '3', '1', '2', '4', '75%', '67%', '88', '50', '69', '455'] },
+          { type: 'dept', name: '运行一部', metrics: ['3', '2', '1', '1', '3', '67%', '50%', '82', '44', '61', '438'] },
+          { type: 'dept', name: '安环部', metrics: ['2', '2', '0', '2', '2', '100%', '100%', '94', '78', '86', '392'] }
+        ]
+      },
+      {
+        type: 'company',
+        name: '华电集团新能源有限公司',
+        metrics: companyBaseMetrics,
+        children: [
+          {
+            type: 'dept',
+            name: '运维部',
+            metrics: ['3', '2', '1', '1', '3', '67%', '50%', '86', '52', '65', '468'],
+            children: [
+              { type: 'dept', name: '运维一班', metrics: ['1', '1', '0', '1', '1', '100%', '100%', '74', '74', '74', '390'] }
+            ]
+          },
+          { type: 'dept', name: '安全监察部', metrics: ['2', '1', '1', '1', '1', '50%', '100%', '91', '91', '91', '360'] },
+          { type: 'dept', name: '人力资源部', metrics: ['1', '1', '0', '1', '1', '100%', '100%', '88', '88', '88', '335'] }
+        ]
+      },
+      {
+        type: 'company',
+        name: '国电燃料集团有限公司',
+        metrics: companyBaseMetrics,
+        children: [
+          { type: 'dept', name: '采购部', metrics: ['3', '2', '1', '1', '2', '67%', '50%', '80', '55', '68', '432'] },
+          { type: 'dept', name: '质检部', metrics: ['2', '1', '1', '0', '1', '50%', '0%', '49', '49', '49', '405'] },
+          { type: 'dept', name: '仓储部', metrics: ['2', '1', '1', '1', '2', '50%', '100%', '90', '62', '76', '456'] }
+        ]
+      },
+      {
+        type: 'company',
+        name: '华电福建分公司',
+        metrics: companyBaseMetrics,
+        children: [
+          { type: 'dept', name: '综合部', metrics: ['2', '2', '0', '1', '2', '100%', '50%', '77', '58', '68', '372'] },
+          { type: 'dept', name: '工程部', metrics: ['3', '2', '1', '2', '3', '67%', '100%', '92', '66', '79', '514'] },
+          { type: 'dept', name: '消防管理部', metrics: ['2', '1', '1', '1', '1', '50%', '100%', '84', '84', '84', '386'] }
+        ]
+      },
+      {
+        type: 'company',
+        name: '华电浙江分公司',
+        metrics: companyBaseMetrics,
+        children: [
+          { type: 'dept', name: '运行部', metrics: ['4', '3', '1', '2', '4', '75%', '67%', '89', '54', '70', '446'] },
+          { type: 'dept', name: '安环部', metrics: ['3', '2', '1', '2', '2', '67%', '100%', '95', '83', '89', '398'] },
+          { type: 'dept', name: '技术部', metrics: ['2', '1', '1', '0', '1', '50%', '0%', '48', '48', '48', '425'] }
+        ]
+      }
+    ];
+
+    function switchStatsTab(tab) {
+      document.querySelectorAll('.stats-tab').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.tab === tab);
+      });
+      document.querySelectorAll('.tab-pane').forEach(pane => {
+        pane.classList.toggle('active', pane.id === 'pane-' + tab);
+      });
+    }
+
+    function escapeHTML(value) {
+      const div = document.createElement('div');
+      div.textContent = String(value ?? '');
+      return div.innerHTML;
+    }
+
+    function toggleDeptCascade(scope) {
+      const panel = document.getElementById(scope + 'DeptCascadePanel');
+      if (!panel) return;
+      closeDeptCascade(scope);
+      const show = panel.classList.toggle('show');
+      if (show) renderDeptCascade(scope);
+    }
+
+    function closeDeptCascade(exceptScope = '') {
+      document.querySelectorAll('.cascade-panel').forEach(panel => {
+        if (!exceptScope || panel.id !== exceptScope + 'DeptCascadePanel') {
+          panel.classList.remove('show');
+        }
+      });
+    }
+
+    function renderDeptCascade(scope) {
+      const left = document.getElementById(scope + 'CascadeLeft');
+      const right = document.getElementById(scope + 'CascadeRight');
+      if (!left || !right) return;
+
+      const companies = Object.keys(deptCascadeOptions);
+      if (!deptCascadeState[scope].company) {
+        deptCascadeState[scope].company = companies[0];
+      }
+      const activeCompany = deptCascadeState[scope].company;
+      const activeDept = deptCascadeState[scope].dept;
+
+      left.innerHTML = companies.map(company => `
+        <span class="cascade-item${company === activeCompany ? ' active' : ''}" data-scope="${scope}" data-company="${escapeHTML(company)}">
+          <span class="cascade-radio ${company === activeCompany ? 'checked' : ''}"></span>
+          <span>${escapeHTML(company)}</span>
+        </span>
+      `).join('');
+
+      right.innerHTML = (deptCascadeOptions[activeCompany] || []).map(dept => `
+        <span class="cascade-item${dept === activeDept ? ' active' : ''}" data-scope="${scope}" data-dept="${escapeHTML(dept)}">
+          <span class="cascade-radio ${dept === activeDept ? 'checked' : ''}"></span>
+          <span>${escapeHTML(dept)}</span>
+        </span>
+      `).join('');
+    }
+
+    function selectDeptCascadeCompany(scope, company) {
+      deptCascadeState[scope].company = company;
+      deptCascadeState[scope].dept = '';
+      const text = document.getElementById(scope + 'DeptCascadeText');
+      if (text) {
+        text.textContent = company;
+        text.classList.remove('placeholder');
+      }
+      renderDeptCascade(scope);
+    }
+
+    function selectDeptCascadeDept(scope, dept) {
+      deptCascadeState[scope].dept = dept;
+      const text = document.getElementById(scope + 'DeptCascadeText');
+      if (text) {
+        text.textContent = dept;
+        text.classList.remove('placeholder');
+      }
+      closeDeptCascade();
+    }
+
+    function getDeptAnalysisFilters() {
+      const keyword = document.getElementById('deptKeywordFilter')?.value.trim() || '';
+      return { keyword };
+    }
+
+    function syncDeptAnalysisViewUI() {
+      const detailBtn = document.getElementById('deptViewDetailBtn');
+      const companyBtn = document.getElementById('deptViewCompanyBtn');
+      const keywordLabel = document.getElementById('deptKeywordLabel');
+      const header = document.getElementById('deptAnalysisNameHeader');
+      if (detailBtn) detailBtn.classList.toggle('active', deptAnalysisView === 'detail');
+      if (companyBtn) companyBtn.classList.toggle('active', deptAnalysisView === 'company');
+      if (keywordLabel) keywordLabel.textContent = deptAnalysisView === 'company' ? '公司名称' : '部门名称';
+      if (header) header.textContent = deptAnalysisView === 'company' ? '公司名称' : '部门名称';
+    }
+
+    function flattenDeptAnalysisTree(nodes, level = 0, companyName = '') {
+      const rows = [];
+      nodes.forEach(node => {
+        const currentCompany = node.type === 'company' ? node.name : companyName;
+        rows.push({
+          type: node.type,
+          name: node.name,
+          company: currentCompany,
+          level,
+          metrics: aggregateDeptSubtree(node).metrics
+        });
+        if (node.children && node.children.length) {
+          rows.push(...flattenDeptAnalysisTree(node.children, level + 1, currentCompany));
+        }
+      });
+      return rows;
+    }
+
+    function getFilteredDeptAnalysisRows() {
+      const { keyword } = getDeptAnalysisFilters();
+      if (deptAnalysisView === 'company') {
+        return deptAnalysisTree
+          .filter(row => row.type === 'company')
+          .map(row => ({
+            type: 'company',
+            name: row.name,
+            metrics: aggregateDeptSubtree(row).metrics
+          }))
+          .filter(row => !keyword || row.name.includes(keyword));
+      }
+      return flattenDeptAnalysisTree(deptAnalysisTree).filter(row => {
+        const keywordMatch = !keyword || row.name.includes(keyword);
+        return keywordMatch;
+      });
+    }
+
+    function aggregateDeptSubtree(node) {
+      const own = {
+        shouldCount: Number(node.metrics[0]) || 0,
+        actualCount: Number(node.metrics[1]) || 0,
+        absentCount: Number(node.metrics[2]) || 0,
+        passCount: Number(node.metrics[3]) || 0,
+        answerTimes: Number(node.metrics[4]) || 0,
+        maxScore: Number(node.metrics[7]) || 0,
+        minScore: Number(node.metrics[8]) || 0,
+        avgScoreNumerator: (Number(node.metrics[9]) || 0) * (Number(node.metrics[4]) || 0),
+        avgDurationNumerator: (Number(node.metrics[10]) || 0) * (Number(node.metrics[4]) || 0)
+      };
+
+      (node.children || []).forEach(child => {
+        const childTotal = aggregateDeptSubtree(child);
+        own.shouldCount += childTotal.shouldCount;
+        own.actualCount += childTotal.actualCount;
+        own.absentCount += childTotal.absentCount;
+        own.passCount += childTotal.passCount;
+        own.answerTimes += childTotal.answerTimes;
+        own.maxScore = Math.max(own.maxScore, childTotal.maxScore);
+        own.minScore = Math.min(own.minScore, childTotal.minScore);
+        own.avgScoreNumerator += childTotal.avgScoreNumerator;
+        own.avgDurationNumerator += childTotal.avgDurationNumerator;
+      });
+
+      const avgScore = own.answerTimes ? Math.round(own.avgScoreNumerator / own.answerTimes) : 0;
+      const avgDuration = own.answerTimes ? Math.round(own.avgDurationNumerator / own.answerTimes) : 0;
+      const joinRate = own.shouldCount ? Math.round((own.actualCount / own.shouldCount) * 100) : 0;
+      const passRate = own.actualCount ? Math.round((own.passCount / own.actualCount) * 100) : 0;
+
+      return {
+        ...own,
+        metrics: [
+          String(own.shouldCount),
+          String(own.actualCount),
+          String(own.absentCount),
+          String(own.passCount),
+          String(own.answerTimes),
+          joinRate + '%',
+          passRate + '%',
+          String(own.maxScore),
+          String(own.minScore),
+          String(avgScore),
+          String(avgDuration)
+        ]
+      };
+    }
+
+    function renderDeptAnalysisRows() {
+      const tbody = document.getElementById('deptAnalysisBody');
+      if (!tbody) return;
+      const rows = getFilteredDeptAnalysisRows();
+      if (!rows.length) {
+        tbody.innerHTML = '<tr><td colspan="13" style="text-align:center;color:#bfbfbf;">暂无数据</td></tr>';
+        return;
+      }
+      tbody.innerHTML = rows.map(row => `
+        <tr class="${row.type === 'company' ? 'company-row' : 'dept-row'}">
+          <td><span class="ck"></span></td>
+          <td><span class="org-name">${escapeHTML(row.name)}</span></td>
+          ${row.metrics.map(item => `<td>${escapeHTML(item)}</td>`).join('')}
+        </tr>
+      `).join('');
+    }
+
+    function applyDeptAnalysisFilter() {
+      renderDeptAnalysisRows();
+    }
+
+    function resetDeptAnalysisFilter() {
+      const keyword = document.getElementById('deptKeywordFilter');
+      if (keyword) keyword.value = '';
+      syncDeptAnalysisViewUI();
+      renderDeptAnalysisRows();
+    }
+
+    function switchDeptAnalysisView(view) {
+      deptAnalysisView = view === 'company' ? 'company' : 'detail';
+      syncDeptAnalysisViewUI();
+      renderDeptAnalysisRows();
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.classList.add('show');
+      clearTimeout(showToast.timer);
+      showToast.timer = setTimeout(() => toast.classList.remove('show'), 1600);
+    }
+
+    document.addEventListener('click', function(event) {
+      const companyItem = event.target.closest('.cascade-item[data-company]');
+      if (companyItem) {
+        selectDeptCascadeCompany(companyItem.dataset.scope, companyItem.dataset.company);
+        return;
+      }
+
+      const deptItem = event.target.closest('.cascade-item[data-dept]');
+      if (deptItem) {
+        selectDeptCascadeDept(deptItem.dataset.scope, deptItem.dataset.dept);
+        return;
+      }
+
+      if (!event.target.closest('.cascade-dropdown')) {
+        closeDeptCascade();
+      }
+    });
+
+    syncDeptAnalysisViewUI();
+    renderDeptAnalysisRows();
+  </script>
+
+  <script type="application/json" id="prd-annotation-config">
+{
+  "pageTitle": "考试统计-集团",
+  "scope": "with_global",
+  "showPrdActions": true,
+  "pagePrd": "# 考试统计-集团 PRD\n\n## 1. 文档范围\n\n本文档仅描述\"考试统计-集团\"页面中与**统计范围、人员状态、所属公司字段、公司汇总视图、部门统计人员过滤**相关的需求。普通统计卡片（及格率/参与率/分数概览）、考试记录列表、导出、分页等基础统计能力沿用既有考试统计规则，本文不重复说明。\n\n> 与下级单位统计版本的主要差异：\n> 1. 考生分析/考试记录列表新增\"所属公司\"列\n> 2. 部门统计支持\"部门明细 / 公司汇总\"视图切换\n> 3. 集团租户下人员来自多家公司，部门按公司级联筛选\n\n页面原型文件：`考试统计-集团.html`\n\n> 本页面PRD需配合[《考试功能-整体PRD》](./考试功能-整体PRD.md)阅读，全局业务规则、数据模型、角色权限定义和核心流程参见整体PRD。\n\n## 2. 使用角色\n\n- **集团管理员**：在集团范围内跨公司查看考生分析、考试记录、部门统计（含公司汇总），支持按人员状态筛选，部门统计默认仅统计在职人员。\n\n## 3. 前置条件\n\n- 用户已登录集团管理端\n- 当前考试已发布，已生成完整的人员快照和考试记录\n- 从考试列表点击\"管理\"入口进入统计页面\n- 考试对象可能来自多家公司\n\n## 4. 页面布局（ASCII 结构图）\n\n```\n+----------------------------------------------------------------------------+\n| [← 统计分析]                                                                |\n+----------------------------------------------------------------------------+\n| 集团安全生产统考                                                             |\n| 考试时间：2026-07-07～2026-08-01                                             |\n+----------------------------------------------------------------------------+\n| ┌───────────┐  ┌───────────┐  ┌──────────────────────────────────────────┐ |\n| │  33%       │  │  50%       │  │ 最高分:60   最低分:20   平均分:40         │ |\n| │  及格率    │  │  参与率    │  │                                        │ |\n| │ 1/3        │  │ 3/3/6      │  │                                        │ |\n| └───────────┘  └───────────┘  └──────────────────────────────────────────┘ |\n+----------------------------------------------------------------------------+\n| [考生分析] [考试记录] [部门统计]                                             |\n+----------------------------------------------------------------------------+\n|                          ↑                                                  |\n|                    统计页签切换                                              |\n+----------------------------------------------------------------------------+\n\n--- 考生分析 / 考试记录 页签 ---\n+----------------------------------------------------------------------------+\n| [姓名___] [公司▾ + 部门▾] [人员状态▾] [完成状态▾] ... [查询][重置]            |\n|               ↑                      ↑                                      |\n|      公司+部门级联筛选         查询条件新增\"人员状态\"                          |\n+----------------------------------------------------------------------------+\n| [导出]                                                                      |\n+----------------------------------------------------------------------------+\n| ☐ | 序号 | 姓名 | 所属公司 | 部门 | 人员状态 | 完成状态 | ... | 操作       |\n|   |      |      |    ↑     |      |    ↑     |          |     |            |\n|   |      |      |  集团新增  |      |  新增列   |          |     |            |\n|————|——————|——————|—————————|——————|——————————|——————————|—————|——————|\n| ☐ | 1    | 吴华立 | 福建华电 | 基建部 | 在职    | 已完成  | ... | 明细   |\n| ☐ | 2    | 庞柳   | 福建华电 | 基建.. | 在职    | 已完成  | ... | 明细   |\n| ☐ | 3    | 熊丽娟 | 华电新能源| 基建1  | 离职    | 已完成  | ... | 明细   |\n| ☐ | 4    | 熊德芳 | 华电新能源| 反措.. | 停用    | 未完成  | ... |        |\n| ☐ | 5    | 熊     | 国电燃料  | 采购部1| 离职    | 未完成  | ... |        |\n+----------------------------------------------------------------------------+\n              ↑\n     离职/停用人员仍在列表中展示；列表新增\"所属公司\"列\n\n--- 部门统计 页签 ---\n+----------------------------------------------------------------------------+\n| [部门名称___] [☑ 只统计在职人员]          [查询] [重置]                      |\n|            ↑                                                                |\n|      新增勾选项，默认勾选                                                    |\n+----------------------------------------------------------------------------+\n| [部门明细] [公司汇总]                           [导出]                       |\n|      ↑                                                                      |\n|   视图切换                                                                   |\n+----------------------------------------------------------------------------+\n|                        部门明细视图（默认）                                  |\n+----------------------------------------------------------------------------+\n| ☐ | 名称               | 应考 | 实考 | 缺考 | 及格 | ... | 参与率 | 及格率 |\n|————|———————————————————|—————|—————|—————|—————|—————|———————|———————|\n| ☐ | 福建华电可门发电     |  8  |  6  |  2  |  4  | ... |  75%  |  67%  |\n| ☐ |   基建部             |  4  |  3  |  1  |  2  | ... |  75%  |  67%  |\n| ☐ |     基建001          |  1  |  1  |  0  |  0  | ... |  100% |  0%   |\n| ☐ |   生产管理部         |  4  |  3  |  1  |  2  | ... |  75%  |  67%  |\n| ☐ | 华电集团新能源       |  5  |  3  |  2  |  1  | ... |  60%  |  33%  |\n| ☐ | 国电燃料集团         |  4  |  2  |  2  |  1  | ... |  50%  |  50%  |\n+----------------------------------------------------------------------------+\n            ↑ 公司↔部门多级树结构，公司行突出显示，可展开/收起\n\n+----------------------------------------------------------------------------+\n|                        公司汇总视图                                          |\n+----------------------------------------------------------------------------+\n| ☐ | 公司名称           | 应考 | 实考 | 缺考 | 及格 | ... | 参与率 | 及格率 |\n|————|———————————————————|—————|—————|—————|—————|—————|———————|———————|\n| ☐ | 福建华电可门发电     |  8  |  6  |  2  |  4  | ... |  75%  |  67%  |\n| ☐ | 华电集团新能源       |  5  |  3  |  2  |  1  | ... |  60%  |  33%  |\n| ☐ | 国电燃料集团         |  4  |  2  |  2  |  1  | ... |  50%  |  50%  |\n+----------------------------------------------------------------------------+\n            ↑ 按公司扁平汇总，各指标为该公司各下级部门数据汇总\n```\n\n## 5. 功能清单\n\n| 模块 | 功能 | 功能描述 |\n|------|------|----------|\n| 统计范围 | 全量人员保留 | 考试发布时的全部人员均保留在统计列表中，离职、停用后人员记录不隐藏、不移除。 |\n| 考生分析 | 所属公司列 + 人员状态 | 列表新增\"所属公司\"列和\"人员状态\"列；查询条件新增公司+部门级联筛选、\"人员状态\"筛选。 |\n| 考试记录 | 所属公司列 + 人员状态 | 列表新增\"所属公司\"列和\"人员状态\"列；查询条件新增公司+部门级联筛选、\"人员状态\"筛选。 |\n| 部门统计 | 视图切换 + 只统计在职人员 | 支持\"部门明细/公司汇总\"视图切换；筛选区新增\"只统计在职人员\"勾选项，默认勾选。部门明细按公司→部门多级树展示，公司汇总按公司扁平汇总。 |\n\n## 6. 需求说明\n\n### 6.1 统计范围：全量人员保留\n\n| 规则项 | 页面要求 |\n|--------|----------|\n| 人员基准 | 统计列表基于考试发布时生成的人员快照，包含考试发布时的全部应考人员。 |\n| 离职人员 | 考试发布后离职的人员，其姓名仍然保留在考生分析和考试记录列表中，通过\"人员状态\"列标注为\"离职\"。 |\n| 停用人员 | 考试发布后被停用的人员，其姓名仍然保留在考生分析和考试记录列表中，通过\"人员状态\"列标注为\"停用\"。 |\n| 不隐藏规则 | 离职、停用人员记录不被系统自动移除或隐藏，用户可通过查询条件和列表直接查看。 |\n| 统计口径 | 离职、停用人员在考生分析、考试记录中正常展示；在部门统计中受\"只统计在职人员\"勾选项控制。 |\n\n### 6.2 考生分析 / 考试记录：新增所属公司列与人员状态\n\n#### 6.2.1 查询条件新增\n\n与下级单位版本相比，集团版查询条件有以下差异：\n\n| 规则项 | 下级单位 | 集团版 |\n|--------|----------|--------|\n| 部门筛选 | 部门下拉（本单位及下属部门级联） | **公司+部门级联**：先选择公司，再选择该公司下的部门 |\n| 人员状态 | 下拉（请选择/在职/离职/停用） | 同下级单位 |\n| 其他筛选 | 姓名、完成状态、是否及格等 | 同下级单位 |\n\n公司+部门级联规则：\n\n| 规则项 | 规则 |\n|--------|------|\n| 组件类型 | 两级级联选择器：左侧公司列表，右侧部门列表 |\n| 默认值 | 请选择（不限制公司和部门） |\n| 交互 | 选择公司后，右侧自动刷新该公司下的部门列表；可直接选择公司或进一步选择部门 |\n| 查询逻辑 | 选择公司后查询该公司下全部人员；选择具体部门后查询该部门人员 |\n\n人员状态筛选（与下级单位一致）：\n\n| 规则项 | 规则 |\n|--------|------|\n| 标签 | 统一使用\"人员状态\"。 |\n| 下拉选项 | 请选择（默认）、在职、离职、停用。 |\n| 默认值 | 请选择，即不按人员状态筛选，展示全部人员。 |\n| 查询逻辑 | 选择具体状态值后点击\"查询\"，过滤出对应人员状态的记录。 |\n\n#### 6.2.2 列表新增列\n\n| 规则项 | 下级单位 | 集团版 |\n|--------|----------|--------|\n| 列顺序 | 姓名 → 部门 → 人员状态 | 姓名 → **所属公司** → 部门 → 人员状态 |\n\n所属公司列规则：\n\n| 规则项 | 规则 |\n|--------|------|\n| 列名 | 所属公司 |\n| 位置 | 位于\"姓名\"列之后、\"部门\"列之前。 |\n| 展示内容 | 人员所属公司的名称。 |\n| 排序 | 默认按公司分组排列，同公司人员连续展示。 |\n\n人员状态列规则（与下级单位一致）：\n\n| 规则项 | 规则 |\n|--------|------|\n| 列名 | 人员状态 |\n| 位置 | 位于\"部门\"列之后。 |\n| 展示风格 | 使用彩色标签展示：在职—绿色标签、离职—红色标签、停用—橘黄色标签。 |\n| 数据来源 | 取自人员快照中记录的人员状态。缺失显示\"--\"。 |\n\n#### 6.2.3 人员状态枚举与样式\n\n| 状态值 | 标签样式 | 说明 |\n|--------|----------|------|\n| 在职 | 绿色背景 + 绿色文字（`person-state`） | 人员当前在职/启用。 |\n| 离职 | 红色背景 + 红色文字（`person-state left`） | 人员已离职，姓名保留在列表中。 |\n| 停用 | 橘黄色背景 + 橘黄色文字（`person-state disabled`） | 人员已停用/禁用，姓名保留在列表中。 |\n\n### 6.3 部门统计：视图切换 + 只统计在职人员\n\n#### 6.3.1 视图切换\n\n集团版部门统计包含两个视图：\n\n| 视图名称 | 说明 | 展示结构 |\n|----------|------|----------|\n| **部门明细**（默认） | 按公司→部门多级树结构展示 | 公司行（加粗）+ 部门行（缩进），支持层级展开/收起 |\n| **公司汇总** | 按公司扁平汇总展示 | 每个公司一行，各指标为公司下所有部门数据的汇总 |\n\n视图切换规则：\n\n| 规则项 | 规则 |\n|--------|------|\n| 组件类型 | 按钮组切换（`部门明细` / `公司汇总`）。 |\n| 默认视图 | **部门明细**。 |\n| 切换行为 | 点击按钮即时切换视图，保留当前筛选条件。 |\n| 筛选条件 | 两种视图共用同一个部门名称搜索框和\"只统计在职人员\"勾选项。 |\n\n#### 6.3.2 部门明细视图\n\n| 规则项 | 规则 |\n|--------|------|\n| 展示结构 | 公司→部门→子部门的多级树结构，公司行为父级，其下部门缩进展示。 |\n| 公司行样式 | 加粗字体、背景色区分（`background: #F8FBFF`），行首可选择展开/收起。 |\n| 默认展开 | 部门明细默认展开第一级公司下的部门，其余公司可手动展开。 |\n| 列名 | \"部门名称\"列在部门明细视图中同时展示公司和部门名称。 |\n| 指标计算 | 公司行指标 = 该公司下所有部门指标的汇总（应考、实考等直接求和；率值按汇总后重新计算）。 |\n\n#### 6.3.3 公司汇总视图\n\n| 规则项 | 规则 |\n|--------|------|\n| 展示结构 | 扁平表格，每个公司单独一行。 |\n| 列名 | 表头列名变更为\"公司名称\"。 |\n| 指标计算 | 与部门明细中公司行的计算口径一致，为该公司下各部门的汇总。 |\n| 排序 | 默认按公司名称排序，支持列表点击排序（待确认）。 |\n\n#### 6.3.4 只统计在职人员\n\n| 规则项 | 规则 |\n|--------|------|\n| 组件类型 | 复选框 + 文字标签。 |\n| 标签文案 | \"只统计在职人员\"。 |\n| 默认状态 | **勾选**（`checked`），即默认只统计在职/启用人员。 |\n| 勾选时 | 各指标仅统计人员状态为\"在职\"的记录，两种视图'均生效。 |\n| 取消勾选时 | 统计范围扩大到全部人员，包含在职、离职、停用，两种视图均生效。 |\n| 切换行为 | 勾选/取消勾选后，需点击\"查询\"按钮触发数据刷新，而非即时生效。 |\n| 影响范围 | 仅影响部门统计页签，不影响考生分析和考试记录页签的数据展示。 |\n\n## 7. 交互设计\n\n### 7.1 人员状态筛选\n\n- 在考生分析或考试记录页签，选择\"人员状态\"下拉值并点击\"查询\"后，列表仅展示对应状态的记录。\n- 选择\"请选择\"并查询，恢复展示全部人员。\n- 点击\"重置\"，人员状态下拉恢复为\"请选择\"。\n\n### 7.2 公司+部门级联筛选\n\n- 公司列表面板展示本次考试涉及的全部公司。\n- 选择公司后，右侧部门面板展示该公司下的部门列表。\n- 选择具体部门后，列表按部门过滤；只选公司不选部门，则查询该公司下全部人员。\n- 级联面板点击外部区域或重新选择时关闭。\n\n### 7.3 部门明细展开/收起\n\n- 公司行首显示展开/收起图标（箭头），默认展开。\n- 点击公司行收起，其下所有部门行隐藏，公司行保留并展示汇总数据。\n- 展开时恢复部门行展示。\n\n### 7.4 视图切换\n\n- 部门明细与公司汇总之间切换为即时切换，无需重新查询。\n- 切换视图时，筛选条件和\"只统计在职人员\"勾选状态保留。\n- 部门明细视图下表头为\"部门名称\"，公司汇总视图下表头变更为\"公司名称\"。\n\n### 7.5 只统计在职人员切换\n\n- 进入部门统计页签时，勾选项默认勾选，视图按在职口径展示。\n- 用户取消勾选后点击\"查询\"，视图刷新为全量口径。\n- 重新勾选后点击\"查询\"，视图恢复为在职口径。\n- 切换行为在两个视图（部门明细/公司汇总）下均保持一致。\n\n### 7.6 页签切换\n\n- 在考生分析、考试记录、部门统计三个页签之间切换时，各页签的查询条件和数据状态保持独立。\n- 考生分析和考试记录的\"人员状态\"筛选互不影响。\n- 部门统计的\"只统计在职人员\"勾选状态和视图选择仅在部门统计页签内有效。\n\n## 8. 异常处理\n\n| 异常场景 | 处理方式 |\n|----------|----------|\n| 人员快照数据缺失人员状态 | 人员状态列显示\"--\"，不作为筛选条件参与过滤。 |\n| 部门统计全量口径下某公司/部门无数据 | 该公司/部门行正常展示，指标值显示\"0\"或\"0%\"。 |\n| 公司汇总无匹配数据 | 列表展示空状态提示\"暂无数据\"。 |\n| 部门明细某公司下无部门 | 公司行仍展示，指标值显示\"0\"或\"0%\"，不显示子行。 |\n| 级联选择器中公司无部门 | 右侧部门面板展示空状态。 |\n\n## 9. 验收标准\n\n| 验收项 | 验收标准 |\n|--------|----------|\n| 离职人员保留 | 考试发布后离职的人员仍在考生分析和考试记录列表中展示，人员状态显示\"离职\"。 |\n| 停用人员保留 | 考试发布后停用的人员仍在考生分析和考试记录列表中展示，人员状态显示\"停用\"。 |\n| 所属公司列 | 考生分析和考试记录列表包含\"所属公司\"列，位于姓名之后、部门之前，正确展示人员所属公司。 |\n| 公司+部门级联 | 考生分析和考试记录的部门筛选为公司+部门两级级联，选择公司后部门列表正确过滤。 |\n| 考生分析人员状态列 | 列表包含\"人员状态\"列，展示在职/离职/停用，样式与枚举一致。 |\n| 考生分析人员状态筛选 | 查询条件包含\"人员状态\"下拉，选择后查询正确过滤。 |\n| 考试记录人员状态列 | 列表包含\"人员状态\"列，展示在职/离职/停用，样式与枚举一致。 |\n| 考试记录人员状态筛选 | 查询条件包含\"人员状态\"下拉，选择后查询正确过滤。 |\n| 部门统计默认视图 | 进入部门统计页签时，默认展示\"部门明细\"视图。 |\n| 部门明细展示 | 公司行为加粗父级行，部门行缩进展示，支持展开/收起。 |\n| 公司汇总展示 | 点击\"公司汇总\"按钮切换为扁平公司列表，各指标为公司下部门汇总。 |\n| 视图切换保留条件 | 切换视图时保留当前筛选条件、\"只统计在职人员\"勾选状态，表头正确变更。 |\n| 部门统计默认勾选 | 进入部门统计页签时，\"只统计在职人员\"默认勾选。 |\n| 部门统计勾选口径 | 勾选时仅统计在职人员，两种视图均生效。 |\n| 部门统计取消勾选 | 取消勾选后点击查询，统计包含全部人员，两种视图均生效。 |\n| 页签独立性 | 各页签的筛选条件和数据状态互不影响。 |\n\n## 10. 版本变更记录\n\n| 版本 | 日期 | 变更内容 | 作者 |\n|------|------|----------|------|\n| V1.0 | 2026-07-13 | 初版创建。基于考试统计-下级单位 PRD，新增所属公司列、公司+部门级联筛选、部门统计视图切换（部门明细/公司汇总）。 | — |\n\n## 11. 关联文档\n\n- [考试功能整体PRD]() – 包含名词解释、业务流程图、ER 图、用例图、业务规则等全局内容\n- [考试统计-下级单位 PRD](./考试统计-下级单位.md) – 下级单位考试统计（本文档的参考基线）\n- [考试统计-普通租户 PRD]() – 普通租户考试统计\n- [考试列表-集团 PRD](./考试列表-集团.md) – 集团考试列表和管理入口\n",
+  "globalPrd": "# 考试功能 — 整体 PRD\n\n## 1. 引言\n\n### 1.1 背景与目标\n\n\"考试功能\"是 EHS+ 企业版中对员工进行安全生产知识评测的核心模块。该模块需要支持三种不同的租户形态：\n\n- **集团（上级单位）**：跨多家子公司的人员管理形态，需要跨公司选择考试对象、查看跨公司统计数据。\n- **下级单位**：处于集团层级下的成员单位，承接上级派发的考试，同时可创建本单位内部考试。\n- **独立租户（普通租户/非集团）**：无上下级层级关系的独立组织，仅管理本租户范围内的考试。\n\n本 PRD 从全局视角定义考试功能在上述三种租户形态下的统一业务规则、数据模型、角色权限和核心流程。各页面的详细交互规格请参见对应的页面 PRD。\n\n### 1.2 用户价值\n\n| 租户类型 | 核心价值 |\n|----------|----------|\n| 集团管理员 | 跨公司统一下发安全知识考试，掌握全集团各子公司的考试进展与成绩分布。 |\n| 下级单位管理员 | 承接集团下发的考试任务，同时自主创建本单位专属考试来满足内部学习需求。 |\n| 普通租户管理员 | 自主管理本组织的考试全生命周期，从创建、发布到统计分析形成完整闭环。 |\n\n### 1.3 功能范围\n\n**包含**：\n\n| 模块 | 说明 |\n|------|------|\n| 考试列表 | 按租户类型展示对应的考试清单，支持新增、编辑、删除、复制、发布（草稿）、管理（统计入口） |\n| 新增考试 | 三步创建考试：基本信息 → 考生范围（人员/部门选择 + 免考） → 考试设置 |\n| 编辑考试 | 修改草稿考试的考生范围，覆盖人员快照 |\n| 考试统计 | 考生分析、考试记录、部门统计三个维度，含人员状态筛选和部门统计在职过滤 |\n| 人员选择 | 按租户数据范围选择考试对象（人员 + 部门） |\n| 发布校验 | 草稿发布前对人员快照与当前人员主数据的差异进行校验与确认 |\n\n**不包含**：\n\n- 试题配置与管理（考试设置步骤中的具体试题选择不属于本次范围）\n- 考生端的考试作答/提交/成绩查看\n- 移动端管理能力\n\n---\n\n## 2. 三种租户形态概览\n\n```\n┌──────────────────────────────────────────────────────────────────┐\n│                        EHS+ 考试功能                              │\n│                                                                   │\n│  ┌──────────────┐    ┌──────────────────┐    ┌───────────────┐   │\n│  │ 集团         │    │  下级单位         │    │ 独立租户      │   │\n│  │ (上级单位)    │───▶│  (子公司/分公司)   │    │ (非集团组织)   │   │\n│  │              │    │                  │    │               │   │\n│  │ • 跨公司选人  │    │ • 承接上级考试    │    │ • 自建考试    │   │\n│  │ • 自建考试    │    │ • 自建本单位考试  │    │ • 本单位数据  │   │\n│  │ • 跨公司统计  │    │ • 本单位统计     │    │ • 本单位统计  │   │\n│  └──────────────┘    └──────────────────┘    └───────────────┘   │\n│                                                                   │\n│  数据范围: 集团全部公司     数据范围: 本单位+下属部门                  │\n│  人员列: 含\"所属公司\"      人员列: 无\"所属公司\"                   无公司概念 │\n│  统计视图: 部门明细/公司汇总 统计视图: 部门明细                     同下级单位 │\n└──────────────────────────────────────────────────────────────────┘\n```\n\n### 2.1 核心差异对照表\n\n| 差异维度 | 集团 | 下级单位 | 独立租户/普通租户 |\n|----------|------|----------|-------------------|\n| 人员数据范围 | 集团内全部公司 | 本单位 + 下属部门 | 本租户内全部人员 |\n| 跨公司选人 | ✅ 支持 | ❌ 不支持 | ❌ 不涉及（无公司概念） |\n| 上级下发考试 | ❌ 不涉及 | ✅ 考试列表展示上级下发 | ❌ 不涉及 |\n| 上级下发考试操作 | — | 仅\"管理\" | — |\n| 人员列表分组 | 按公司分组 | 不分组、平铺展示 | 不分组、平铺展示 |\n| 考生分析/考试记录列表 | 含\"所属公司\"列 | 无\"所属公司\"列 | 无\"所属公司\"列 |\n| 部门筛选方式 | 公司+部门级联 | 部门下拉树 | 部门下拉树 |\n| 统计部门视图 | 部门明细 + 公司汇总 | 部门明细 | 部门明细 |\n| 人员选择器页面 | 人员选择-集团 | 人员选择-下级单位 | 人员选择-下级单位 |\n\n---\n\n## 3. 角色与权限\n\n| 角色 | 租户端 | 可创建考试 | 可选择的考试对象范围 | 可编辑考试 | 可查看统计 | 说明 |\n|------|--------|-----------|---------------------|-----------|-----------|------|\n| 集团管理员 | 集团 | ✅ | 集团全部公司的人员和部门 | ✅ 仅草稿 | ✅ 全集团 | 可跨公司管理考试全生命周期 |\n| 下级单位管理员 | 下级单位 | ✅ 本单位考试 | 本单位 + 下属部门 | ✅ 仅自建草稿 | ✅ 本单位 | 可承接上级下发考试，对其进行管理操作 |\n| 普通租户管理员 | 独立租户 | ✅ | 本租户全量人员 | ✅ 仅草稿 | ✅ 本租户 | 与下级单位类似，但无上下级关系 |\n\n### 3.1 下级单位对上级下发考试的操作权限\n\n| 操作 | 本单位自建考试 | 上级下发考试 |\n|------|:---:|:---:|\n| 查看详情（名称链接） | ✅ | ✅（查看集团版详情） |\n| 管理（进入统计） | ✅ | ✅ |\n| 预览 | ✅ | ❌ |\n| 发布 | ✅ 草稿 | ❌ |\n| 编辑 | ✅ 草稿 | ❌ |\n| 复制 | ✅ | ❌ |\n| 删除 | ✅ | ❌ |\n| 批量删除 | ✅ | ❌ |\n\n---\n\n## 4. 名词解释\n\n| 术语 | 定义 |\n|------|------|\n| **考试** | 一次完整的考试活动，包含基本信息、考生范围、考试设置、题目配置等。 |\n| **考生范围** | 考试的目标对象集合，可通过选择人员（指定用户）或部门范围来定义。 |\n| **指定用户** | 以单个人员为维度选定的考试对象。 |\n| **部门范围** | 以部门为维度选定的考试对象，选择某部门即包含该部门下（可选含下级部门）的全体人员。 |\n| **组织内全部人员** | 考试对象覆盖当前租户范围内的全部人员，无需单独选择。 |\n| **仅部分人员** | 考试对象仅为管理员选择的具体人员或部门范围内的人员。 |\n| **免考人员** | 被排除在考试要求之外的人员或部门，不计入应考人数，不影响参与率和及格率计算。 |\n| **人员快照** | 创建考试或编辑保存时对当时考试对象范围内所有人员的完整记录（含 ID、姓名、所属公司、部门、人员状态），用于发布前人员变更校验。 |\n| **人员状态** | 枚举值：在职（启用）、离职、停用（禁用）。 |\n| **草稿** | 考试创建后尚未发布的初始状态，支持编辑和发布。 |\n| **未开始** | 考试发布后但尚未到达考试开始时间的状态。 |\n| **进行中** | 考试正处于考试时间段内的状态。 |\n| **已结束** | 考试时间已过的状态。 |\n| **上级下发考试** | 由集团或上级单位创建并推送给下级单位的考试，下级单位不可编辑、删除、发布。 |\n| **自建考试** | 当前租户管理员自行创建的考试。 |\n| **公司汇总** | 集团独有的统计视图，以公司为粒度对部门数据进行扁平汇总展示。 |\n| **部门明细** | 以部门树结构展示统计数据的视图。 |\n\n---\n\n## 5. 核心业务流程图\n\n### 5.1 考试全生命周期（通用）\n\n```mermaid\nflowchart TD\n    A[创建考试] --> B[填写基本信息]\n    B --> C[选择考生范围]\n    C --> C1{考试对象模式?}\n    C1 -->|仅部分人员| C2[选择人员/部门 + 配置免考]\n    C1 -->|组织内全部人员| C3[跳过选人]\n    C2 --> D[设置考试参数]\n    C3 --> D\n    D --> E[生成人员快照]\n    E --> F{保存为草稿}\n    F --> G[草稿状态]\n    G --> H{管理员操作?}\n    H -->|编辑| I[编辑考生范围 → 覆盖快照]\n    I --> G\n    H -->|发布| J[执行发布前人员变更校验]\n    J --> K{有人员变更?}\n    K -->|否| L[直接发布]\n    K -->|是| M[展示发布弹窗]\n    M --> N{管理员确认?}\n    N -->|取消| G\n    N -->|确认发布| L\n    L --> O[未开始]\n    O --> P[进行中]\n    P --> Q[已结束]\n    G -->|删除| R[考试删除]\n```\n\n### 5.2 下级单位特殊流程：上级下发考试\n\n```mermaid\nflowchart TD\n    G[集团管理员] -->|创建并下发| S[上级下发考试]\n    S -->|出现在| SU[下级单位考试列表]\n    SU --> SU1{下级单位操作}\n    SU1 -->|点击名称| SU2[查看集团版考试详情]\n    SU1 -->|管理| SU3[进入本单位统计页]\n    SU1 -->|编辑/删除/发布/复制| SU4[❌ 不可操作]\n```\n\n### 5.3 发布前人员变更校验流程\n\n```mermaid\nflowchart TD\n    A[管理员点击发布] --> B[系统获取人员快照]\n    B --> C[获取当前人员主数据]\n    C --> D{比对快照与主数据}\n    D --> E1[已选人员离职/停用 → 移除]\n    D --> E2[部门内人员离职/停用/转出 → 移除]\n    D --> E3[部门内人员转入/启用 → 新增]\n    E1 --> F{总计变更 > 0 ?}\n    E2 --> F\n    E3 --> F\n    F -->|否| G[直接发布，状态变更为未开始]\n    F -->|是| H[展示发布弹窗]\n    H --> I[按分类查看：全部 / 移除 / 新增]\n    I --> J{管理员操作?}\n    J -->|点击发布| G\n    J -->|点击取消 / 关闭 / 遮罩| K[保持草稿，不发布]\n```\n\n---\n\n## 6. 用例图\n\n```mermaid\nflowchart LR\n    subgraph Actors\n        GA[集团管理员]\n        SA[下级单位管理员]\n        NA[普通租户管理员]\n        SYS[系统]\n    end\n\n    subgraph UC[考试功能用例]\n        direction TB\n        UC1((创建考试))\n        UC2((编辑考试))\n        UC3((发布考试))\n        UC4((查看考试列表))\n        UC5((考试统计))\n        UC6((人员选择))\n        UC7((免考配置))\n        UC8((接收上级考试))\n        UC9((发布前校验))\n        UC10((快照管理))\n    end\n\n    GA --> UC1\n    GA --> UC2\n    GA --> UC3\n    GA --> UC4\n    GA --> UC5\n    GA --> UC6\n    GA --> UC7\n    SA --> UC1\n    SA --> UC2\n    SA --> UC3\n    SA --> UC4\n    SA --> UC5\n    SA --> UC6\n    SA --> UC7\n    SA --> UC8\n    NA --> UC1\n    NA --> UC2\n    NA --> UC3\n    NA --> UC4\n    NA --> UC5\n    NA --> UC6\n    NA --> UC7\n    SYS --> UC9\n    SYS --> UC10\n```\n\n---\n\n## 7. 数据模型\n\n### 7.1 核心实体关系图\n\n```mermaid\nerDiagram\n    租户 ||--o{ 考试 : \"拥有\"\n    考试 ||--o{ 人员快照 : \"生成\"\n    考试 ||--o{ 考试记录 : \"产生\"\n    考试 ||--o{ 免考配置 : \"配置\"\n    考试 }o--|| 租户 : \"归属\"\n    考试 }o--|| 考试分类 : \"分类\"\n\n    租户 {\n        string 租户ID PK\n        string 租户名称\n        string 租户类型 \"集团 / 下级单位 / 普通租户\"\n        string 上级租户ID FK \"下级单位时有值\"\n        string 所属公司名称 \"集团/下级单位\"\n    }\n\n    考试 {\n        string 考试ID PK\n        string 所属租户ID FK\n        string 考试名称\n        string 分类ID FK\n        string 来源 \"自建 / 上级下发\"\n        string 状态 \"草稿 / 未开始 / 进行中 / 已结束\"\n        string 范围模式 \"仅部分人员 / 组织内全部人员\"\n        datetime 考试开始时间\n        datetime 考试结束时间\n        datetime 快照生成时间\n        datetime 创建时间\n        datetime 更新时间\n    }\n\n    人员快照 {\n        string 快照ID PK\n        string 考试ID FK\n        string 人员ID\n        string 姓名\n        string 所属公司 \"集团有值，下级单位/普通租户无\"\n        string 部门名称\n        string 部门全路径\n        string 人员状态 \"在职 / 离职 / 停用\"\n        datetime 快照时间\n        string 快照版本 \"创建 / 编辑\"\n    }\n\n    免考配置 {\n        string 免考配置ID PK\n        string 考试ID FK\n        string 免考类型 \"人员 / 部门\"\n        string 免考目标ID\n        string 免考目标名称\n    }\n\n    考试记录 {\n        string 考试记录ID PK\n        string 考试ID FK\n        string 考生ID\n        string 考生姓名\n        string 所属公司\n        string 部门名称\n        string 完成状态 \"已完成 / 未完成\"\n        int 分数\n        bool 是否及格\n        datetime 交卷时间\n    }\n\n    考试分类 {\n        string 分类ID PK\n        string 租户ID FK\n        string 分类名称\n        string 上级分类ID\n        string 来源 \"自建 / 上级下发（下级单位有上级下发分类节点）\"\n    }\n```\n\n### 7.2 关键字段说明\n\n#### 考试来源\n\n| 值 | 含义 | 适用租户 |\n|----|------|---------|\n| 自建 | 当前租户自建考试 | 全部 |\n| 上级下发 | 上级下发考试 | 下级单位 |\n\n#### 考试状态流转\n\n```\n草稿 → 未开始 → 进行中 → 已结束\n  │\n  └── (删除)\n```\n\n#### 人员快照版本\n\n| 值 | 生成时机 | 说明 |\n|----|---------|------|\n| 创建 | 创建考试保存时 | 考试首次创建时生成 |\n| 编辑 | 编辑考试保存时 | 覆盖旧快照，作为发布校验的最新基准 |\n\n---\n\n## 8. 非功能性需求\n\n### 8.1 性能要求\n\n| 指标 | 要求 |\n|------|------|\n| 考试列表查询响应 | ≤ 2s（1000 条以内） |\n| 人员选择器加载 | ≤ 3s（10,000 以内人员数据） |\n| 部门人数重新计算 | ≤ 3s |\n| 发布前人员变更校验 | ≤ 5s（包含三分类校验） |\n| 考试统计查询 | ≤ 3s |\n| 并发支持 | 支持 100+ 管理员同时操作 |\n\n### 8.2 安全性\n\n| 要求 | 说明 |\n|------|------|\n| 数据隔离 | 不同租户数据严格隔离，下级单位不可访问集团或平级单位数据 |\n| 操作权限 | 上级下发考试在下级单位侧仅开放\"管理\"操作，编辑/删除/发布等操作需校验考试来源为自建 |\n| 人员选择范围限制 | 下级单位人员选择器限定本单位及下属部门，不可越权访问平级或上级单位人员 |\n| 快照安全 | 人员快照为只读历史数据，持久化后不可篡改 |\n\n### 8.3 兼容性\n\n| 要求 | 说明 |\n|------|------|\n| 浏览器 | Chrome 90+、Edge 90+、Safari 14+ |\n| 分辨率 | 1366×768 及以上 |\n\n### 8.4 可维护性\n\n| 要求 | 说明 |\n|------|------|\n| 操作日志 | 考试创建、编辑、发布、删除需记录操作日志 |\n| 快照审计 | 快照生成和覆盖保留历史记录，发布校验时可回溯 |\n\n---\n\n## 9. 页面清单与关联 PRD\n\n### 9.1 集团（上级单位）\n\n| 序号 | 页面名称 | 页面 PRD 路径 | 原型文件 |\n|------|---------|--------------|---------|\n| 1 | 考试列表-集团 | `prd/考试列表-集团.md` | `考试列表-集团.html` |\n| 2 | 新增考试-集团 | `prd/新增考试-集团.md` | `新增考试-集团.html` |\n| 3 | 编辑考试-集团 | `prd/编辑考试-集团.md` | `编辑考试-集团.html` |\n| 4 | 考试统计-集团 | `prd/考试统计-集团.md` | `考试统计-集团.html` |\n| 5 | 人员选择-集团 | — | `人员选择-集团.html` |\n\n### 9.2 下级单位\n\n| 序号 | 页面名称 | 页面 PRD 路径 | 原型文件 |\n|------|---------|--------------|---------|\n| 1 | 考试列表-下级单位 | `prd/考试列表-下级单位.md` | `考试列表-下级单位.html` |\n| 2 | 新增考试-下级单位 | `prd/新增考试-下级单位.md` | `新增考试-下级单位.html` |\n| 3 | 编辑考试-下级单位 | `prd/编辑考试-下级单位.md` | `编辑考试-下级单位:独立租户.html` |\n| 4 | 考试统计-下级单位 | `prd/考试统计-下级单位.md` | `考试统计-下级单位:独立租户.html` |\n| 5 | 人员选择-下级单位：本单位 | — | `人员选择-下级单位:本单位.html` |\n| 6 | 人员选择-下级单位 | — | `人员选择-下级单位.html` |\n\n### 9.3 独立租户/普通租户\n\n| 序号 | 页面名称 | 页面 PRD 路径 | 原型文件 |\n|------|---------|--------------|---------|\n| 1 | 考试列表 | `prd/考试列表-普通租户.md` | `考试列表-普通租户.html` |\n| 2 | 新增考试 | —（参考集团/下级新增） | `新增考试-普通租户.html` |\n| 3 | 编辑考试 | —（参考下级编辑，同数据范围） | `编辑考试-下级单位:独立租户.html` |\n| 4 | 考试统计 | —（参考下级统计） | `考试统计-普通租户.html` |\n\n### 9.4 通用页面\n\n| 序号 | 页面名称 | 说明 | 原型文件 |\n|------|---------|------|---------|\n| 1 | 规则说明 | 考试功能入口的规则说明页 | `规则说明.html` |\n\n### 9.5 小程序\n\n| 序号 | 页面名称 | 说明 | 原型文件 |\n|------|---------|------|---------|\n| 1 | 考试列表 | 小程序端考试列表 | `小程序考试列表.html` |\n\n---\n\n## 10. 附录\n\n### 10.1 租户数据范围矩阵\n\n```\n┌────────────────┬──────────────────────┬──────────────────────┬──────────────────┐\n│   能力 \\ 租户   │        集团           │       下级单位         │    独立租户        │\n├────────────────┼──────────────────────┼──────────────────────┼──────────────────┤\n│ 创建考试        │ 集团跨公司            │ 本单位+下属部门        │ 本租户            │\n│ 上级下发考试     │ 不涉及（集团不下发自己） │ ✅ 列表展示+接收       │ ❌ 不涉及          │\n│ 跨公司选人       │ ✅                    │ ❌                    │ ❌ 无公司概念       │\n│ 人员按公司分组    │ ✅                    │ ❌ 平铺标签            │ ❌ 平铺标签        │\n│ 列表含所属公司列  │ ✅ 考生分析/考试记录    │ ❌                    │ ❌                │\n│ 部门筛选          │ 公司+部门级联          │ 部门下拉树            │ 部门下拉树         │\n│ 统计视图          │ 部门明细 + 公司汇总     │ 部门明细              │ 部门明细           │\n│ 人员选择器        │ 人员选择-集团          │ 人员选择-下级单位       │ 人员选择-下级单位    │\n│ 快照含公司字段    │ ✅                    │ ❌                    │ ❌                │\n│ 分类树上级下发节点 │ ❌                    │ ✅                    │ ❌                │\n└────────────────┴──────────────────────┴──────────────────────┴──────────────────┘\n```\n\n### 10.2 页面状态流转\n\n| 当前状态 | 触发操作 | 目标状态 | 前置条件 |\n|----------|---------|---------|----------|\n| — | 创建考试（保存草稿） | 草稿 | 基本信息填写完成 + 考生范围选择（部分人员模式下至少 1 人或 1 部门） |\n| 草稿 | 编辑保存 | 草稿 | 编辑后覆盖人员快照 |\n| 草稿 | 发布（无变更） | 未开始 | 无人员变更 |\n| 草稿 | 发布（有变更→确认） | 未开始 | 管理员在发布弹窗确认 |\n| 草稿 | 删除 | — | — |\n| 未开始 | 到达开始时间 | 进行中 | 系统自动 |\n| 进行中 | 到达结束时间 | 已结束 | 系统自动 |\n\n### 10.3 版本变更记录\n\n| 版本 | 日期 | 变更内容 | 作者 |\n|------|------|----------|------|\n| V1.0 | 2026-07-13 | 初版。统一定义集团/下级单位/独立租户三种形态下考试功能的全局业务规则、数据模型、角色权限、核心流程和页面清单。 | — |\n\n### 10.4 引用标准\n\n- 本 PRD 作为\"总分结构\"中的总纲，各页面详细交互/UI 规格参见对应的页面 PRD。\n- 所有页面 PRD 的编号均以本 PRD 中第 9 节的页面清单为索引。\n- 三种租户的独特规则已在各差异对照表和矩阵中明确标注。\n",
+  "annotations": [],
+  "badges": [
+    {
+      "id": "1",
+      "title": "统计范围：全量人员保留",
+      "anchor": {
+        "selector": ".exam-heading"
+      },
+      "content": "<div class=\"prd-content-wide\"><p><strong>对应 PRD：6.1 统计范围：全量人员保留</strong></p><table class=\"prd-readable-table\"><thead><tr><th>规则项</th><th>页面要求</th></tr></thead><tbody><tr><td>人员基准</td><td>统计列表基于考试发布时生成的人员快照，包含考试发布时的全部应考人员。</td></tr><tr><td>离职人员</td><td>考试发布后离职的人员仍保留在考生分析和考试记录列表中，并通过人员状态列标注为离职。</td></tr><tr><td>停用人员</td><td>考试发布后停用的人员仍保留在列表中，并通过人员状态列标注为停用。</td></tr><tr><td>不隐藏规则</td><td>离职、停用人员记录不被系统自动移除或隐藏。</td></tr><tr><td>统计口径</td><td>离职、停用人员在考生分析和考试记录中正常展示；部门统计受\"只统计在职人员\"控制。</td></tr></tbody></table></div>"
+    },
+    {
+      "id": "2",
+      "title": "考生分析：所属公司与人员状态",
+      "anchor": {
+        "selector": "#pane-candidate .filter-bar"
+      },
+      "content": "<div class=\"prd-content-wide\"><p><strong>对应 PRD：6.2 考生分析 / 考试记录：新增所属公司列与人员状态</strong></p><table class=\"prd-readable-table\"><thead><tr><th>项目</th><th>规则</th></tr></thead><tbody><tr><td>公司+部门级联</td><td>部门筛选为两级级联：先选择公司，再选择该公司下的部门。</td></tr><tr><td>人员状态筛选</td><td>查询条件新增\"人员状态\"，选项为请选择、在职、离职、停用。</td></tr><tr><td>所属公司列</td><td>考生分析列表新增\"所属公司\"列，位于姓名之后、部门之前。</td></tr><tr><td>人员状态列</td><td>列表新增\"人员状态\"列，位于部门列之后。</td></tr><tr><td>状态样式</td><td>在职使用绿色标签，离职使用红色标签，停用使用橘黄色标签；缺失显示\"--\"。</td></tr></tbody></table></div>"
+    },
+    {
+      "id": "3",
+      "title": "考试记录：所属公司与人员状态",
+      "anchor": {
+        "selector": "#pane-record .filter-bar"
+      },
+      "content": "<div class=\"prd-content-wide\"><p><strong>对应 PRD：6.2 考生分析 / 考试记录：新增所属公司列与人员状态、7.1 人员状态筛选</strong></p><table class=\"prd-readable-table\"><thead><tr><th>项目</th><th>规则</th></tr></thead><tbody><tr><td>公司+部门级联</td><td>考试记录页签同样使用公司+部门两级级联筛选。</td></tr><tr><td>人员状态筛选</td><td>选择具体状态后点击查询，仅展示对应人员状态的考试记录；重置后恢复请选择。</td></tr><tr><td>所属公司列</td><td>考试记录列表包含\"所属公司\"列，展示人员所属公司名称。</td></tr><tr><td>人员状态列</td><td>考试记录列表包含\"人员状态\"列，展示在职、离职、停用。</td></tr><tr><td>页签独立性</td><td>考生分析和考试记录的人员状态筛选互不影响。</td></tr></tbody></table></div>"
+    },
+    {
+      "id": "4",
+      "title": "部门统计：视图切换与在职过滤",
+      "anchor": {
+        "selector": "#pane-dept .filter-bar"
+      },
+      "content": "<div class=\"prd-content-wide\"><p><strong>对应 PRD：6.3 部门统计：视图切换 + 只统计在职人员</strong></p><table class=\"prd-readable-table\"><thead><tr><th>规则项</th><th>规则</th></tr></thead><tbody><tr><td>默认视图</td><td>进入部门统计页签默认展示\"部门明细\"视图。</td></tr><tr><td>部门明细</td><td>按公司→部门→子部门的多级树结构展示，公司行为父级并可展开收起。</td></tr><tr><td>公司汇总</td><td>按公司扁平汇总展示，每个公司一行，各指标为该公司下所有部门数据汇总。</td></tr><tr><td>只统计在职人员</td><td>筛选区新增复选框，默认勾选；勾选时各指标仅统计在职人员。</td></tr><tr><td>取消勾选</td><td>取消后点击查询，统计范围包含在职、离职、停用人员。</td></tr><tr><td>视图切换</td><td>切换部门明细/公司汇总时保留当前筛选条件和在职过滤状态。</td></tr></tbody></table></div>"
+    }
+  ]
+}
+</script>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script src="prd-annotation.js"></script>
+
+</body>
+</html>
