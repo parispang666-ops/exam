@@ -27,6 +27,11 @@
   opacity: .85;
 }
 
+.data-table th.prd-anchor .prd-badge {
+  top: 2px;
+  right: 2px;
+}
+
 /* ===== 浮窗 ===== */
 .prd-annotation-popover {
   position: fixed;
