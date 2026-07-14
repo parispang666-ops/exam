@@ -415,6 +415,261 @@
     .btn-select-standalone:hover {
       background: var(--color-brand-hover);
     }
+    .btn-import-batch {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 32px;
+      padding: 0 20px;
+      border-radius: var(--radius-component);
+      background: #fff;
+      color: var(--color-text-primary);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      border: 1px solid var(--color-border);
+      transition: border-color 0.15s, color 0.15s, background 0.15s;
+    }
+    .btn-import-batch:hover {
+      border-color: var(--color-brand);
+      color: var(--color-brand);
+      background: var(--color-brand-light, #F0F7FF);
+    }
+    /* ---- 批量导入弹窗 ---- */
+    .batch-import-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 10000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,0.45);
+    }
+    .batch-import-modal.open {
+      display: flex;
+    }
+    .batch-import-modal .modal-dialog {
+      width: 560px;
+      max-width: 90vw;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.15);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .batch-import-modal .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--color-divider);
+    }
+    .batch-import-modal .modal-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--color-text-primary);
+    }
+    .batch-import-modal .modal-close {
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      background: transparent;
+      color: var(--color-text-secondary);
+      cursor: pointer;
+      font-size: 20px;
+      line-height: 1;
+    }
+    .batch-import-modal .modal-close:hover { color: var(--color-text-primary); }
+    .batch-import-modal .modal-body {
+      padding: 24px 20px;
+      flex: 1;
+      overflow-y: auto;
+    }
+    .batch-import-modal .step {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .batch-import-modal .step-num {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 600;
+      flex-shrink: 0;
+      background: #E6F0FF;
+      color: var(--color-brand);
+      border: 1px solid var(--color-brand);
+    }
+    .batch-import-modal .step-num.active {
+      background: var(--color-brand);
+      color: #fff;
+    }
+    .batch-import-modal .step-title {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--color-text-primary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      line-height: 24px;
+    }
+    .batch-import-modal .step-content {
+      margin-left: 36px;
+      margin-bottom: 24px;
+    }
+    .batch-import-modal .template-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px;
+      background: #F5F9FF;
+      border: 1px solid #E6F0FF;
+      border-radius: 6px;
+    }
+    .batch-import-modal .template-icon {
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #fff;
+      border: 1px solid #E6F0FF;
+      border-radius: 6px;
+      font-size: 22px;
+      color: var(--color-brand);
+      font-weight: 600;
+    }
+    .batch-import-modal .template-info {
+      flex: 1;
+      font-size: 13px;
+      color: var(--color-text-primary);
+      line-height: 1.6;
+    }
+    .batch-import-modal .btn-template {
+      height: 30px;
+      padding: 0 16px;
+      border: 1px solid var(--color-border);
+      border-radius: 4px;
+      background: #fff;
+      color: var(--color-text-primary);
+      font-size: 13px;
+      cursor: pointer;
+      transition: border-color 0.15s, color 0.15s, background 0.15s;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .batch-import-modal .btn-template:hover {
+      border-color: var(--color-brand);
+      color: var(--color-brand);
+      background: #F0F7FF;
+    }
+    .batch-import-modal .upload-area {
+      border: 1px dashed var(--color-border);
+      border-radius: 6px;
+      padding: 40px 20px;
+      text-align: center;
+      color: var(--color-text-secondary);
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+      position: relative;
+    }
+    .batch-import-modal .upload-area:hover,
+    .batch-import-modal .upload-area.dragover {
+      border-color: var(--color-brand);
+      background: #F5F9FF;
+    }
+    .batch-import-modal .upload-area input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+    }
+    .batch-import-modal .upload-icon {
+      width: 48px;
+      height: 48px;
+      margin: 0 auto 12px;
+      color: #B8C0CC;
+    }
+    .batch-import-modal .upload-text {
+      font-size: 13px;
+      color: var(--color-text-secondary);
+      line-height: 1.6;
+    }
+    .batch-import-modal .upload-text a {
+      color: var(--color-brand);
+      text-decoration: none;
+    }
+    .batch-import-modal .upload-file {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--color-text-primary);
+    }
+    .batch-import-modal .upload-file .remove-file {
+      color: var(--color-text-secondary);
+      cursor: pointer;
+      font-size: 16px;
+      line-height: 1;
+    }
+    .batch-import-modal .upload-file .remove-file:hover { color: var(--color-danger); }
+    .batch-import-modal .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      padding: 12px 20px 16px;
+      border-top: 1px solid var(--color-divider);
+    }
+    .batch-import-modal .btn-footer {
+      height: 32px;
+      padding: 0 20px;
+      border-radius: 4px;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .batch-import-modal .btn-footer-cancel {
+      border: 1px solid var(--color-border);
+      background: #fff;
+      color: var(--color-text-primary);
+    }
+    .batch-import-modal .btn-footer-cancel:hover {
+      border-color: var(--color-brand);
+      color: var(--color-brand);
+      background: #F0F7FF;
+    }
+    .batch-import-modal .btn-footer-primary {
+      border: none;
+      background: var(--color-brand);
+      color: #fff;
+    }
+    .batch-import-modal .btn-footer-primary:hover { background: var(--color-brand-hover); }
+    .batch-import-modal .btn-footer-primary:disabled {
+      background: #B8C0CC;
+      cursor: not-allowed;
+    }
+    .batch-import-tooltip {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--color-text-placeholder);
+      color: #fff;
+      font-size: 10px;
+      cursor: help;
+    }
 
     .person-box {
       min-height: 80px;
@@ -946,6 +1201,7 @@
           <!-- 选择按钮 -->
           <div class="select-btn-row" id="selectBtnRow">
             <button class="btn-select-standalone" onclick="openPersonPicker()">选择</button>
+            <button class="btn-import-batch" onclick="openBatchImportModal()">批量导入</button>
             <span class="personnel-count" id="examPersonCount"><span class="personnel-count-text">共计人员：0人</span></span>
           </div>
 
@@ -1549,6 +1805,180 @@ function viewScopeSelected(type, companyFilter = '') {
     });
   });
 
+  // ==================== 批量导入 ====================
+  let batchImportSelectedFile = null;
+
+  function openBatchImportModal() {
+    document.getElementById('batchImportModal').classList.add('open');
+    document.body.classList.add('modal-open');
+  }
+
+  function closeBatchImportModal() {
+    document.getElementById('batchImportModal').classList.remove('open');
+    document.body.classList.remove('modal-open');
+    resetBatchImport();
+  }
+
+  function resetBatchImport() {
+    batchImportSelectedFile = null;
+    const fileInput = document.getElementById('batchImportFile');
+    if (fileInput) fileInput.value = '';
+    const uploadArea = document.getElementById('batchImportUploadArea');
+    const uploadText = document.getElementById('batchImportUploadText');
+    if (uploadArea && uploadText) {
+      uploadArea.classList.remove('has-file');
+      uploadText.innerHTML = '将文件拖到此处，或 <a href="javascript:void(0)">点击上传</a><br>最大支持5M、仅xls、xlsx的文件';
+    }
+    const submitBtn = document.getElementById('batchImportSubmit');
+    if (submitBtn) submitBtn.disabled = true;
+  }
+
+  function downloadBatchTemplate() {
+    const BOM = '\uFEFF';
+    const csv = BOM + '姓名,手机号\n';
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = '考生导入模板.csv';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  }
+
+  function handleBatchImportFileSelect(input) {
+    const file = input.files && input.files[0];
+    if (!file) return;
+    batchImportSelectedFile = file;
+    const uploadArea = document.getElementById('batchImportUploadArea');
+    const uploadText = document.getElementById('batchImportUploadText');
+    if (uploadArea && uploadText) {
+      uploadArea.classList.add('has-file');
+      uploadText.innerHTML = '<div class="upload-file"><span>' + escapeHTML(file.name) + '</span><span class="remove-file" onclick="event.preventDefault(); event.stopPropagation(); resetBatchImport()" title="移除">&times;</span></div>';
+    }
+    const submitBtn = document.getElementById('batchImportSubmit');
+    if (submitBtn) submitBtn.disabled = false;
+  }
+
+  // 模拟导入：根据文件名展示不同结果
+  function submitBatchImport() {
+    if (!batchImportSelectedFile) {
+      alert('请先上传文件');
+      return;
+    }
+
+    const fileName = batchImportSelectedFile.name.toLowerCase();
+    let success = 0, skip = 0, fail = 0, failedRows = [];
+
+    if (fileName.includes('失败') || fileName.includes('error') || fileName.includes('fail')) {
+      // 全部失败
+      success = 0; skip = 0; fail = 3;
+      failedRows = [
+        { name: '张三', phone: '13800138001', error: '手机号格式错误，请填写11位数字，以1开头' },
+        { name: '李四', phone: '', error: '手机号为空，请填写手机号' },
+        { name: '王五', phone: '13900139002', error: '姓名长度超过限制（最大10个字符），请调整' }
+      ];
+    } else if (fileName.includes('跳过') || fileName.includes('skip') || fileName.includes('重复')) {
+      // 部分成功 + 跳过
+      success = 2; skip = 2; fail = 0;
+    } else {
+      // 默认全部成功
+      success = 3; skip = 0; fail = 0;
+    }
+
+    // 将成功数据合并到已选用户（仅模拟）
+    if (success > 0) {
+      const importedUsers = generateMockImportedUsers(success);
+      importedUsers.forEach(user => {
+        if (!specifiedUsers.some(u => u.id === user.id)) {
+          specifiedUsers.push(user);
+          if (!specifiedResolvedUsers.some(u => u.id === user.id)) {
+            specifiedResolvedUsers.push(user);
+          }
+        }
+      });
+      renderSpecified();
+    }
+
+    // 结果提示
+    let message = '';
+    if (fail === 0) {
+      message = '成功导入 ' + success + ' 名考生' + (skip > 0 ? '，跳过 ' + skip + ' 人（已存在）' : '');
+      alert(message);
+    } else {
+      message = '成功导入 ' + success + ' 人，跳过 ' + skip + ' 人（已存在），失败 ' + fail + ' 人。';
+      if (fail > 0) {
+        message += ' 是否下载错误文件查看原因？';
+      }
+      if (confirm(message)) {
+        downloadBatchErrorFile(failedRows);
+      }
+    }
+
+    if (fail === 0) {
+      closeBatchImportModal();
+    }
+  }
+
+  function generateMockImportedUsers(count) {
+    const samples = [
+      { id: 'import_001', name: '导入考生一', company: '福建华电可门发电', dept: '行政部', post: '职员' },
+      { id: 'import_002', name: '导入考生二', company: '福建华电可门发电', dept: '生产部', post: '专员' },
+      { id: 'import_003', name: '导入考生三', company: '华电集团新能源', dept: '安监部', post: '经理' }
+    ];
+    return samples.slice(0, count);
+  }
+
+  function downloadBatchErrorFile(rows) {
+    const BOM = '\uFEFF';
+    let csv = BOM + '姓名,手机号,错误信息\n';
+    rows.forEach(row => {
+      csv += (row.name || '') + ',' + (row.phone || '') + ',' + (row.error || '') + '\n';
+    });
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = '导入错误信息.csv';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  }
+
+  // 拖拽上传增强
+  const batchImportUploadArea = document.getElementById('batchImportUploadArea');
+  if (batchImportUploadArea) {
+    ['dragenter', 'dragover'].forEach(eventName => {
+      batchImportUploadArea.addEventListener(eventName, function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        this.classList.add('dragover');
+      }, false);
+    });
+    ['dragleave', 'drop'].forEach(eventName => {
+      batchImportUploadArea.addEventListener(eventName, function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        this.classList.remove('dragover');
+      }, false);
+    });
+    batchImportUploadArea.addEventListener('drop', function(e) {
+      const files = e.dataTransfer.files;
+      if (files.length) {
+        const fileInput = document.getElementById('batchImportFile');
+        fileInput.files = files;
+        handleBatchImportFileSelect(fileInput);
+      }
+    }, false);
+  }
+
+  // 点击弹窗背景关闭
+  document.getElementById('batchImportModal').addEventListener('click', function(e) {
+    if (e.target === this) closeBatchImportModal();
+  });
+
   // 初始化
   renderSpecified();
   renderScopeRanges();
@@ -1634,6 +2064,54 @@ function viewScopeSelected(type, companyFilter = '') {
 </script>
 </script>
   <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <!-- 批量导入弹窗 -->
+  <div class="batch-import-modal" id="batchImportModal" role="dialog" aria-modal="true">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div class="modal-title">导入</div>
+        <button class="modal-close" type="button" onclick="closeBatchImportModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-title">下载模板，填写信息</div>
+        </div>
+        <div class="step-content">
+          <div class="template-card">
+            <div class="template-icon">M</div>
+            <div class="template-info">按照下载的模板，完成信息填写</div>
+            <button class="btn-template" type="button" onclick="downloadBatchTemplate()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              下载模板
+            </button>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num active">2</div>
+          <div class="step-title">
+            上传填好文件
+            <span class="batch-import-tooltip" title="支持 .xls、.xlsx 格式，单次最多 1000 行，姓名与手机号均为必填">?</span>
+          </div>
+        </div>
+        <div class="step-content" style="margin-bottom:0;">
+          <label class="upload-area" id="batchImportUploadArea" for="batchImportFile">
+            <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            <div class="upload-text" id="batchImportUploadText">
+              将文件拖到此处，或 <a href="javascript:void(0)">点击上传</a><br>
+              最大支持5M、仅xls、xlsx的文件
+            </div>
+            <input type="file" id="batchImportFile" accept=".xls,.xlsx" onchange="handleBatchImportFileSelect(this)">
+          </label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-footer btn-footer-cancel" type="button" onclick="closeBatchImportModal()">返回</button>
+        <button class="btn-footer btn-footer-primary" type="button" id="batchImportSubmit" onclick="submitBatchImport()" disabled>导入</button>
+      </div>
+    </div>
+  </div>
+
   <script src="prd-annotation.js"></script>
 
 </body>
