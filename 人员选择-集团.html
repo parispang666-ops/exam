@@ -1827,10 +1827,13 @@
       const list = document.getElementById('selectedList');
       let items = [];
       if (selectedTab === 'person') for (const id of selected.person) items.push({ type: 'person', id, name: allPersons.find(p => p.id === id)?.name || id });
-      if (selectedTab === 'dept') for (const id of selected.dept) {
-        const node = findNode(id);
-        items.push({ type: 'dept', id, name: formatScopeName(deptToCompany[id] || '', node?.name || id) });
-      }
+    if (selectedTab === 'dept') for (const id of selected.dept) {
+      const node = findNode(id);
+      const companyName = deptToCompany[id] || '';
+      let displayName = node?.name || id;
+      if (companyName && companyName !== displayName) displayName = `${displayName}-${companyName}`;
+      items.push({ type: 'dept', id, name: displayName });
+    }
 
       if (items.length === 0) {
         list.innerHTML = '<div class="empty-tip">暂无选择项</div>';
