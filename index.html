@@ -252,6 +252,9 @@
       transition: background-color var(--transition), color var(--transition);
       font-weight: 500;
     }
+    .nav-subgroup-header.level-0 {
+      padding: 9px 16px;
+    }
     .nav-subgroup-header:hover {
       background: var(--color-bg-muted);
       color: var(--color-text-primary);
@@ -450,7 +453,13 @@
   // 配置数据（由 Index Generator Skill 自动生成）
   // =================================================================
   const menuConfig = [
+    { type: 'page', label: '整体说明', file: 'prd/考试功能-整体PRD.md' },
     { type: 'page', label: '规则说明', file: '规则说明.html' },
+    {
+      type: 'group',
+      id: 'proto',
+      label: '原型设计',
+      children: [
     {
       type: 'group',
       id: 'pc',
@@ -499,10 +508,57 @@
         { type: 'page', label: '考试列表', file: '小程序考试列表.html' }
       ]
     }
+      ]
+    },
+    {
+      type: 'group',
+      id: 'prd',
+      label: 'PRD',
+      children: [
+        {
+          type: 'group',
+          id: 'prd-group',
+          label: '集团（上级单位）',
+          children: [
+            { type: 'page', label: '考试列表-集团', file: 'prd/考试列表-集团.md' },
+            { type: 'page', label: '新增考试-集团', file: 'prd/新增考试-集团.md' },
+            { type: 'page', label: '编辑考试-集团', file: 'prd/编辑考试-集团.md' },
+            { type: 'page', label: '考试统计-集团', file: 'prd/考试统计-集团.md' }
+          ]
+        },
+        {
+          type: 'group',
+          id: 'prd-subordinate',
+          label: '下级单位',
+          children: [
+            { type: 'page', label: '考试列表-下级单位', file: 'prd/考试列表-下级单位.md' },
+            { type: 'page', label: '新增考试-下级单位', file: 'prd/新增考试-下级单位.md' },
+            { type: 'page', label: '编辑考试-下级单位', file: 'prd/编辑考试-下级单位.md' },
+            { type: 'page', label: '考试统计-下级单位', file: 'prd/考试统计-下级单位.md' }
+          ]
+        },
+        {
+          type: 'group',
+          id: 'prd-normal',
+          label: '普通租户（非集团）',
+          children: [
+            { type: 'page', label: '考试列表', file: 'prd/考试列表-普通租户.md' }
+          ]
+        },
+        {
+          type: 'group',
+          id: 'prd-mini',
+          label: '小程序',
+          children: [
+            { type: 'page', label: '考试列表', file: 'prd/小程序考试列表.md' }
+          ]
+        }
+      ]
+    }
   ];
 
   // 默认展开的分组ID
-  const defaultExpandedGroups = ['pc', 'pc-group', 'pc-subordinate', 'pc-normal', 'mini'];
+  const defaultExpandedGroups = ['proto', 'pc', 'pc-group', 'pc-subordinate', 'pc-normal', 'mini', 'prd', 'prd-group', 'prd-subordinate', 'prd-normal', 'prd-mini'];
 
   // =================================================================
   // 渲染逻辑（保持不变）
@@ -522,7 +578,7 @@
       } else if (item.type === 'group') {
         const groupId = item.id || 'g-' + Math.random().toString(36).substr(2, 6);
         const header = document.createElement('div');
-        header.className = 'nav-subgroup-header';
+        header.className = level === 0 ? 'nav-subgroup-header level-0' : 'nav-subgroup-header';
         header.dataset.groupId = groupId;
         header.innerHTML = `
           <span class="arrow open">

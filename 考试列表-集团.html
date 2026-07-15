@@ -1665,8 +1665,8 @@
 
     function getPersonnelChangeRows(exam, tab = publishChangeTab) {
       const groups = getPersonnelChangeGroups(exam);
-      const removed = groups.removed.map(person => ({ ...person, operation: '移除' }));
-      const added = groups.added.map(person => ({ ...person, operation: '新增' }));
+      const removed = groups.removed.map(person => ({ ...person, operation: '已移除' }));
+      const added = groups.added.map(person => ({ ...person, operation: '已新增' }));
       if (tab === 'removed') return removed;
       if (tab === 'added') return added;
       return [...removed, ...added];
@@ -1700,8 +1700,8 @@
       const groups = getPersonnelChangeGroups(exam);
       const tabItems = [
         { key: 'all', label: '全部', count: groups.removed.length + groups.added.length },
-        { key: 'removed', label: '移除', count: groups.removed.length },
-        { key: 'added', label: '新增', count: groups.added.length }
+        { key: 'removed', label: '已移除', count: groups.removed.length },
+        { key: 'added', label: '已新增', count: groups.added.length }
       ];
       publishChangeTabs.innerHTML = tabItems.map(tab => `
         <button class="change-tab ${publishChangeTab === tab.key ? 'active' : ''}" type="button" onclick="switchPublishTab('${tab.key}')">
@@ -1719,7 +1719,7 @@
           <td>${escapeHTML(person.name)}${person.status === '离职' || person.status === '停用' ? '<span class="person-status">（离职）</span>' : ''}</td>
           <td>${escapeHTML(person.company)}</td>
           <td>${escapeHTML(person.department)}</td>
-          <td><span class="operation-type ${person.operation === '新增' ? 'add' : 'remove'}">${escapeHTML(person.operation)}</span></td>
+          <td><span class="operation-type ${person.operation === '已新增' ? 'add' : 'remove'}">${escapeHTML(person.operation)}</span></td>
         </tr>
       `).join('') : '<tr><td class="change-empty" colspan="5">暂无人员变更</td></tr>';
       renderPublishPager(rows.length, totalPages);

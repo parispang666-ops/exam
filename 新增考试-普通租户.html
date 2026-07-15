@@ -333,23 +333,28 @@
     .person-section {
       margin-bottom: 24px;
     }
-    .person-section-header {
+    .specified-user-section {
+      display: none;
+      margin-bottom: 24px;
+    }
+    .specified-user-section.is-visible { display: block; }
+    .specified-user-section-title {
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      gap: 10px;
+      height: 24px;
       margin-bottom: 12px;
-    }
-    .person-section-title {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 14px;
-      font-weight: 500;
       color: var(--color-text-primary);
+      font-size: 14px;
+      line-height: 22px;
+      font-weight: 500;
     }
-    .person-section-title .count {
-      color: var(--color-text-secondary);
-      font-weight: 400;
+    .specified-user-section-title::before {
+      content: "";
+      width: 3px;
+      height: 14px;
+      background: var(--color-brand);
+      flex-shrink: 0;
     }
     .person-section-actions {
       display: flex;
@@ -370,8 +375,27 @@
     .person-section-action:hover { opacity: 0.8; }
     .person-section-action svg { width: 14px; height: 14px; }
     .person-section-action.disabled { color: var(--color-text-disabled); cursor: not-allowed; pointer-events: none; }
+    .section-collapse-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin-left: 16px;
+      padding: 0;
+      background: transparent;
+      border: none;
+      color: var(--color-brand);
+      font-size: 13px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .section-collapse-btn:hover { opacity: 0.8; }
+    .section-collapse-btn svg { width: 12px; height: 12px; transition: transform 0.2s; }
+    .section-collapsed { display: none !important; }
     .select-btn-row {
       margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
     .personnel-count {
       color: var(--color-text-secondary);
@@ -413,6 +437,16 @@
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
+      max-height: 74px;
+      overflow: hidden;
+      position: relative;
+    }
+    .tags-more-btn-slot {
+      position: absolute;
+      top: 0;
+      right: 0;
+      z-index: 1;
+      display: none;
     }
     .person-tag {
       display: inline-flex;
@@ -514,6 +548,9 @@
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
+      max-height: 74px;
+      overflow: hidden;
+      position: relative;
     }
     .scope-tag {
       display: inline-flex;
@@ -549,69 +586,38 @@
       background: #FFF0EF;
     }
     .scope-tag-remove svg { width: 10px; height: 10px; }
-    .exempt-selection {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-    .exempt-selection-block {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-    .exempt-selection-title {
+    .exempt-section-title {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
+      height: 24px;
+      margin-bottom: 12px;
       color: var(--color-text-primary);
       font-size: 14px;
       line-height: 22px;
       font-weight: 500;
     }
-    .exempt-selection-title::before {
+    .exempt-section-title::before {
       content: "";
       width: 3px;
       height: 14px;
       background: var(--color-brand);
       flex-shrink: 0;
     }
-    .exempt-selection-count {
-      color: var(--color-text-secondary);
-      font-weight: 400;
-    }
-    .exempt-selection-actions {
-      margin-left: auto;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .exempt-selection-action {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      padding: 0;
-      background: transparent;
-      border: none;
-      color: var(--color-brand);
-      font-size: 12px;
-      line-height: 20px;
-      cursor: pointer;
-    }
-    .exempt-selection-action:hover { color: var(--color-brand-hover); }
-    .exempt-selection-action svg { width: 14px; height: 14px; flex-shrink: 0; }
     .selected-more-btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
       width: fit-content;
-      height: 32px;
-      padding: 0 12px;
+      height: 28px;
+      padding: 0 10px;
       border: 1px solid #B7D7FF;
       border-radius: 4px;
       background: #F2F8FF;
       color: var(--color-brand);
-      font-size: 13px;
+      font-size: 12px;
       cursor: pointer;
+      flex-shrink: 0;
     }
     .selected-more-btn:hover {
       background: #E6F2FF;
@@ -879,43 +885,52 @@
 
           <!-- 选择按钮 -->
           <div class="select-btn-row" id="selectBtnRow">
-            <button class="btn-select-standalone" onclick="openPersonPicker()">选择</button>
+            <button class="btn-add" onclick="openPersonPicker()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              选择
+            </button>
             <span class="personnel-count" id="examPersonCount"><span class="personnel-count-text">共计人员：0人</span></span>
           </div>
 
-          <!-- 指定用户 -->
-          <div class="form-section" id="specifiedUserSection">
-            <div class="person-section-header">
-              <div class="person-section-title">
-                指定用户
-                <span class="count" id="specifiedCount">（1人）</span>
+          <!-- 已选人员 -->
+          <div class="specified-user-section is-visible" id="specifiedUserSection">
+            <div class="specified-user-section-title">已选人员</div>
+            <div class="scope-card">
+              <div class="scope-card-header">
+                <div class="scope-card-count" id="specifiedCount">1人</div>
+                <div class="scope-card-actions">
+                  <button class="scope-card-action" id="btnViewSelected" onclick="viewScopeSelected('person')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    查看已选
+                  </button>
+                  <button class="scope-card-action" id="btnRemoveAll" onclick="removeAllSpecified()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                    全部移除
+                  </button>
+                  <button class="section-collapse-btn" id="btnCollapseUser" onclick="toggleSectionCollapse(this)" data-target="specifiedUserBox" data-text-true="收起" data-text-false="展开" title="收起">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+                    收起
+                  </button>
+                </div>
               </div>
-              <div class="person-section-actions">
-                <button class="person-section-action" id="btnViewSelected" onclick="viewScopeSelected('person')">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                  查看已选
-                </button>
-                <button class="person-section-action" id="btnRemoveAll" onclick="removeAllSpecified()">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-                  全部移除
-                </button>
-              </div>
-            </div>
-            <div class="person-box" id="specifiedUserBox">
-              <div class="person-tags" id="specifiedTags">
-                <span class="person-tag" data-id="p1" title="正太网络科技有限公司 / 行政组 / 行政专员">
-                  李敏
-                  <span class="person-tag-remove" onclick="removeSpecified('p1')" title="移除">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-                  </span>
-                </span>
+              <div id="specifiedUserBox">
+                <div class="scope-card-body">
+                  <div class="person-tags" id="specifiedTags">
+                    <span class="person-tag" data-id="p1" title="正太网络科技有限公司 / 行政组 / 行政专员">
+                      李敏
+                      <span class="person-tag-remove" onclick="removeSpecified('p1')" title="移除">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                      </span>
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
 
-          <!-- 部门范围 -->
+          <!-- 已选部门 -->
           <div class="scope-section" id="deptRangeSection">
-            <div class="scope-section-title">部门范围</div>
+            <div class="scope-section-title">已选部门</div>
             <div class="scope-card">
               <div class="scope-card-header">
                 <div class="scope-card-count" id="deptRangeCount">0个部门</div>
@@ -928,30 +943,31 @@
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
                     全部移除
                   </button>
+                  <button class="section-collapse-btn scope-collapse-btn" onclick="toggleSectionCollapse(this)" data-target="deptRangeCollapseBody" data-text-true="收起" data-text-false="展开" title="收起">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+                    收起
+                  </button>
                 </div>
               </div>
-              <div class="scope-card-body">
-                <div class="scope-tags" id="deptRangeTags"></div>
+              <div id="deptRangeCollapseBody">
+                <div class="scope-card-body">
+                  <div class="scope-tags" id="deptRangeTags"></div>
+                </div>
               </div>
             </div>
           </div>
 
           <!-- 免考人员 -->
           <div class="form-section" id="exemptSection">
-            <div class="person-section-header">
-              <div class="person-section-title">
-                免考人员
-                <span class="count" id="exemptCount"></span>
-              </div>
+            <div class="exempt-section-title">免考人员</div>
+            <div class="select-btn-row" style="margin-bottom:0;">
+              <button class="btn-add" onclick="openExemptPicker()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                选择
+              </button>
+              <span class="personnel-count" id="exemptPersonCount"><span class="personnel-count-text">共计人员：0人</span></span>
             </div>
-            <button class="btn-add" onclick="openExemptPicker()">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-              选择
-            </button>
-            <span class="personnel-count" id="exemptPersonCount"><span class="personnel-count-text">共计人员：0人</span></span>
-            <div class="person-box" id="exemptBox" style="margin-top:12px; display:none;">
-              <div class="person-tags" id="exemptTags"></div>
-            </div>
+            <div id="exemptBox" style="margin-top:12px; display:none;"></div>
           </div>
         </div>
       </div>
@@ -981,7 +997,7 @@
   let exemptDeptRanges = [];
   let exemptResolvedUsers = [];
   let currentPicker = ''; // 'specified' | 'exempt'
-  const MAX_VISIBLE_SELECTED_TAGS = 10;
+
 
   const rangeCards = document.querySelectorAll('.range-card');
   const selectBtnRow = document.getElementById('selectBtnRow');
@@ -1065,44 +1081,52 @@
     `;
   }
 
-  function selectedMoreButton(hiddenCount, clickHandler) {
-    if (!hiddenCount || hiddenCount <= 0 || !clickHandler) return '';
-    return `<button type="button" class="selected-more-btn" onclick="${clickHandler}">查看更多${hiddenCount}项</button>`;
+  function selectedMoreButton(clickHandler, totalCount) {
+    return `<button type="button" class="selected-more-btn" onclick="${escapeHTML(clickHandler)}">查看全部（${totalCount}项）</button>`;
   }
 
   function renderTags(items, className, renderTag, emptyText, clickMoreHandler = '') {
     if (!items || items.length === 0) return `<div class="person-box-empty">${escapeHTML(emptyText)}</div>`;
-    const visibleItems = items.slice(0, MAX_VISIBLE_SELECTED_TAGS);
-    const hiddenCount = Math.max(0, items.length - MAX_VISIBLE_SELECTED_TAGS);
     return `
-      <div class="${className}">
-        ${visibleItems.map(renderTag).join('')}
-        ${selectedMoreButton(hiddenCount, clickMoreHandler)}
+      <div class="${className} tags-collapsible" data-total="${items.length}">
+        ${items.map(renderTag).join('')}
+        <span class="tags-more-btn-slot" data-handler="${escapeHTML(clickMoreHandler)}"></span>
       </div>
     `;
   }
 
   function renderExemptBlock(title, amount, bodyHTML, viewHandler, removeHandler) {
     const hasActions = viewHandler && removeHandler;
+    const blockId = 'exemptBody_' + (title.replace(/[^a-zA-Z0-9\u4e00-\u9fa5]/g, ''));
     return `
-      <div class="exempt-selection-block">
-        <div class="exempt-selection-title">
-          <span>${escapeHTML(title)}</span>
-          <span class="exempt-selection-count">（${escapeHTML(amount)}）</span>
-          ${hasActions ? `
-          <div class="exempt-selection-actions">
-            <button type="button" class="exempt-selection-action" onclick="${viewHandler}">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-              查看已选
-            </button>
-            <button type="button" class="exempt-selection-action" onclick="${removeHandler}">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-              全部移除
-            </button>
+      <div class="scope-section is-visible" style="margin-bottom:0;">
+        <div class="scope-section-title">${escapeHTML(title)}</div>
+        <div class="scope-card">
+          <div class="scope-card-header">
+            <div class="scope-card-count">${escapeHTML(amount)}</div>
+            ${hasActions ? `
+            <div class="scope-card-actions">
+              <button type="button" class="scope-card-action" onclick="${viewHandler}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                查看已选
+              </button>
+              <button type="button" class="scope-card-action" onclick="${removeHandler}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                全部移除
+              </button>
+              <button type="button" class="section-collapse-btn" onclick="toggleSectionCollapse(this)" data-target="${blockId}" data-text-true="收起" data-text-false="展开" title="收起">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+                收起
+              </button>
+            </div>
+            ` : ''}
           </div>
-          ` : ''}
+          <div id="${blockId}">
+            <div class="scope-card-body">
+              ${bodyHTML}
+            </div>
+          </div>
         </div>
-        ${bodyHTML}
       </div>
     `;
   }
@@ -1117,10 +1141,10 @@
       const selected = card.dataset.value === value;
       card.classList.toggle('selected', selected);
     });
-    // 组织内全部人员时，隐藏选择按钮、指定用户和免考人员区域
+    // 组织内全部人员时，隐藏选择按钮、已选人员和免考人员区域
     if (value === 'all') {
       selectBtnRow.style.display = 'none';
-      specifiedSection.style.display = 'none';
+      specifiedSection.classList.remove('is-visible');
       deptRangeSection.classList.remove('is-visible');
       exemptSection.style.display = 'none';
     } else {
@@ -1136,16 +1160,16 @@
     const box = document.getElementById('specifiedUserBox');
     const hasScopeRanges = specifiedDeptRanges.length > 0;
     if (currentRange === 'partial') {
-      specifiedSection.style.display = specifiedUsers.length > 0 ? 'block' : 'none';
+      specifiedSection.classList.toggle('is-visible', specifiedUsers.length > 0);
     }
-    count.textContent = '（' + specifiedUsers.length + '人）';
+    count.textContent = specifiedUsers.length + '人';
     if (specifiedUsers.length === 0) {
-      box.innerHTML = '<div class="person-box-empty">暂无指定用户</div>';
+      box.innerHTML = '<div class="person-box-empty">暂无已选人员</div>';
     } else {
       box.innerHTML = `
-        <div class="person-tags" id="specifiedTags">
-          ${specifiedUsers.slice(0, MAX_VISIBLE_SELECTED_TAGS).map(u => userTagTemplate(u, 'removeSpecified')).join('')}
-          ${selectedMoreButton(Math.max(0, specifiedUsers.length - MAX_VISIBLE_SELECTED_TAGS), "viewScopeSelected('person')")}
+        <div class="person-tags tags-collapsible" id="specifiedTags" data-total="${specifiedUsers.length}">
+          ${specifiedUsers.map(u => userTagTemplate(u, 'removeSpecified')).join('')}
+          <span class="tags-more-btn-slot" data-handler="viewScopeSelected('person')"></span>
         </div>
       `;
     }
@@ -1158,6 +1182,7 @@
     var epcText = epc.querySelector('.personnel-count-text');
     if (epcText) epcText.textContent = '共计人员：' + specifiedResolvedUsers.length + '人';
     else epc.textContent = '共计人员：' + specifiedResolvedUsers.length + '人';
+    checkTagOverflow();
   }
 
   function renderScopeRanges() {
@@ -1167,17 +1192,18 @@
 
     document.getElementById('deptRangeCount').textContent = specifiedDeptRanges.length + '个部门';
 
-    document.getElementById('deptRangeTags').innerHTML = specifiedDeptRanges
-      .slice(0, MAX_VISIBLE_SELECTED_TAGS)
+    const deptRangeTagsEl = document.getElementById('deptRangeTags');
+    deptRangeTagsEl.classList.add('tags-collapsible');
+    deptRangeTagsEl.setAttribute('data-total', specifiedDeptRanges.length);
+    deptRangeTagsEl.innerHTML = specifiedDeptRanges
       .map(dept => scopeTagTemplate(dept, 'removeDeptRange', formatScopeName(dept.company, dept.name)))
-      .join('') + selectedMoreButton(Math.max(0, specifiedDeptRanges.length - MAX_VISIBLE_SELECTED_TAGS), "viewScopeSelected('dept')");
+      .join('') + `<span class="tags-more-btn-slot" data-handler="viewScopeSelected('dept')"></span>`;
+    checkTagOverflow();
   }
 
   function renderExempt() {
-    const count = document.getElementById('exemptCount');
     const box = document.getElementById('exemptBox');
     const hasExempt = exemptUsers.length > 0 || exemptDeptRanges.length > 0;
-    count.textContent = '';
 
     var expc = document.getElementById('exemptPersonCount');
     var expcText = expc.querySelector('.personnel-count-text');
@@ -1203,12 +1229,8 @@
       'removeAllExemptDepts()'
     ) : '';
     box.style.display = 'block';
-    box.innerHTML = `
-      <div class="exempt-selection">
-        ${userBlock}
-        ${deptBlock}
-      </div>
-    `;
+    box.innerHTML = userBlock + deptBlock;
+    checkTagOverflow();
   }
 
   function removeSpecified(id) {
@@ -1243,6 +1265,36 @@
     exemptDeptRanges = [];
     exemptResolvedUsers = [];
     renderExempt();
+  }
+
+  function toggleSectionCollapse(btn) {
+    const targetId = btn.dataset.target;
+    const targetEl = document.getElementById(targetId);
+    if (!targetEl) return;
+    const isCollapsed = targetEl.classList.toggle('section-collapsed');
+    btn.setAttribute('title', isCollapsed ? '展开' : '收起');
+    btn.innerHTML = isCollapsed
+      ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>展开'
+      : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>收起';
+  }
+
+  function checkTagOverflow() {
+    requestAnimationFrame(() => {
+      document.querySelectorAll('.person-tags.tags-collapsible, .scope-tags.tags-collapsible').forEach(tagsEl => {
+        const slot = tagsEl.querySelector('.tags-more-btn-slot');
+        if (!slot) return;
+        const total = parseInt(tagsEl.dataset.total) || 0;
+        const overflow = tagsEl.scrollHeight > tagsEl.clientHeight + 1;
+        if (overflow && total > 0) {
+          const handler = slot.dataset.handler || '';
+          slot.innerHTML = selectedMoreButton(handler, total);
+          slot.style.display = 'block';
+        } else {
+          slot.innerHTML = '';
+          slot.style.display = 'none';
+        }
+      });
+    });
   }
 
   function removeAllSpecified() {
@@ -1388,7 +1440,7 @@
 
   function goNext() {
     if (currentRange === 'partial' && !hasSpecifiedSelection()) {
-      alert('请至少选择一名指定用户、一个部门或一个岗位');
+      alert('请至少选择一名已选人员、一个已选部门或一个岗位');
       return;
     }
     alert('保存并进入下一步：考试设置');
@@ -1418,8 +1470,8 @@
   "pageTitle": "新增考试-普通租户",
   "scope": "with_global",
   "showPrdActions": true,
-  "pagePrd": "# 新增考试-下级单位 PRD\n\n## 1. 文档范围\n\n本文档仅描述\"新增考试-下级单位\"页面本次新增功能范围，包括下级单位范围内创建考试、人员和部门范围选择、已选结果回显（不按公司分组）、免考人员配置、人员快照生成和新入职人员处理。\n\n与集团版的核心区别：下级单位不展示所属公司字段，已选人员和部门不按公司分组展示，选择范围限定在本单位及下属部门。\n\n原有考试基本信息、考试设置、题目配置、步骤条流转、通用表单校验等基础能力沿用既有规则，本文不重复说明。\n\n> 本页面PRD需配合[《考试功能-整体PRD》](./考试功能-整体PRD.md)阅读，全局业务规则、数据模型、角色权限定义和核心流程参见整体PRD。\n\n## 2. 使用角色\n\n- 下级单位管理员：在本单位端创建考试，选择本单位及下属部门范围内的人员或部门作为考试对象，并配置免考范围。\n- 系统：根据管理员选择的考试对象生成创建考试时人员快照，用于后续草稿发布前人员变更校验。\n\n## 3. 功能清单\n\n| 模块 | 功能 | 功能描述 |\n|------|------|----------|\n| 考生范围 | 本单位范围内创建 | 支持下级单位管理员在本单位及下属部门范围内创建考试。 |\n| 考生范围 | 选择人员和部门 | 本次新增范围仅支持选择人员和部门范围。 |\n| 已选结果 | 不分公司回显 | 已选人员按姓名标签展示、已选部门按名称标签展示，不按公司分组。 |\n| 人员选择器 | 选择和查看已选 | 支持选人员、选部门、查看已选、全部移除，并将选择结果回写页面。 |\n| 免考人员 | 免考范围配置 | 支持配置免考人员和免考部门范围，并回显已选结果。 |\n| 人员快照 | 创建快照 | 创建考试草稿时生成创建考试时人员快照。 |\n| 发布校验 | 快照基准 | 草稿发布前以创建或最近一次编辑后的人员快照为基准进行变更校验。 |\n\n## 4. 需求说明\n\n### 4.1 考试对象范围\n\n| 规则项 | 页面要求 |\n|--------|----------|\n| 创建范围 | 仅支持本单位及下属部门范围内创建考试，不支持跨平级单位或上级单位。 |\n| 选择对象 | 本次新增功能仅支持选择人员和部门范围。 |\n| 去重规则 | 系统自动对重复选择的人员进行去重，确保同一考试内同一人员只进入一次考生范围。 |\n| 全部人员 | 选择\"组织内全部人员\"时，隐藏指定用户、部门范围和免考人员配置区。 |\n| 部分人员 | 选择\"仅部分人员\"时，展示选择入口、指定用户、部门范围和免考人员配置区。 |\n| 所属公司 | 不展示所属公司字段，已选结果不按公司划分区域。 |\n\n### 4.2 人员选择器\n\n#### 4.2.1 打开入口与选择范围\n\n| 项目 | 规则 |\n|------|------|\n| 考生范围选择入口 | 点击考生范围中的\"选择\"按钮，打开下级单位人员选择器，用于选择本次考试对象。 |\n| 免考范围选择入口 | 点击免考人员区域的\"选择\"按钮，打开下级单位人员选择器，用于选择本次考试的免考对象。 |\n| 查看已选入口 | 指定用户、部门范围均支持进入查看已选，用于核对和维护已选结果。 |\n| 选择范围 | 仅支持在本单位及下属部门范围内选择人员和部门。 |\n| 选择对象 | 本次新增功能仅支持选择人员和部门范围。 |\n| 人员选择器页面 | 使用 `人员选择-下级单位.html`，不支持跨公司选择。 |\n\n#### 4.2.2 选择模式\n\n| 模式 | 规则 |\n|------|------|\n| 选人员 | 支持按人员维度选择考试对象；可结合姓名、部门名称等条件进行查询，选择后同步进入右侧已选人员区域。 |\n| 选部门 | 支持按部门维度选择考试对象；部门选择结果同步进入右侧已选部门区域。 |\n| 部门级联 | 选择部门时支持按本单位部门层级展开，不涉及跨公司层级。 |\n| 包含下级部门员工 | 选择部门范围时支持按业务需要包含下级部门员工，用于形成完整的部门考试对象范围。 |\n| 已选数量 | 右侧已选区域分别展示人员数量和部门数量，选择、取消选择或移除后实时刷新。 |\n\n#### 4.2.3 查询条件\n\n| 所在区域 | 查询项 | 查询规则 |\n|----------|--------|----------|\n| 选人员列表 | 姓名、部门名称 | 姓名支持按输入内容查询；部门名称支持按本单位部门层级选择后查询。 |\n| 选部门列表 | 部门名称 | 支持按部门名称查询部门树，匹配到的部门及其上级层级需保留展示。 |\n| 查看已选人员 | 姓名、部门 | 仅在已选人员范围内查询，不影响未选人员列表。 |\n| 查看已选部门 | 部门 | 仅在已选部门范围内查询，不影响未选部门列表。 |\n| 查询按钮 | 执行当前条件查询 | 点击后刷新当前列表结果、已选状态和分页。 |\n| 重置按钮 | 清空当前查询条件 | 点击后恢复当前列表默认结果，并保留已选结果。 |\n\n#### 4.2.4 列表展示项\n\n| 列表区域 | 展示项 | 展示规则 |\n|----------|--------|----------|\n| 选人员列表 | 勾选框、姓名、所属部门 | 支持单个勾选、本页全选、分页展示；已选人员在列表中保持选中状态。**不展示所属公司列。** |\n| 选部门列表 | 勾选框、部门名称、部门人数、部门层级 | 以部门层级方式展示；勾选部门时需联动右侧已选部门数量。 |\n| 右侧已选人员 | 已选人员标签、人员数量 | 展示已选人员数量和人员标签，支持从标签上移除单个人员。 |\n| 右侧已选部门 | 已选部门标签、部门数量 | 展示已选部门数量和部门名称标签（仅展示部门名称，不含公司名），支持从标签上移除单个部门。 |\n| 查看已选人员列表 | 勾选框、姓名、所属部门、操作 | 仅展示已选人员；支持单个移除和批量删除。不展示所属公司列。 |\n| 查看已选部门列表 | 勾选框、部门名称、人数、操作 | 仅展示已选部门；支持单个移除和批量删除。不展示所属公司列。 |\n| 空状态 | 暂无数据提示 | 当前查询或已选范围无数据时，列表展示空状态提示。 |\n\n#### 4.2.5 查看已选与移除\n\n| 操作 | 规则 |\n|------|------|\n| 查看已选人员 | 展示当前已选人员清单，支持继续核对和移除。 |\n| 查看已选部门 | 展示当前已选部门清单，支持继续核对和移除。 |\n| 单个移除 | 支持从已选区域移除单个人员或单个部门。 |\n| 全部移除 | 支持清空当前范围内已选人员或部门，清空后同步刷新数量和页面回显。 |\n| 确认返回 | 点击确定后，将当前已选人员、部门以及系统解析出的人员范围返回新增考试页面。 |\n| 取消或关闭 | 取消或关闭人员选择器时，不更新新增考试页面当前已选结果。 |\n\n#### 4.2.6 返回与回显规则\n\n| 项目 | 规则 |\n|------|------|\n| 人员信息 | 返回人员需包含人员 ID、姓名、部门、人员状态等信息，用于创建考试时人员快照和后续发布校验。不返回所属公司。 |\n| 部门信息 | 返回部门需包含部门名称、部门范围等信息，用于页面回显和人员范围解析。不返回所属公司。 |\n| 去重规则 | 人员和部门范围解析后，如出现同一人员重复命中，系统需自动去重。 |\n| 页面回显 | 选择结果返回页面后，立即刷新指定用户、部门范围的数量和标签。部门区域不显示时，隐藏整个部门范围区块。 |\n| 不分组展示 | 已选人员和部门不按公司分组展示，以平铺标签形式呈现。 |\n\n### 4.3 已选人员和部门回显\n\n| 展示对象 | 展示规则 |\n|----------|----------|\n| 已选人员 | 展示在\"指定用户\"区域，以姓名标签平铺展示，不按公司分组。标签上仅显示姓名，hover 可查看完整部门路径。 |\n| 已选部门 | 展示在\"部门范围\"区域，以部门名称标签平铺展示。 |\n| 单个移除 | 支持移除单个人员或单个部门。 |\n| 全部移除 | 支持清空当前已选人员和部门范围。 |\n| 可见性 | 未选择人员时，不展示指定用户区域；未选择部门时，不展示部门范围区域。 |\n| 数量展示 | 指定用户区域标题旁展示人员数量（如\"1人\"），部门区域标题旁展示部门数量（如\"0个部门\"）。 |\n| 超量展示 | 页面已选人员、已选部门或免考已选结果超过 10 条时，页面最多展示前 10 条标签，并展示\"查看更多 X 项\"入口；X = 当前已选总条数 - 10。 |\n| 查看更多 | 点击\"查看更多 X 项\"时，等同于点击当前区域的\"查看已选\"按钮，打开人员选择器的已选视图，用于查看和维护完整已选结果。 |\n\n### 4.4 免考人员配置\n\n| 项目 | 规则 |\n|------|------|\n| 配置入口 | 点击\"免考人员\"区域的\"选择\"按钮，打开下级单位人员选择器。 |\n| 免考对象 | 支持选择免考人员和免考部门范围。 |\n| 结果回显 | 页面展示已选免考人员数量、免考部门数量。已选结果不按公司分组，以标签形式平铺展示。 |\n| 查看已选 | 存在免考对象时，支持查看已选免考人员或免考部门。 |\n| 超量展示 | 免考已选人员或免考已选部门超过 10 条时，页面最多展示前 10 条标签，并展示\"查看更多 X 项\"入口；X = 当前免考已选总条数 - 10。 |\n| 全部移除 | 支持一键清空所有免考人员和免考部门。 |\n| 业务口径 | 免考范围需随考试对象一并保存，用于后续应考人数和考试流程口径计算。 |\n\n### 4.5 人员快照生成\n\n| 场景 | 快照规则 |\n|------|----------|\n| 创建草稿 | 创建考试草稿时，系统基于当前考试对象生成创建考试时人员快照。 |\n| 编辑保存 | 后续每次编辑保存后，需覆盖原人员快照。 |\n| 快照内容 | 快照需保留人员 ID、姓名、部门、人员状态等信息。不含所属公司。 |\n| 校验用途 | 快照用于草稿发布前比对当前考试对象和创建或编辑时的人员差异。 |\n\n### 4.6 新入职人员处理\n\n- 新入职人员不会自动进入已创建考试。\n- 当考试对象为部门范围时，如果草稿发布前存在转入部门或启用人员，需在发布弹窗\"新增\"分类中提示。\n- 管理员需要在发布弹窗中确认人员变更后，考试才继续发布。\n\n## 5. 交互设计\n\n### 5.1 选择考生范围\n\n- 选择\"仅部分人员\"后，页面展示人员选择按钮、指定用户区域（有人员时）和部门范围区域（有部门时）。\n- 选择\"组织内全部人员\"后，页面隐藏选择按钮、指定用户区域、部门范围区域和免考人员配置区。\n- 从人员选择器确认返回后，页面即时刷新已选结果。\n\n### 5.2 查看和移除已选\n\n- 点击\"查看已选\"时，打开人员选择器的已选视图。\n- 当页面已选标签超过 10 条时，仅展示前 10 条，并显示\"查看更多 X 项\"；点击后打开对应区域的查看已选视图，X = 当前已选总条数 - 10。\n- 点击单个标签的移除按钮时，仅移除该人员或部门，其他标签保持不动。\n- 点击\"全部移除\"时，清空当前区域已选结果，并同步刷新数量。\n\n### 5.3 保存与快照\n\n- 保存草稿或完成本步骤保存时，系统生成或更新人员快照。\n- 保存后进入后续考试设置流程。\n- 后续发布校验以最新创建或编辑快照为基准。\n\n### 5.4 页面跳转\n\n- 点击\"上一步\"返回基本信息步骤。\n- 点击\"保存并下一步\"进入考试设置步骤，保存前需校验至少选择了一名用户或一个部门。\n\n## 6. 异常处理\n\n| 异常场景 | 处理方式 |\n|----------|----------|\n| 仅部分人员但未选择考试对象 | 提示管理员至少选择一名指定用户或一个部门。 |\n| 人员选择器取消或关闭 | 不更新当前页面已选结果。 |\n| 当前区域无已选结果 | \"查看已选\"和\"全部移除\"按钮置灰不可用。 |\n| 指定用户区域无人员时 | 隐藏整个指定用户区域。 |\n| 部门范围区域无部门时 | 隐藏整个部门范围区域。 |\n\n## 7. 验收标准\n\n| 验收项 | 验收标准 |\n|--------|----------|\n| 选择范围 | 仅支持在本单位及下属部门范围内选择人员和部门，不可跨平级或上级单位。 |\n| 人员选择器 | 使用下级单位人员选择器（`人员选择-下级单位.html`），不支持跨公司选择。 |\n| 不展示所属公司 | 选人员列表、查看已选人员列表、已选人员标签、已选部门标签均不展示所属公司字段。 |\n| 不按公司分组 | 已选人员和部门不按公司分组展示，以平铺标签形式呈现。 |\n| 已选回显 | 已选人员以姓名标签回显，hover 可查看部门路径；已选部门以名称标签回显。 |\n| 已选超量展示 | 页面已选结果超过 10 条时最多展示 10 条标签，并展示\"查看更多 X 项\"；点击后打开对应查看已选视图，X = 当前已选总条数 - 10。 |\n| 免考配置 | 支持选择免考人员和免考部门，以标签平铺形式回显。 |\n| 查看已选 | 指定用户、部门范围均支持查看已选。 |\n| 移除能力 | 支持单个移除和全部移除已选结果。 |\n| 快照生成 | 创建考试草稿时必须生成人员快照，快照不含所属公司。 |\n| 快照覆盖 | 每次编辑保存后必须覆盖原人员快照。 |\n| 快照内容 | 快照必须包含人员状态字段。 |\n| 新入职处理 | 新入职人员不会自动进入已创建考试，部门范围新增人员在发布校验中提示。 |\n| 组织内全部人员 | 选择后隐藏选择按钮、指定用户、部门范围和免考人员配置区。 |\n\n## 8. 版本变更记录\n\n| 版本 | 日期 | 变更内容 |\n|------|------|----------|\n| V1.0 | 2026-07-13 | 新增下级单位新增考试页面本单位范围内创建考试、人员和部门选择、免考配置、人员快照和发布校验相关 PRD。 |\n| V1.1 | 2026-07-13 | 明确人员选择器右侧已选部门标签仅展示部门名称，不含公司名。 |\n| V1.2 | 2026-07-14 | 补充页面已选结果超过 10 条时最多展示 10 条、展示\"查看更多 X 项\"及点击进入查看已选视图的规则。 |\n",
-  "globalPrd": "# 考试功能 — 整体 PRD\n\n## 1. 引言\n\n### 1.1 背景与目标\n\n\"考试功能\"是 EHS+ 企业版中对员工进行安全生产知识评测的核心模块。该模块需要支持三种不同的租户形态：\n\n- **集团（上级单位）**：跨多家子公司的人员管理形态，需要跨公司选择考试对象、查看跨公司统计数据。\n- **下级单位**：处于集团层级下的成员单位，承接上级派发的考试，同时可创建本单位内部考试。\n- **独立租户（普通租户/非集团）**：无上下级层级关系的独立组织，仅管理本租户范围内的考试。\n\n本 PRD 从全局视角定义考试功能在上述三种租户形态下的统一业务规则、数据模型、角色权限和核心流程。各页面的详细交互规格请参见对应的页面 PRD。\n\n### 1.2 用户价值\n\n| 租户类型 | 核心价值 |\n|----------|----------|\n| 集团管理员 | 跨公司统一下发安全知识考试，掌握全集团各子公司的考试进展与成绩分布。 |\n| 下级单位管理员 | 承接集团下发的考试任务，同时自主创建本单位专属考试来满足内部学习需求。 |\n| 普通租户管理员 | 自主管理本组织的考试全生命周期，从创建、发布到统计分析形成完整闭环。 |\n\n### 1.3 功能范围\n\n**包含**：\n\n| 模块 | 说明 |\n|------|------|\n| 考试列表 | 按租户类型展示对应的考试清单，支持新增、编辑、删除、复制、发布（草稿）、管理（统计入口） |\n| 新增考试 | 三步创建考试：基本信息 → 考生范围（人员/部门选择 + 免考） → 考试设置 |\n| 编辑考试 | 修改草稿考试的考生范围，覆盖人员快照 |\n| 考试统计 | 考生分析、考试记录、部门统计三个维度，含人员状态筛选和部门统计在职过滤 |\n| 人员选择 | 按租户数据范围选择考试对象（人员 + 部门） |\n| 发布校验 | 草稿发布前对人员快照与当前人员主数据的差异进行校验与确认 |\n\n**不包含**：\n\n- 试题配置与管理（考试设置步骤中的具体试题选择不属于本次范围）\n- 考生端的考试作答/提交/成绩查看\n- 移动端管理能力\n\n---\n\n## 2. 三种租户形态概览\n\n```\n┌──────────────────────────────────────────────────────────────────┐\n│                        EHS+ 考试功能                              │\n│                                                                   │\n│  ┌──────────────┐    ┌──────────────────┐    ┌───────────────┐   │\n│  │ 集团         │    │  下级单位         │    │ 独立租户      │   │\n│  │ (上级单位)    │───▶│  (子公司/分公司)   │    │ (非集团组织)   │   │\n│  │              │    │                  │    │               │   │\n│  │ • 跨公司选人  │    │ • 承接上级考试    │    │ • 自建考试    │   │\n│  │ • 自建考试    │    │ • 自建本单位考试  │    │ • 本单位数据  │   │\n│  │ • 跨公司统计  │    │ • 本单位统计     │    │ • 本单位统计  │   │\n│  └──────────────┘    └──────────────────┘    └───────────────┘   │\n│                                                                   │\n│  数据范围: 集团全部公司     数据范围: 本单位+下属部门                  │\n│  人员列: 含\"所属公司\"      人员列: 无\"所属公司\"                   无公司概念 │\n│  统计视图: 部门明细/公司汇总 统计视图: 部门明细                     同下级单位 │\n└──────────────────────────────────────────────────────────────────┘\n```\n\n### 2.1 核心差异对照表\n\n| 差异维度 | 集团 | 下级单位 | 独立租户/普通租户 |\n|----------|------|----------|-------------------|\n| 人员数据范围 | 集团内全部公司 | 本单位 + 下属部门 | 本租户内全部人员 |\n| 跨公司选人 | ✅ 支持 | ❌ 不支持 | ❌ 不涉及（无公司概念） |\n| 上级下发考试 | ❌ 不涉及 | ✅ 考试列表展示上级下发 | ❌ 不涉及 |\n| 上级下发考试操作 | — | 仅\"管理\" | — |\n| 人员列表分组 | 按公司分组 | 不分组、平铺展示 | 不分组、平铺展示 |\n| 考生分析/考试记录列表 | 含\"所属公司\"列 | 无\"所属公司\"列 | 无\"所属公司\"列 |\n| 部门筛选方式 | 公司+部门级联 | 部门下拉树 | 部门下拉树 |\n| 统计部门视图 | 部门明细 + 公司汇总 | 部门明细 | 部门明细 |\n| 人员选择器页面 | 人员选择-集团 | 人员选择-下级单位 | 人员选择-下级单位 |\n\n---\n\n## 3. 角色与权限\n\n| 角色 | 租户端 | 可创建考试 | 可选择的考试对象范围 | 可编辑考试 | 可查看统计 | 说明 |\n|------|--------|-----------|---------------------|-----------|-----------|------|\n| 集团管理员 | 集团 | ✅ | 集团全部公司的人员和部门 | ✅ 仅草稿 | ✅ 全集团 | 可跨公司管理考试全生命周期 |\n| 下级单位管理员 | 下级单位 | ✅ 本单位考试 | 本单位 + 下属部门 | ✅ 仅自建草稿 | ✅ 本单位 | 可承接上级下发考试，对其进行管理操作 |\n| 普通租户管理员 | 独立租户 | ✅ | 本租户全量人员 | ✅ 仅草稿 | ✅ 本租户 | 与下级单位类似，但无上下级关系 |\n\n### 3.1 下级单位对上级下发考试的操作权限\n\n| 操作 | 本单位自建考试 | 上级下发考试 |\n|------|:---:|:---:|\n| 查看详情（名称链接） | ✅ | ✅（查看集团版详情） |\n| 管理（进入统计） | ✅ | ✅ |\n| 预览 | ✅ | ❌ |\n| 发布 | ✅ 草稿 | ❌ |\n| 编辑 | ✅ 草稿 | ❌ |\n| 复制 | ✅ | ❌ |\n| 删除 | ✅ | ❌ |\n| 批量删除 | ✅ | ❌ |\n\n---\n\n## 4. 名词解释\n\n| 术语 | 定义 |\n|------|------|\n| **考试** | 一次完整的考试活动，包含基本信息、考生范围、考试设置、题目配置等。 |\n| **考生范围** | 考试的目标对象集合，可通过选择人员（指定用户）或部门范围来定义。 |\n| **指定用户** | 以单个人员为维度选定的考试对象。 |\n| **部门范围** | 以部门为维度选定的考试对象，选择某部门即包含该部门下（可选含下级部门）的全体人员。 |\n| **组织内全部人员** | 考试对象覆盖当前租户范围内的全部人员，无需单独选择。 |\n| **仅部分人员** | 考试对象仅为管理员选择的具体人员或部门范围内的人员。 |\n| **免考人员** | 被排除在考试要求之外的人员或部门，不计入应考人数，不影响参与率和及格率计算。 |\n| **人员快照** | 创建考试或编辑保存时对当时考试对象范围内所有人员的完整记录（含 ID、姓名、所属公司、部门、人员状态），用于发布前人员变更校验。 |\n| **人员状态** | 枚举值：在职（启用）、离职、停用（禁用）。 |\n| **草稿** | 考试创建后尚未发布的初始状态，支持编辑和发布。 |\n| **未开始** | 考试发布后但尚未到达考试开始时间的状态。 |\n| **进行中** | 考试正处于考试时间段内的状态。 |\n| **已结束** | 考试时间已过的状态。 |\n| **上级下发考试** | 由集团或上级单位创建并推送给下级单位的考试，下级单位不可编辑、删除、发布。 |\n| **自建考试** | 当前租户管理员自行创建的考试。 |\n| **公司汇总** | 集团独有的统计视图，以公司为粒度对部门数据进行扁平汇总展示。 |\n| **部门明细** | 以部门树结构展示统计数据的视图。 |\n\n---\n\n## 5. 核心业务流程图\n\n### 5.1 考试全生命周期（通用）\n\n```mermaid\nflowchart TD\n    A[创建考试] --> B[填写基本信息]\n    B --> C[选择考生范围]\n    C --> C1{考试对象模式?}\n    C1 -->|仅部分人员| C2[选择人员/部门 + 配置免考]\n    C1 -->|组织内全部人员| C3[跳过选人]\n    C2 --> D[设置考试参数]\n    C3 --> D\n    D --> E[生成人员快照]\n    E --> F{保存为草稿}\n    F --> G[草稿状态]\n    G --> H{管理员操作?}\n    H -->|编辑| I[编辑考生范围 → 覆盖快照]\n    I --> G\n    H -->|发布| J[执行发布前人员变更校验]\n    J --> K{有人员变更?}\n    K -->|否| L[直接发布]\n    K -->|是| M[展示发布弹窗]\n    M --> N{管理员确认?}\n    N -->|取消| G\n    N -->|确认发布| L\n    L --> O[未开始]\n    O --> P[进行中]\n    P --> Q[已结束]\n    G -->|删除| R[考试删除]\n```\n\n### 5.2 下级单位特殊流程：上级下发考试\n\n```mermaid\nflowchart TD\n    G[集团管理员] -->|创建并下发| S[上级下发考试]\n    S -->|出现在| SU[下级单位考试列表]\n    SU --> SU1{下级单位操作}\n    SU1 -->|点击名称| SU2[查看集团版考试详情]\n    SU1 -->|管理| SU3[进入本单位统计页]\n    SU1 -->|编辑/删除/发布/复制| SU4[❌ 不可操作]\n```\n\n### 5.3 发布前人员变更校验流程\n\n```mermaid\nflowchart TD\n    A[管理员点击发布] --> B[系统获取人员快照]\n    B --> C[获取当前人员主数据]\n    C --> D{比对快照与主数据}\n    D --> E1[已选人员离职/停用 → 移除]\n    D --> E2[部门内人员离职/停用/转出 → 移除]\n    D --> E3[部门内人员转入/启用 → 新增]\n    E1 --> F{总计变更 > 0 ?}\n    E2 --> F\n    E3 --> F\n    F -->|否| G[直接发布，状态变更为未开始]\n    F -->|是| H[展示发布弹窗]\n    H --> I[按分类查看：全部 / 移除 / 新增]\n    I --> J{管理员操作?}\n    J -->|点击发布| G\n    J -->|点击取消 / 关闭 / 遮罩| K[保持草稿，不发布]\n```\n\n---\n\n## 6. 用例图\n\n```mermaid\nflowchart LR\n    subgraph Actors\n        GA[集团管理员]\n        SA[下级单位管理员]\n        NA[普通租户管理员]\n        SYS[系统]\n    end\n\n    subgraph UC[考试功能用例]\n        direction TB\n        UC1((创建考试))\n        UC2((编辑考试))\n        UC3((发布考试))\n        UC4((查看考试列表))\n        UC5((考试统计))\n        UC6((人员选择))\n        UC7((免考配置))\n        UC8((接收上级考试))\n        UC9((发布前校验))\n        UC10((快照管理))\n    end\n\n    GA --> UC1\n    GA --> UC2\n    GA --> UC3\n    GA --> UC4\n    GA --> UC5\n    GA --> UC6\n    GA --> UC7\n    SA --> UC1\n    SA --> UC2\n    SA --> UC3\n    SA --> UC4\n    SA --> UC5\n    SA --> UC6\n    SA --> UC7\n    SA --> UC8\n    NA --> UC1\n    NA --> UC2\n    NA --> UC3\n    NA --> UC4\n    NA --> UC5\n    NA --> UC6\n    NA --> UC7\n    SYS --> UC9\n    SYS --> UC10\n```\n\n---\n\n## 7. 数据模型\n\n### 7.1 核心实体关系图\n\n```mermaid\nerDiagram\n    租户 ||--o{ 考试 : \"拥有\"\n    考试 ||--o{ 人员快照 : \"生成\"\n    考试 ||--o{ 考试记录 : \"产生\"\n    考试 ||--o{ 免考配置 : \"配置\"\n    考试 }o--|| 租户 : \"归属\"\n    考试 }o--|| 考试分类 : \"分类\"\n\n    租户 {\n        string 租户ID PK\n        string 租户名称\n        string 租户类型 \"集团 / 下级单位 / 普通租户\"\n        string 上级租户ID FK \"下级单位时有值\"\n        string 所属公司名称 \"集团/下级单位\"\n    }\n\n    考试 {\n        string 考试ID PK\n        string 所属租户ID FK\n        string 考试名称\n        string 分类ID FK\n        string 来源 \"自建 / 上级下发\"\n        string 状态 \"草稿 / 未开始 / 进行中 / 已结束\"\n        string 范围模式 \"仅部分人员 / 组织内全部人员\"\n        datetime 考试开始时间\n        datetime 考试结束时间\n        datetime 快照生成时间\n        datetime 创建时间\n        datetime 更新时间\n    }\n\n    人员快照 {\n        string 快照ID PK\n        string 考试ID FK\n        string 人员ID\n        string 姓名\n        string 所属公司 \"集团有值，下级单位/普通租户无\"\n        string 部门名称\n        string 部门全路径\n        string 人员状态 \"在职 / 离职 / 停用\"\n        datetime 快照时间\n        string 快照版本 \"创建 / 编辑\"\n    }\n\n    免考配置 {\n        string 免考配置ID PK\n        string 考试ID FK\n        string 免考类型 \"人员 / 部门\"\n        string 免考目标ID\n        string 免考目标名称\n    }\n\n    考试记录 {\n        string 考试记录ID PK\n        string 考试ID FK\n        string 考生ID\n        string 考生姓名\n        string 所属公司\n        string 部门名称\n        string 完成状态 \"已完成 / 未完成\"\n        int 分数\n        bool 是否及格\n        datetime 交卷时间\n    }\n\n    考试分类 {\n        string 分类ID PK\n        string 租户ID FK\n        string 分类名称\n        string 上级分类ID\n        string 来源 \"自建 / 上级下发（下级单位有上级下发分类节点）\"\n    }\n```\n\n### 7.2 关键字段说明\n\n#### 考试来源\n\n| 值 | 含义 | 适用租户 |\n|----|------|---------|\n| 自建 | 当前租户自建考试 | 全部 |\n| 上级下发 | 上级下发考试 | 下级单位 |\n\n#### 考试状态流转\n\n```\n草稿 → 未开始 → 进行中 → 已结束\n  │\n  └── (删除)\n```\n\n#### 人员快照版本\n\n| 值 | 生成时机 | 说明 |\n|----|---------|------|\n| 创建 | 创建考试保存时 | 考试首次创建时生成 |\n| 编辑 | 编辑考试保存时 | 覆盖旧快照，作为发布校验的最新基准 |\n\n---\n\n## 8. 非功能性需求\n\n### 8.1 性能要求\n\n| 指标 | 要求 |\n|------|------|\n| 考试列表查询响应 | ≤ 2s（1000 条以内） |\n| 人员选择器加载 | ≤ 3s（10,000 以内人员数据） |\n| 部门人数重新计算 | ≤ 3s |\n| 发布前人员变更校验 | ≤ 5s（包含三分类校验） |\n| 考试统计查询 | ≤ 3s |\n| 并发支持 | 支持 100+ 管理员同时操作 |\n\n### 8.2 安全性\n\n| 要求 | 说明 |\n|------|------|\n| 数据隔离 | 不同租户数据严格隔离，下级单位不可访问集团或平级单位数据 |\n| 操作权限 | 上级下发考试在下级单位侧仅开放\"管理\"操作，编辑/删除/发布等操作需校验考试来源为自建 |\n| 人员选择范围限制 | 下级单位人员选择器限定本单位及下属部门，不可越权访问平级或上级单位人员 |\n| 快照安全 | 人员快照为只读历史数据，持久化后不可篡改 |\n\n### 8.3 兼容性\n\n| 要求 | 说明 |\n|------|------|\n| 浏览器 | Chrome 90+、Edge 90+、Safari 14+ |\n| 分辨率 | 1366×768 及以上 |\n\n### 8.4 可维护性\n\n| 要求 | 说明 |\n|------|------|\n| 操作日志 | 考试创建、编辑、发布、删除需记录操作日志 |\n| 快照审计 | 快照生成和覆盖保留历史记录，发布校验时可回溯 |\n\n---\n\n## 9. 页面清单与关联 PRD\n\n### 9.1 集团（上级单位）\n\n| 序号 | 页面名称 | 页面 PRD 路径 | 原型文件 |\n|------|---------|--------------|---------|\n| 1 | 考试列表-集团 | `prd/考试列表-集团.md` | `考试列表-集团.html` |\n| 2 | 新增考试-集团 | `prd/新增考试-集团.md` | `新增考试-集团.html` |\n| 3 | 编辑考试-集团 | `prd/编辑考试-集团.md` | `编辑考试-集团.html` |\n| 4 | 考试统计-集团 | `prd/考试统计-集团.md` | `考试统计-集团.html` |\n| 5 | 人员选择-集团 | — | `人员选择-集团.html` |\n\n### 9.2 下级单位\n\n| 序号 | 页面名称 | 页面 PRD 路径 | 原型文件 |\n|------|---------|--------------|---------|\n| 1 | 考试列表-下级单位 | `prd/考试列表-下级单位.md` | `考试列表-下级单位.html` |\n| 2 | 新增考试-下级单位 | `prd/新增考试-下级单位.md` | `新增考试-下级单位.html` |\n| 3 | 编辑考试-下级单位 | `prd/编辑考试-下级单位.md` | `编辑考试-下级单位:独立租户.html` |\n| 4 | 考试统计-下级单位 | `prd/考试统计-下级单位.md` | `考试统计-下级单位:独立租户.html` |\n| 5 | 人员选择-下级单位：本单位 | — | `人员选择-下级单位:本单位.html` |\n| 6 | 人员选择-下级单位 | — | `人员选择-下级单位.html` |\n\n### 9.3 独立租户/普通租户\n\n| 序号 | 页面名称 | 页面 PRD 路径 | 原型文件 |\n|------|---------|--------------|---------|\n| 1 | 考试列表 | `prd/考试列表-普通租户.md` | `考试列表-普通租户.html` |\n| 2 | 新增考试 | —（参考集团/下级新增） | `新增考试-普通租户.html` |\n| 3 | 编辑考试 | —（参考下级编辑，同数据范围） | `编辑考试-下级单位:独立租户.html` |\n| 4 | 考试统计 | —（参考下级统计） | `考试统计-普通租户.html` |\n\n### 9.4 通用页面\n\n| 序号 | 页面名称 | 说明 | 原型文件 |\n|------|---------|------|---------|\n| 1 | 规则说明 | 考试功能入口的规则说明页 | `规则说明.html` |\n\n### 9.5 小程序\n\n| 序号 | 页面名称 | 说明 | 原型文件 |\n|------|---------|------|---------|\n| 1 | 考试列表 | 小程序端考试列表 | `小程序考试列表.html` |\n\n---\n\n## 10. 附录\n\n### 10.1 租户数据范围矩阵\n\n```\n┌────────────────┬──────────────────────┬──────────────────────┬──────────────────┐\n│   能力 \\ 租户   │        集团           │       下级单位         │    独立租户        │\n├────────────────┼──────────────────────┼──────────────────────┼──────────────────┤\n│ 创建考试        │ 集团跨公司            │ 本单位+下属部门        │ 本租户            │\n│ 上级下发考试     │ 不涉及（集团不下发自己） │ ✅ 列表展示+接收       │ ❌ 不涉及          │\n│ 跨公司选人       │ ✅                    │ ❌                    │ ❌ 无公司概念       │\n│ 人员按公司分组    │ ✅                    │ ❌ 平铺标签            │ ❌ 平铺标签        │\n│ 列表含所属公司列  │ ✅ 考生分析/考试记录    │ ❌                    │ ❌                │\n│ 部门筛选          │ 公司+部门级联          │ 部门下拉树            │ 部门下拉树         │\n│ 统计视图          │ 部门明细 + 公司汇总     │ 部门明细              │ 部门明细           │\n│ 人员选择器        │ 人员选择-集团          │ 人员选择-下级单位       │ 人员选择-下级单位    │\n│ 快照含公司字段    │ ✅                    │ ❌                    │ ❌                │\n│ 分类树上级下发节点 │ ❌                    │ ✅                    │ ❌                │\n└────────────────┴──────────────────────┴──────────────────────┴──────────────────┘\n```\n\n### 10.2 页面状态流转\n\n| 当前状态 | 触发操作 | 目标状态 | 前置条件 |\n|----------|---------|---------|----------|\n| — | 创建考试（保存草稿） | 草稿 | 基本信息填写完成 + 考生范围选择（部分人员模式下至少 1 人或 1 部门） |\n| 草稿 | 编辑保存 | 草稿 | 编辑后覆盖人员快照 |\n| 草稿 | 发布（无变更） | 未开始 | 无人员变更 |\n| 草稿 | 发布（有变更→确认） | 未开始 | 管理员在发布弹窗确认 |\n| 草稿 | 删除 | — | — |\n| 未开始 | 到达开始时间 | 进行中 | 系统自动 |\n| 进行中 | 到达结束时间 | 已结束 | 系统自动 |\n\n### 10.3 版本变更记录\n\n| 版本 | 日期 | 变更内容 | 作者 |\n|------|------|----------|------|\n| V1.0 | 2026-07-13 | 初版。统一定义集团/下级单位/独立租户三种形态下考试功能的全局业务规则、数据模型、角色权限、核心流程和页面清单。 | — |\n\n### 10.4 引用标准\n\n- 本 PRD 作为\"总分结构\"中的总纲，各页面详细交互/UI 规格参见对应的页面 PRD。\n- 所有页面 PRD 的编号均以本 PRD 中第 9 节的页面清单为索引。\n- 三种租户的独特规则已在各差异对照表和矩阵中明确标注。\n",
+  "pagePrd": "# 新增考试-下级单位 PRD\n\n## 1. 文档范围\n\n本文档仅描述\"新增考试-下级单位\"页面本次新增功能范围，包括下级单位范围内创建考试、人员和已选部门选择、已选结果回显（不按公司分组）、免考人员配置、人员快照生成和新入职人员处理。\n\n与集团版的核心区别：下级单位不展示所属公司字段，已选人员和部门不按公司分组展示，选择范围限定在本单位及下属部门。\n\n原有考试基本信息、考试设置、题目配置、步骤条流转、通用表单校验等基础能力沿用既有规则，本文不重复说明。\n\n> 本页面PRD需配合[《考试功能-整体PRD》](./考试功能-整体PRD.md)阅读，全局业务规则、数据模型、角色权限定义和核心流程参见整体PRD。\n\n## 2. 使用角色\n\n- 下级单位管理员：在本单位端创建考试，选择本单位及下属已选部门内的人员或部门作为考试对象，并配置免考范围。\n- 系统：根据管理员选择的考试对象生成创建考试时人员快照，用于后续草稿发布前人员变更校验。\n\n## 3. 功能清单\n\n| 模块 | 功能 | 功能描述 |\n|------|------|----------|\n| 考生范围 | 本单位范围内创建 | 支持下级单位管理员在本单位及下属已选部门内创建考试。 |\n| 考生范围 | 选择人员和部门 | 本次新增范围仅支持选择人员和已选部门。 |\n| 已选结果 | 不分公司回显 | 已选人员按姓名标签展示、已选部门按名称标签展示，不按公司分组。 |\n| 人员选择器 | 选择和查看已选 | 支持选人员、选部门、查看已选、全部移除，并将选择结果回写页面。 |\n| 免考人员 | 免考范围配置 | 支持配置免考人员和免考已选部门，并回显已选结果。 |\n| 人员快照 | 创建快照 | 创建考试草稿时生成创建考试时人员快照。 |\n| 发布校验 | 快照基准 | 草稿发布前以创建或最近一次编辑后的人员快照为基准进行变更校验。 |\n\n## 4. 需求说明\n\n### 4.1 考试对象范围\n\n| 规则项 | 页面要求 |\n|--------|----------|\n| 创建范围 | 仅支持本单位及下属已选部门内创建考试，不支持跨平级单位或上级单位。 |\n| 选择对象 | 本次新增功能仅支持选择人员和已选部门。 |\n| 去重规则 | 系统自动对重复选择的人员进行去重，确保同一考试内同一人员只进入一次考生范围。 |\n| 全部人员 | 选择\"组织内全部人员\"时，隐藏已选人员、已选部门和免考人员配置区。 |\n| 部分人员 | 选择\"仅部分人员\"时，展示选择入口、已选人员、已选部门和免考人员配置区。 |\n| 所属公司 | 不展示所属公司字段，已选结果不按公司划分区域。 |\n\n### 4.2 人员选择器\n\n#### 4.2.1 打开入口与选择范围\n\n| 项目 | 规则 |\n|------|------|\n| 考生范围选择入口 | 点击考生范围中的\"选择\"按钮，打开下级单位人员选择器，用于选择本次考试对象。 |\n| 免考范围选择入口 | 点击免考人员区域的\"选择\"按钮，打开下级单位人员选择器，用于选择本次考试的免考对象。 |\n| 查看已选入口 | 已选人员、已选部门均支持进入查看已选，用于核对和维护已选结果。 |\n| 选择范围 | 仅支持在本单位及下属已选部门内选择人员和部门。 |\n| 选择对象 | 本次新增功能仅支持选择人员和已选部门。 |\n| 人员选择器页面 | 使用 `人员选择-下级单位.html`，不支持跨公司选择。 |\n\n#### 4.2.2 选择模式\n\n| 模式 | 规则 |\n|------|------|\n| 选人员 | 支持按人员维度选择考试对象；可结合姓名、部门名称等条件进行查询，选择后同步进入右侧已选人员区域。 |\n| 选部门 | 支持按部门维度选择考试对象；部门选择结果同步进入右侧已选部门区域。 |\n| 部门级联 | 选择部门时支持按本单位部门层级展开，不涉及跨公司层级。 |\n| 包含下级部门员工 | 选择已选部门时支持按业务需要包含下级部门员工，用于形成完整的部门考试对象范围。 |\n| 已选数量 | 右侧已选区域分别展示人员数量和部门数量，选择、取消选择或移除后实时刷新。 |\n\n#### 4.2.3 查询条件\n\n| 所在区域 | 查询项 | 查询规则 |\n|----------|--------|----------|\n| 选人员列表 | 姓名、部门名称 | 姓名支持按输入内容查询；部门名称支持按本单位部门层级选择后查询。 |\n| 选部门列表 | 部门名称 | 支持按部门名称查询部门树，匹配到的部门及其上级层级需保留展示。 |\n| 查看已选人员 | 姓名、部门 | 仅在已选人员范围内查询，不影响未选人员列表。 |\n| 查看已选部门 | 部门 | 仅在已选已选部门内查询，不影响未选部门列表。 |\n| 查询按钮 | 执行当前条件查询 | 点击后刷新当前列表结果、已选状态和分页。 |\n| 重置按钮 | 清空当前查询条件 | 点击后恢复当前列表默认结果，并保留已选结果。 |\n\n#### 4.2.4 列表展示项\n\n| 列表区域 | 展示项 | 展示规则 |\n|----------|--------|----------|\n| 选人员列表 | 勾选框、姓名、所属部门 | 支持单个勾选、本页全选、分页展示；已选人员在列表中保持选中状态。**不展示所属公司列。** |\n| 选部门列表 | 勾选框、部门名称、部门人数、部门层级 | 以部门层级方式展示；勾选部门时需联动右侧已选部门数量。 |\n| 右侧已选人员 | 已选人员标签、人员数量 | 展示已选人员数量和人员标签，支持从标签上移除单个人员。 |\n| 右侧已选部门 | 已选部门标签、部门数量 | 展示已选部门数量和部门名称标签（仅展示部门名称，不含公司名），支持从标签上移除单个部门。 |\n| 查看已选人员列表 | 勾选框、姓名、所属部门、操作 | 仅展示已选人员；支持单个移除和批量删除。不展示所属公司列。 |\n| 查看已选部门列表 | 勾选框、部门名称、人数、操作 | 仅展示已选部门；支持单个移除和批量删除。不展示所属公司列。 |\n| 空状态 | 暂无数据提示 | 当前查询或已选范围无数据时，列表展示空状态提示。 |\n\n#### 4.2.5 查看已选与移除\n\n| 操作 | 规则 |\n|------|------|\n| 查看已选人员 | 展示当前已选人员清单，支持继续核对和移除。 |\n| 查看已选部门 | 展示当前已选部门清单，支持继续核对和移除。 |\n| 单个移除 | 支持从已选区域移除单个人员或单个部门。 |\n| 全部移除 | 支持清空当前范围内已选人员或部门，清空后同步刷新数量和页面回显。 |\n| 确认返回 | 点击确定后，将当前已选人员、部门以及系统解析出的人员范围返回新增考试页面。 |\n| 取消或关闭 | 取消或关闭人员选择器时，不更新新增考试页面当前已选结果。 |\n\n#### 4.2.6 返回与回显规则\n\n| 项目 | 规则 |\n|------|------|\n| 人员信息 | 返回人员需包含人员 ID、姓名、部门、人员状态等信息，用于创建考试时人员快照和后续发布校验。不返回所属公司。 |\n| 部门信息 | 返回部门需包含部门名称、已选部门等信息，用于页面回显和人员范围解析。不返回所属公司。 |\n| 去重规则 | 人员和已选部门解析后，如出现同一人员重复命中，系统需自动去重。 |\n| 页面回显 | 选择结果返回页面后，立即刷新已选人员、已选部门的数量和标签。部门区域不显示时，隐藏整个已选部门区块。 |\n| 不分组展示 | 已选人员和部门不按公司分组展示，以平铺标签形式呈现。 |\n\n### 4.3 已选人员和部门回显\n\n| 展示对象 | 展示规则 |\n|----------|----------|\n| 已选人员 | 展示在\"已选人员\"区域，以姓名标签平铺展示，不按公司分组。标签上仅显示姓名，hover 可查看完整部门路径。 |\n| 已选部门 | 展示在\"已选部门\"区域，以部门名称标签平铺展示。 |\n| 单个移除 | 支持移除单个人员或单个部门。 |\n| 全部移除 | 支持清空当前已选人员和已选部门。 |\n| 可见性 | 未选择人员时，不展示已选人员区域；未选择部门时，不展示已选部门区域。 |\n| 数量展示 | 已选人员区域标题旁展示人员数量（如\"1人\"），部门区域标题旁展示部门数量（如\"0个部门\"）。 |\n| 超量展示 | 页面已选人员、已选部门或免考已选结果超过 10 条时，页面最多展示前 10 条标签，并展示\"查看更多 X 项\"入口；X = 当前已选总条数 - 10。 |\n| 查看更多 | 点击\"查看更多 X 项\"时，等同于点击当前区域的\"查看已选\"按钮，打开人员选择器的已选视图，用于查看和维护完整已选结果。 |\n\n### 4.4 免考人员配置\n\n| 项目 | 规则 |\n|------|------|\n| 配置入口 | 点击\"免考人员\"区域的\"选择\"按钮，打开下级单位人员选择器。 |\n| 免考对象 | 支持选择免考人员和免考已选部门。 |\n| 结果回显 | 页面展示已选免考人员数量、免考部门数量。已选结果不按公司分组，以标签形式平铺展示。 |\n| 查看已选 | 存在免考对象时，支持查看已选免考人员或免考部门。 |\n| 超量展示 | 免考已选人员或免考已选部门超过 10 条时，页面最多展示前 10 条标签，并展示\"查看更多 X 项\"入口；X = 当前免考已选总条数 - 10。 |\n| 全部移除 | 支持一键清空所有免考人员和免考部门。 |\n| 业务口径 | 免考范围需随考试对象一并保存，用于后续应考人数和考试流程口径计算。 |\n\n### 4.5 人员快照生成\n\n| 场景 | 快照规则 |\n|------|----------|\n| 创建草稿 | 创建考试草稿时，系统基于当前考试对象生成创建考试时人员快照。 |\n| 编辑保存 | 后续每次编辑保存后，需覆盖原人员快照。 |\n| 快照内容 | 快照需保留人员 ID、姓名、部门、人员状态等信息。不含所属公司。 |\n| 校验用途 | 快照用于草稿发布前比对当前考试对象和创建或编辑时的人员差异。 |\n\n### 4.6 新入职人员处理\n\n- 新入职人员不会自动进入已创建考试。\n- 当考试对象为已选部门时，如果草稿发布前存在转入部门或启用人员，需在发布弹窗\"新增\"分类中提示。\n- 管理员需要在发布弹窗中确认人员变更后，考试才继续发布。\n\n## 5. 交互设计\n\n### 5.1 选择考生范围\n\n- 选择\"仅部分人员\"后，页面展示人员选择按钮、已选人员区域（有人员时）和已选部门区域（有部门时）。\n- 选择\"组织内全部人员\"后，页面隐藏选择按钮、已选人员区域、已选部门区域和免考人员配置区。\n- 从人员选择器确认返回后，页面即时刷新已选结果。\n\n### 5.2 查看和移除已选\n\n- 点击\"查看已选\"时，打开人员选择器的已选视图。\n- 当页面已选标签超过 10 条时，仅展示前 10 条，并显示\"查看更多 X 项\"；点击后打开对应区域的查看已选视图，X = 当前已选总条数 - 10。\n- 点击单个标签的移除按钮时，仅移除该人员或部门，其他标签保持不动。\n- 点击\"全部移除\"时，清空当前区域已选结果，并同步刷新数量。\n\n### 5.3 保存与快照\n\n- 保存草稿或完成本步骤保存时，系统生成或更新人员快照。\n- 保存后进入后续考试设置流程。\n- 后续发布校验以最新创建或编辑快照为基准。\n\n### 5.4 页面跳转\n\n- 点击\"上一步\"返回基本信息步骤。\n- 点击\"保存并下一步\"进入考试设置步骤，保存前需校验至少选择了一名用户或一个部门。\n\n## 6. 异常处理\n\n| 异常场景 | 处理方式 |\n|----------|----------|\n| 仅部分人员但未选择考试对象 | 提示管理员至少选择一名已选人员或一个部门。 |\n| 人员选择器取消或关闭 | 不更新当前页面已选结果。 |\n| 当前区域无已选结果 | \"查看已选\"和\"全部移除\"按钮置灰不可用。 |\n| 已选人员区域无人员时 | 隐藏整个已选人员区域。 |\n| 已选部门区域无部门时 | 隐藏整个已选部门区域。 |\n\n## 7. 验收标准\n\n| 验收项 | 验收标准 |\n|--------|----------|\n| 选择范围 | 仅支持在本单位及下属已选部门内选择人员和部门，不可跨平级或上级单位。 |\n| 人员选择器 | 使用下级单位人员选择器（`人员选择-下级单位.html`），不支持跨公司选择。 |\n| 不展示所属公司 | 选人员列表、查看已选人员列表、已选人员标签、已选部门标签均不展示所属公司字段。 |\n| 不按公司分组 | 已选人员和部门不按公司分组展示，以平铺标签形式呈现。 |\n| 已选回显 | 已选人员以姓名标签回显，hover 可查看部门路径；已选部门以名称标签回显。 |\n| 已选超量展示 | 页面已选结果超过 10 条时最多展示 10 条标签，并展示\"查看更多 X 项\"；点击后打开对应查看已选视图，X = 当前已选总条数 - 10。 |\n| 免考配置 | 支持选择免考人员和免考部门，以标签平铺形式回显。 |\n| 查看已选 | 已选人员、已选部门均支持查看已选。 |\n| 移除能力 | 支持单个移除和全部移除已选结果。 |\n| 快照生成 | 创建考试草稿时必须生成人员快照，快照不含所属公司。 |\n| 快照覆盖 | 每次编辑保存后必须覆盖原人员快照。 |\n| 快照内容 | 快照必须包含人员状态字段。 |\n| 新入职处理 | 新入职人员不会自动进入已创建考试，已选部门新增人员在发布校验中提示。 |\n| 组织内全部人员 | 选择后隐藏选择按钮、已选人员、已选部门和免考人员配置区。 |\n\n## 8. 版本变更记录\n\n| 版本 | 日期 | 变更内容 |\n|------|------|----------|\n| V1.0 | 2026-07-13 | 新增下级单位新增考试页面本单位范围内创建考试、人员和部门选择、免考配置、人员快照和发布校验相关 PRD。 |\n| V1.1 | 2026-07-13 | 明确人员选择器右侧已选部门标签仅展示部门名称，不含公司名。 |\n| V1.2 | 2026-07-14 | 补充页面已选结果超过 10 条时最多展示 10 条、展示\"查看更多 X 项\"及点击进入查看已选视图的规则。 |\n",
+  "globalPrd": "# 考试功能 — 整体 PRD\n\n## 1. 引言\n\n### 1.1 背景与目标\n\n\"考试功能\"是 EHS+ 企业版中对员工进行安全生产知识评测的核心模块。该模块需要支持三种不同的租户形态：\n\n- **集团（上级单位）**：跨多家子公司的人员管理形态，需要跨公司选择考试对象、查看跨公司统计数据。\n- **下级单位**：处于集团层级下的成员单位，承接上级派发的考试，同时可创建本单位内部考试。\n- **独立租户（普通租户/非集团）**：无上下级层级关系的独立组织，仅管理本租户范围内的考试。\n\n本 PRD 从全局视角定义考试功能在上述三种租户形态下的统一业务规则、数据模型、角色权限和核心流程。各页面的详细交互规格请参见对应的页面 PRD。\n\n### 1.2 用户价值\n\n| 租户类型 | 核心价值 |\n|----------|----------|\n| 集团管理员 | 跨公司统一下发安全知识考试，掌握全集团各子公司的考试进展与成绩分布。 |\n| 下级单位管理员 | 承接集团下发的考试任务，同时自主创建本单位专属考试来满足内部学习需求。 |\n| 普通租户管理员 | 自主管理本组织的考试全生命周期，从创建、发布到统计分析形成完整闭环。 |\n\n### 1.3 功能范围\n\n**包含**：\n\n| 模块 | 说明 |\n|------|------|\n| 考试列表 | 按租户类型展示对应的考试清单，支持新增、编辑、删除、复制、发布（草稿）、管理（统计入口） |\n| 新增考试 | 三步创建考试：基本信息 → 考生范围（人员/部门选择 + 免考） → 考试设置 |\n| 编辑考试 | 修改草稿考试的考生范围，覆盖人员快照 |\n| 考试统计 | 考生分析、考试记录、部门统计三个维度，含人员状态筛选和部门统计在职过滤 |\n| 人员选择 | 按租户数据范围选择考试对象（人员 + 部门） |\n| 发布校验 | 草稿发布前对人员快照与当前人员主数据的差异进行校验与确认 |\n\n**不包含**：\n\n- 试题配置与管理（考试设置步骤中的具体试题选择不属于本次范围）\n- 考生端的考试作答/提交/成绩查看\n- 移动端管理能力\n\n---\n\n## 2. 三种租户形态概览\n\n```\n┌──────────────────────────────────────────────────────────────────┐\n│                        EHS+ 考试功能                              │\n│                                                                   │\n│  ┌──────────────┐    ┌──────────────────┐    ┌───────────────┐   │\n│  │ 集团         │    │  下级单位         │    │ 独立租户      │   │\n│  │ (上级单位)    │───▶│  (子公司/分公司)   │    │ (非集团组织)   │   │\n│  │              │    │                  │    │               │   │\n│  │ • 跨公司选人  │    │ • 承接上级考试    │    │ • 自建考试    │   │\n│  │ • 自建考试    │    │ • 自建本单位考试  │    │ • 本单位数据  │   │\n│  │ • 跨公司统计  │    │ • 本单位统计     │    │ • 本单位统计  │   │\n│  └──────────────┘    └──────────────────┘    └───────────────┘   │\n│                                                                   │\n│  数据范围: 集团全部公司     数据范围: 本单位+下属部门                  │\n│  人员列: 含\"所属公司\"      人员列: 无\"所属公司\"                   无公司概念 │\n│  统计视图: 部门明细/公司汇总 统计视图: 部门明细                     同下级单位 │\n└──────────────────────────────────────────────────────────────────┘\n```\n\n### 2.1 核心差异对照表\n\n| 差异维度 | 集团 | 下级单位 | 独立租户/普通租户 |\n|----------|------|----------|-------------------|\n| 人员数据范围 | 集团内全部公司 | 本单位 + 下属部门 | 本租户内全部人员 |\n| 跨公司选人 | ✅ 支持 | ❌ 不支持 | ❌ 不涉及（无公司概念） |\n| 上级下发考试 | ❌ 不涉及 | ✅ 考试列表展示上级下发 | ❌ 不涉及 |\n| 上级下发考试操作 | — | 仅\"管理\" | — |\n| 人员列表分组 | 按公司分组 | 不分组、平铺展示 | 不分组、平铺展示 |\n| 考生分析/考试记录列表 | 含\"所属公司\"列 | 无\"所属公司\"列 | 无\"所属公司\"列 |\n| 部门筛选方式 | 公司+部门级联 | 部门下拉树 | 部门下拉树 |\n| 统计部门视图 | 部门明细 + 公司汇总 | 部门明细 | 部门明细 |\n| 人员选择器页面 | 人员选择-集团 | 人员选择-下级单位 | 人员选择-下级单位 |\n\n---\n\n## 3. 角色与权限\n\n| 角色 | 租户端 | 可创建考试 | 可选择的考试对象范围 | 可编辑考试 | 可查看统计 | 说明 |\n|------|--------|-----------|---------------------|-----------|-----------|------|\n| 集团管理员 | 集团 | ✅ | 集团全部公司的人员和部门 | ✅ 仅草稿 | ✅ 全集团 | 可跨公司管理考试全生命周期 |\n| 下级单位管理员 | 下级单位 | ✅ 本单位考试 | 本单位 + 下属部门 | ✅ 仅自建草稿 | ✅ 本单位 | 可承接上级下发考试，对其进行管理操作 |\n| 普通租户管理员 | 独立租户 | ✅ | 本租户全量人员 | ✅ 仅草稿 | ✅ 本租户 | 与下级单位类似，但无上下级关系 |\n\n### 3.1 下级单位对上级下发考试的操作权限\n\n| 操作 | 本单位自建考试 | 上级下发考试 |\n|------|:---:|:---:|\n| 查看详情（名称链接） | ✅ | ✅（查看集团版详情） |\n| 管理（进入统计） | ✅ | ✅ |\n| 预览 | ✅ | ❌ |\n| 发布 | ✅ 草稿 | ❌ |\n| 编辑 | ✅ 草稿 | ❌ |\n| 复制 | ✅ | ❌ |\n| 删除 | ✅ | ❌ |\n| 批量删除 | ✅ | ❌ |\n\n---\n\n## 4. 名词解释\n\n| 术语 | 定义 |\n|------|------|\n| **考试** | 一次完整的考试活动，包含基本信息、考生范围、考试设置、题目配置等。 |\n| **考生范围** | 考试的目标对象集合，可通过选择人员（已选人员）或已选部门来定义。 |\n| **已选人员** | 以单个人员为维度选定的考试对象。 |\n| **已选部门** | 以部门为维度选定的考试对象，选择某部门即包含该部门下（可选含下级部门）的全体人员。 |\n| **组织内全部人员** | 考试对象覆盖当前租户范围内的全部人员，无需单独选择。 |\n| **仅部分人员** | 考试对象仅为管理员选择的具体人员或已选部门内的人员。 |\n| **免考人员** | 被排除在考试要求之外的人员或部门，不计入应考人数，不影响参与率和及格率计算。 |\n| **人员快照** | 创建考试或编辑保存时对当时考试对象范围内所有人员的完整记录（含 ID、姓名、所属公司、部门、人员状态），用于发布前人员变更校验。 |\n| **人员状态** | 枚举值：在职（启用）、离职、停用（禁用）。 |\n| **草稿** | 考试创建后尚未发布的初始状态，支持编辑和发布。 |\n| **未开始** | 考试发布后但尚未到达考试开始时间的状态。 |\n| **进行中** | 考试正处于考试时间段内的状态。 |\n| **已结束** | 考试时间已过的状态。 |\n| **上级下发考试** | 由集团或上级单位创建并推送给下级单位的考试，下级单位不可编辑、删除、发布。 |\n| **自建考试** | 当前租户管理员自行创建的考试。 |\n| **公司汇总** | 集团独有的统计视图，以公司为粒度对部门数据进行扁平汇总展示。 |\n| **部门明细** | 以部门树结构展示统计数据的视图。 |\n\n---\n\n## 5. 核心业务流程图\n\n### 5.1 考试全生命周期（通用）\n\n```mermaid\nflowchart TD\n    A[创建考试] --> B[填写基本信息]\n    B --> C[选择考生范围]\n    C --> C1{考试对象模式?}\n    C1 -->|仅部分人员| C2[选择人员/部门 + 配置免考]\n    C1 -->|组织内全部人员| C3[跳过选人]\n    C2 --> D[设置考试参数]\n    C3 --> D\n    D --> E[生成人员快照]\n    E --> F{保存为草稿}\n    F --> G[草稿状态]\n    G --> H{管理员操作?}\n    H -->|编辑| I[编辑考生范围 → 覆盖快照]\n    I --> G\n    H -->|发布| J[执行发布前人员变更校验]\n    J --> K{有人员变更?}\n    K -->|否| L[直接发布]\n    K -->|是| M[展示发布弹窗]\n    M --> N{管理员确认?}\n    N -->|取消| G\n    N -->|确认发布| L\n    L --> O[未开始]\n    O --> P[进行中]\n    P --> Q[已结束]\n    G -->|删除| R[考试删除]\n```\n\n### 5.2 下级单位特殊流程：上级下发考试\n\n```mermaid\nflowchart TD\n    G[集团管理员] -->|创建并下发| S[上级下发考试]\n    S -->|出现在| SU[下级单位考试列表]\n    SU --> SU1{下级单位操作}\n    SU1 -->|点击名称| SU2[查看集团版考试详情]\n    SU1 -->|管理| SU3[进入本单位统计页]\n    SU1 -->|编辑/删除/发布/复制| SU4[❌ 不可操作]\n```\n\n### 5.3 发布前人员变更校验流程\n\n```mermaid\nflowchart TD\n    A[管理员点击发布] --> B[系统获取人员快照]\n    B --> C[获取当前人员主数据]\n    C --> D{比对快照与主数据}\n    D --> E1[已选人员离职/停用 → 移除]\n    D --> E2[部门内人员离职/停用/转出 → 移除]\n    D --> E3[部门内人员转入/启用 → 新增]\n    E1 --> F{总计变更 > 0 ?}\n    E2 --> F\n    E3 --> F\n    F -->|否| G[直接发布，状态变更为未开始]\n    F -->|是| H[展示发布弹窗]\n    H --> I[按分类查看：全部 / 移除 / 新增]\n    I --> J{管理员操作?}\n    J -->|点击发布| G\n    J -->|点击取消 / 关闭 / 遮罩| K[保持草稿，不发布]\n```\n\n---\n\n## 6. 用例图\n\n```mermaid\nflowchart LR\n    subgraph Actors\n        GA[集团管理员]\n        SA[下级单位管理员]\n        NA[普通租户管理员]\n        SYS[系统]\n    end\n\n    subgraph UC[考试功能用例]\n        direction TB\n        UC1((创建考试))\n        UC2((编辑考试))\n        UC3((发布考试))\n        UC4((查看考试列表))\n        UC5((考试统计))\n        UC6((人员选择))\n        UC7((免考配置))\n        UC8((接收上级考试))\n        UC9((发布前校验))\n        UC10((快照管理))\n    end\n\n    GA --> UC1\n    GA --> UC2\n    GA --> UC3\n    GA --> UC4\n    GA --> UC5\n    GA --> UC6\n    GA --> UC7\n    SA --> UC1\n    SA --> UC2\n    SA --> UC3\n    SA --> UC4\n    SA --> UC5\n    SA --> UC6\n    SA --> UC7\n    SA --> UC8\n    NA --> UC1\n    NA --> UC2\n    NA --> UC3\n    NA --> UC4\n    NA --> UC5\n    NA --> UC6\n    NA --> UC7\n    SYS --> UC9\n    SYS --> UC10\n```\n\n---\n\n## 7. 数据模型\n\n### 7.1 核心实体关系图\n\n```mermaid\nerDiagram\n    租户 ||--o{ 考试 : \"拥有\"\n    考试 ||--o{ 人员快照 : \"生成\"\n    考试 ||--o{ 考试记录 : \"产生\"\n    考试 ||--o{ 免考配置 : \"配置\"\n    考试 }o--|| 租户 : \"归属\"\n    考试 }o--|| 考试分类 : \"分类\"\n\n    租户 {\n        string 租户ID PK\n        string 租户名称\n        string 租户类型 \"集团 / 下级单位 / 普通租户\"\n        string 上级租户ID FK \"下级单位时有值\"\n        string 所属公司名称 \"集团/下级单位\"\n    }\n\n    考试 {\n        string 考试ID PK\n        string 所属租户ID FK\n        string 考试名称\n        string 分类ID FK\n        string 来源 \"自建 / 上级下发\"\n        string 状态 \"草稿 / 未开始 / 进行中 / 已结束\"\n        string 范围模式 \"仅部分人员 / 组织内全部人员\"\n        datetime 考试开始时间\n        datetime 考试结束时间\n        datetime 快照生成时间\n        datetime 创建时间\n        datetime 更新时间\n    }\n\n    人员快照 {\n        string 快照ID PK\n        string 考试ID FK\n        string 人员ID\n        string 姓名\n        string 所属公司 \"集团有值，下级单位/普通租户无\"\n        string 部门名称\n        string 部门全路径\n        string 人员状态 \"在职 / 离职 / 停用\"\n        datetime 快照时间\n        string 快照版本 \"创建 / 编辑\"\n    }\n\n    免考配置 {\n        string 免考配置ID PK\n        string 考试ID FK\n        string 免考类型 \"人员 / 部门\"\n        string 免考目标ID\n        string 免考目标名称\n    }\n\n    考试记录 {\n        string 考试记录ID PK\n        string 考试ID FK\n        string 考生ID\n        string 考生姓名\n        string 所属公司\n        string 部门名称\n        string 完成状态 \"已完成 / 未完成\"\n        int 分数\n        bool 是否及格\n        datetime 交卷时间\n    }\n\n    考试分类 {\n        string 分类ID PK\n        string 租户ID FK\n        string 分类名称\n        string 上级分类ID\n        string 来源 \"自建 / 上级下发（下级单位有上级下发分类节点）\"\n    }\n```\n\n### 7.2 关键字段说明\n\n#### 考试来源\n\n| 值 | 含义 | 适用租户 |\n|----|------|---------|\n| 自建 | 当前租户自建考试 | 全部 |\n| 上级下发 | 上级下发考试 | 下级单位 |\n\n#### 考试状态流转\n\n```\n草稿 → 未开始 → 进行中 → 已结束\n  │\n  └── (删除)\n```\n\n#### 人员快照版本\n\n| 值 | 生成时机 | 说明 |\n|----|---------|------|\n| 创建 | 创建考试保存时 | 考试首次创建时生成 |\n| 编辑 | 编辑考试保存时 | 覆盖旧快照，作为发布校验的最新基准 |\n\n---\n\n## 8. 非功能性需求\n\n### 8.1 性能要求\n\n| 指标 | 要求 |\n|------|------|\n| 考试列表查询响应 | ≤ 2s（1000 条以内） |\n| 人员选择器加载 | ≤ 3s（10,000 以内人员数据） |\n| 部门人数重新计算 | ≤ 3s |\n| 发布前人员变更校验 | ≤ 5s（包含三分类校验） |\n| 考试统计查询 | ≤ 3s |\n| 并发支持 | 支持 100+ 管理员同时操作 |\n\n### 8.2 安全性\n\n| 要求 | 说明 |\n|------|------|\n| 数据隔离 | 不同租户数据严格隔离，下级单位不可访问集团或平级单位数据 |\n| 操作权限 | 上级下发考试在下级单位侧仅开放\"管理\"操作，编辑/删除/发布等操作需校验考试来源为自建 |\n| 人员选择范围限制 | 下级单位人员选择器限定本单位及下属部门，不可越权访问平级或上级单位人员 |\n| 快照安全 | 人员快照为只读历史数据，持久化后不可篡改 |\n\n### 8.3 兼容性\n\n| 要求 | 说明 |\n|------|------|\n| 浏览器 | Chrome 90+、Edge 90+、Safari 14+ |\n| 分辨率 | 1366×768 及以上 |\n\n### 8.4 可维护性\n\n| 要求 | 说明 |\n|------|------|\n| 操作日志 | 考试创建、编辑、发布、删除需记录操作日志 |\n| 快照审计 | 快照生成和覆盖保留历史记录，发布校验时可回溯 |\n\n---\n\n## 9. 页面清单与关联 PRD\n\n### 9.1 集团（上级单位）\n\n| 序号 | 页面名称 | 页面 PRD 路径 | 原型文件 |\n|------|---------|--------------|---------|\n| 1 | 考试列表-集团 | `prd/考试列表-集团.md` | `考试列表-集团.html` |\n| 2 | 新增考试-集团 | `prd/新增考试-集团.md` | `新增考试-集团.html` |\n| 3 | 编辑考试-集团 | `prd/编辑考试-集团.md` | `编辑考试-集团.html` |\n| 4 | 考试统计-集团 | `prd/考试统计-集团.md` | `考试统计-集团.html` |\n| 5 | 人员选择-集团 | — | `人员选择-集团.html` |\n\n### 9.2 下级单位\n\n| 序号 | 页面名称 | 页面 PRD 路径 | 原型文件 |\n|------|---------|--------------|---------|\n| 1 | 考试列表-下级单位 | `prd/考试列表-下级单位.md` | `考试列表-下级单位.html` |\n| 2 | 新增考试-下级单位 | `prd/新增考试-下级单位.md` | `新增考试-下级单位.html` |\n| 3 | 编辑考试-下级单位 | `prd/编辑考试-下级单位.md` | `编辑考试-下级单位:独立租户.html` |\n| 4 | 考试统计-下级单位 | `prd/考试统计-下级单位.md` | `考试统计-下级单位:独立租户.html` |\n| 5 | 人员选择-下级单位：本单位 | — | `人员选择-下级单位:本单位.html` |\n| 6 | 人员选择-下级单位 | — | `人员选择-下级单位.html` |\n\n### 9.3 独立租户/普通租户\n\n| 序号 | 页面名称 | 页面 PRD 路径 | 原型文件 |\n|------|---------|--------------|---------|\n| 1 | 考试列表 | `prd/考试列表-普通租户.md` | `考试列表-普通租户.html` |\n| 2 | 新增考试 | —（参考集团/下级新增） | `新增考试-普通租户.html` |\n| 3 | 编辑考试 | —（参考下级编辑，同数据范围） | `编辑考试-下级单位:独立租户.html` |\n| 4 | 考试统计 | —（参考下级统计） | `考试统计-普通租户.html` |\n\n### 9.4 通用页面\n\n| 序号 | 页面名称 | 说明 | 原型文件 |\n|------|---------|------|---------|\n| 1 | 规则说明 | 考试功能入口的规则说明页 | `规则说明.html` |\n\n### 9.5 小程序\n\n| 序号 | 页面名称 | 说明 | 原型文件 |\n|------|---------|------|---------|\n| 1 | 考试列表 | 小程序端考试列表 | `小程序考试列表.html` |\n\n---\n\n## 10. 附录\n\n### 10.1 租户数据范围矩阵\n\n```\n┌────────────────┬──────────────────────┬──────────────────────┬──────────────────┐\n│   能力 \\ 租户   │        集团           │       下级单位         │    独立租户        │\n├────────────────┼──────────────────────┼──────────────────────┼──────────────────┤\n│ 创建考试        │ 集团跨公司            │ 本单位+下属部门        │ 本租户            │\n│ 上级下发考试     │ 不涉及（集团不下发自己） │ ✅ 列表展示+接收       │ ❌ 不涉及          │\n│ 跨公司选人       │ ✅                    │ ❌                    │ ❌ 无公司概念       │\n│ 人员按公司分组    │ ✅                    │ ❌ 平铺标签            │ ❌ 平铺标签        │\n│ 列表含所属公司列  │ ✅ 考生分析/考试记录    │ ❌                    │ ❌                │\n│ 部门筛选          │ 公司+部门级联          │ 部门下拉树            │ 部门下拉树         │\n│ 统计视图          │ 部门明细 + 公司汇总     │ 部门明细              │ 部门明细           │\n│ 人员选择器        │ 人员选择-集团          │ 人员选择-下级单位       │ 人员选择-下级单位    │\n│ 快照含公司字段    │ ✅                    │ ❌                    │ ❌                │\n│ 分类树上级下发节点 │ ❌                    │ ✅                    │ ❌                │\n└────────────────┴──────────────────────┴──────────────────────┴──────────────────┘\n```\n\n### 10.2 页面状态流转\n\n| 当前状态 | 触发操作 | 目标状态 | 前置条件 |\n|----------|---------|---------|----------|\n| — | 创建考试（保存草稿） | 草稿 | 基本信息填写完成 + 考生范围选择（部分人员模式下至少 1 人或 1 部门） |\n| 草稿 | 编辑保存 | 草稿 | 编辑后覆盖人员快照 |\n| 草稿 | 发布（无变更） | 未开始 | 无人员变更 |\n| 草稿 | 发布（有变更→确认） | 未开始 | 管理员在发布弹窗确认 |\n| 草稿 | 删除 | — | — |\n| 未开始 | 到达开始时间 | 进行中 | 系统自动 |\n| 进行中 | 到达结束时间 | 已结束 | 系统自动 |\n\n### 10.3 版本变更记录\n\n| 版本 | 日期 | 变更内容 | 作者 |\n|------|------|----------|------|\n| V1.0 | 2026-07-13 | 初版。统一定义集团/下级单位/独立租户三种形态下考试功能的全局业务规则、数据模型、角色权限、核心流程和页面清单。 | — |\n\n### 10.4 引用标准\n\n- 本 PRD 作为\"总分结构\"中的总纲，各页面详细交互/UI 规格参见对应的页面 PRD。\n- 所有页面 PRD 的编号均以本 PRD 中第 9 节的页面清单为索引。\n- 三种租户的独特规则已在各差异对照表和矩阵中明确标注。\n",
   "annotations": [],
   "badges": [
     {
@@ -1428,31 +1480,31 @@
       "anchor": {
         "selector": ".range-cards"
       },
-      "content": "<div class=\"prd-content-wide\"><p><strong>对应 PRD：4.1 考试对象范围</strong></p><table class=\"prd-readable-table\"><thead><tr><th>规则项</th><th>页面要求</th></tr></thead><tbody><tr><td>创建范围</td><td>普通租户仅支持本租户范围内创建考试。</td></tr><tr><td>选择对象</td><td>支持选择人员和部门范围。</td></tr><tr><td>去重规则</td><td>系统自动对重复选择的人员进行去重，确保同一考试内同一人员只进入一次考生范围。</td></tr><tr><td>组织内全部人员</td><td>选择后隐藏指定用户、部门范围和免考人员配置区。</td></tr><tr><td>仅部分人员</td><td>选择后展示选择入口、指定用户、部门范围和免考人员配置区。</td></tr></tbody></table></div>"
+      "content": "<div class=\"prd-content-wide\"><p><strong>对应 PRD：4.1 考试对象范围</strong></p><table class=\"prd-readable-table\"><thead><tr><th>规则项</th><th>页面要求</th></tr></thead><tbody><tr><td>创建范围</td><td>普通租户仅支持本租户范围内创建考试。</td></tr><tr><td>选择对象</td><td>支持选择人员和已选部门。</td></tr><tr><td>去重规则</td><td>系统自动对重复选择的人员进行去重，确保同一考试内同一人员只进入一次考生范围。</td></tr><tr><td>组织内全部人员</td><td>选择后隐藏已选人员、已选部门和免考人员配置区。</td></tr><tr><td>仅部分人员</td><td>选择后展示选择入口、已选人员、已选部门和免考人员配置区。</td></tr></tbody></table></div>"
     },
     {
       "id": "2",
       "title": "选择考试对象",
       "anchor": {
-        "selector": ".btn-select-standalone"
+        "selector": ".btn-add"
       },
-      "content": "<div class=\"prd-content-wide\"><p><strong>对应 PRD：4.2.1 打开入口与选择范围</strong></p><table class=\"prd-readable-table\"><thead><tr><th>项目</th><th>规则</th></tr></thead><tbody><tr><td>触发动作</td><td>点击考生范围中的\"选择\"按钮。</td></tr><tr><td>打开页面</td><td>打开人员选择器，用于选择本次考试对象。</td></tr><tr><td>选择范围</td><td>仅支持在当前租户范围内选择人员和部门。</td></tr><tr><td>查看已选</td><td>指定用户、部门范围均支持进入查看已选，用于核对和维护已选结果。</td></tr><tr><td>确认返回</td><td>确认后将当前已选人员、部门和系统解析出的人员范围返回新增考试页面。</td></tr></tbody></table></div>"
+      "content": "<div class=\"prd-content-wide\"><p><strong>对应 PRD：4.2.1 打开入口与选择范围</strong></p><table class=\"prd-readable-table\"><thead><tr><th>项目</th><th>规则</th></tr></thead><tbody><tr><td>触发动作</td><td>点击考生范围中的\"选择\"按钮。</td></tr><tr><td>打开页面</td><td>打开人员选择器，用于选择本次考试对象。</td></tr><tr><td>选择范围</td><td>仅支持在当前租户范围内选择人员和部门。</td></tr><tr><td>查看已选</td><td>已选人员、已选部门均支持进入查看已选，用于核对和维护已选结果。</td></tr><tr><td>确认返回</td><td>确认后将当前已选人员、部门和系统解析出的人员范围返回新增考试页面。</td></tr></tbody></table></div>"
     },
     {
       "id": "3",
-      "title": "指定用户",
+      "title": "已选人员",
       "anchor": {
         "selector": "#specifiedUserSection"
       },
-      "content": "<div class=\"prd-content-wide\"><p><strong>对应 PRD：4.3 已选人员和部门回显</strong></p><table class=\"prd-readable-table\"><thead><tr><th>展示对象</th><th>展示规则</th></tr></thead><tbody><tr><td>已选人员</td><td>展示在指定用户区域，以姓名标签平铺展示，不按公司分组。</td></tr><tr><td>标签内容</td><td>标签上显示姓名，hover 可查看完整部门路径。</td></tr><tr><td>单个移除</td><td>支持移除单个人员，其他标签保持不动。</td></tr><tr><td>全部移除</td><td>支持清空当前已选人员和部门范围。</td></tr><tr><td>可见性</td><td>未选择人员时隐藏整个指定用户区域。</td></tr><tr><td>超量展示</td><td>已选人员超过 10 条时，页面最多展示前 10 条标签，并显示「查看更多 X 项」，X = 已选人员总数 - 10。</td></tr><tr><td>查看更多</td><td>点击「查看更多 X 项」时，等同于点击当前区域的「查看已选」按钮，打开已选人员视图，用于查看和维护完整已选人员。</td></tr></tbody></table></div>"
+      "content": "<div class=\"prd-content-wide\"><p><strong>对应 PRD：4.3 已选人员和部门回显</strong></p><table class=\"prd-readable-table\"><thead><tr><th>展示对象</th><th>展示规则</th></tr></thead><tbody><tr><td>已选人员</td><td>展示在已选人员区域，以姓名标签平铺展示，不按公司分组。</td></tr><tr><td>标签内容</td><td>标签上显示姓名，hover 可查看完整部门路径。</td></tr><tr><td>单个移除</td><td>支持移除单个人员，其他标签保持不动。</td></tr><tr><td>全部移除</td><td>支持清空当前已选人员和已选部门。</td></tr><tr><td>可见性</td><td>未选择人员时隐藏整个已选人员区域。</td></tr><tr><td>超量展示</td><td>已选人员超过 10 条时，页面最多展示前 10 条标签，并显示「查看更多 X 项」，X = 已选人员总数 - 10。</td></tr><tr><td>查看更多</td><td>点击「查看更多 X 项」时，等同于点击当前区域的「查看已选」按钮，打开已选人员视图，用于查看和维护完整已选人员。</td></tr></tbody></table></div>"
     },
     {
       "id": "4",
-      "title": "部门范围",
+      "title": "已选部门",
       "anchor": {
         "selector": "#deptRangeSection"
       },
-      "content": "<div class=\"prd-content-wide\"><p><strong>对应 PRD：4.3 已选人员和部门回显</strong></p><table class=\"prd-readable-table\"><thead><tr><th>展示对象</th><th>展示规则</th></tr></thead><tbody><tr><td>已选部门</td><td>展示在部门范围区域，以部门名称标签平铺展示。</td></tr><tr><td>部门标签</td><td>仅展示部门名称，不展示公司名。</td></tr><tr><td>单个移除</td><td>支持移除单个部门，并同步刷新数量。</td></tr><tr><td>全部移除</td><td>支持清空当前已选部门范围。</td></tr><tr><td>可见性</td><td>未选择部门时隐藏整个部门范围区域。</td></tr><tr><td>超量展示</td><td>已选部门超过 10 条时，页面最多展示前 10 条标签，并显示「查看更多 X 项」，X = 已选部门总数 - 10。</td></tr><tr><td>查看更多</td><td>点击「查看更多 X 项」时，等同于点击当前区域的「查看已选」按钮，打开已选部门视图，用于查看和维护完整已选部门。</td></tr></tbody></table></div>"
+      "content": "<div class=\"prd-content-wide\"><p><strong>对应 PRD：4.3 已选人员和部门回显</strong></p><table class=\"prd-readable-table\"><thead><tr><th>展示对象</th><th>展示规则</th></tr></thead><tbody><tr><td>已选部门</td><td>展示在已选部门区域，以部门名称标签平铺展示。</td></tr><tr><td>部门标签</td><td>仅展示部门名称，不展示公司名。</td></tr><tr><td>单个移除</td><td>支持移除单个部门，并同步刷新数量。</td></tr><tr><td>全部移除</td><td>支持清空当前已选已选部门。</td></tr><tr><td>可见性</td><td>未选择部门时隐藏整个已选部门区域。</td></tr><tr><td>超量展示</td><td>已选部门超过 10 条时，页面最多展示前 10 条标签，并显示「查看更多 X 项」，X = 已选部门总数 - 10。</td></tr><tr><td>查看更多</td><td>点击「查看更多 X 项」时，等同于点击当前区域的「查看已选」按钮，打开已选部门视图，用于查看和维护完整已选部门。</td></tr></tbody></table></div>"
     },
     {
       "id": "5",
@@ -1460,7 +1512,7 @@
       "anchor": {
         "selector": "#exemptSection"
       },
-      "content": "<div class=\"prd-content-wide\"><p><strong>对应 PRD：4.4 免考人员配置</strong></p><table class=\"prd-readable-table\"><thead><tr><th>项目</th><th>规则</th></tr></thead><tbody><tr><td>配置入口</td><td>点击免考人员区域的\"选择\"按钮打开人员选择器。</td></tr><tr><td>免考对象</td><td>支持选择免考人员和免考部门范围。</td></tr><tr><td>结果回显</td><td>展示已选免考人员数量、免考部门数量，已选结果以标签形式平铺展示。</td></tr><tr><td>查看已选</td><td>存在免考对象时，支持查看已选免考人员或免考部门。</td></tr><tr><td>业务口径</td><td>免考范围随考试对象一并保存，用于后续应考人数和考试流程口径计算。</td></tr><tr><td>超量展示</td><td>免考已选人员或免考已选部门超过 10 条时，页面最多展示前 10 条标签，并显示「查看更多 X 项」，X = 当前免考已选总条数 - 10。</td></tr><tr><td>查看更多</td><td>点击「查看更多 X 项」时，等同于点击免考区域的「查看已选」按钮，打开对应已选视图，用于查看和维护完整免考范围。</td></tr></tbody></table></div>"
+      "content": "<div class=\"prd-content-wide\"><p><strong>对应 PRD：4.4 免考人员配置</strong></p><table class=\"prd-readable-table\"><thead><tr><th>项目</th><th>规则</th></tr></thead><tbody><tr><td>配置入口</td><td>点击免考人员区域的\"选择\"按钮打开人员选择器。</td></tr><tr><td>免考对象</td><td>支持选择免考人员和免考已选部门。</td></tr><tr><td>结果回显</td><td>展示已选免考人员数量、免考部门数量，已选结果以标签形式平铺展示。</td></tr><tr><td>查看已选</td><td>存在免考对象时，支持查看已选免考人员或免考部门。</td></tr><tr><td>业务口径</td><td>免考范围随考试对象一并保存，用于后续应考人数和考试流程口径计算。</td></tr><tr><td>超量展示</td><td>免考已选人员或免考已选部门超过 10 条时，页面最多展示前 10 条标签，并显示「查看更多 X 项」，X = 当前免考已选总条数 - 10。</td></tr><tr><td>查看更多</td><td>点击「查看更多 X 项」时，等同于点击免考区域的「查看已选」按钮，打开对应已选视图，用于查看和维护完整免考范围。</td></tr></tbody></table></div>"
     },
     {
       "id": "6",
@@ -1476,13 +1528,13 @@
       "anchor": {
         "selector": "#specifiedCount"
       },
-      "content": "<div class=\"prd-content-wide\"><p><strong>对应 PRD：4.3 已选人员和部门回显</strong></p><table class=\"prd-readable-table\"><thead><tr><th>统计项</th><th>规则</th></tr></thead><tbody><tr><td>指定用户数量</td><td>指定用户区域标题旁展示人员数量。</td></tr><tr><td>部门数量</td><td>部门范围区域标题旁展示部门数量。</td></tr><tr><td>刷新时机</td><td>选择返回、单个移除、全部移除后同步刷新数量和页面回显。</td></tr></tbody></table></div>"
+      "content": "<div class=\"prd-content-wide\"><p><strong>对应 PRD：4.3 已选人员和部门回显</strong></p><table class=\"prd-readable-table\"><thead><tr><th>统计项</th><th>规则</th></tr></thead><tbody><tr><td>已选人员数量</td><td>已选人员区域标题旁展示人员数量。</td></tr><tr><td>部门数量</td><td>已选部门区域标题旁展示部门数量。</td></tr><tr><td>刷新时机</td><td>选择返回、单个移除、全部移除后同步刷新数量和页面回显。</td></tr></tbody></table></div>"
     },
     {
       "id": "8",
       "title": "免考人员统计",
       "anchor": {
-        "selector": "#exemptCount"
+        "selector": "#exemptSection"
       },
       "content": "<div class=\"prd-content-wide\"><p><strong>对应 PRD：4.4 免考人员配置</strong></p><table class=\"prd-readable-table\"><thead><tr><th>统计项</th><th>规则</th></tr></thead><tbody><tr><td>免考人数</td><td>页面展示已选免考人员数量。</td></tr><tr><td>免考部门</td><td>页面展示已选免考部门数量。</td></tr><tr><td>同步刷新</td><td>选择、查看已选、单个移除和全部移除后同步刷新免考统计。</td></tr></tbody></table></div>"
     }

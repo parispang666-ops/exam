@@ -1874,7 +1874,7 @@
           const node = findNode(id);
           if (!node) return null;
           const companyName = deptToCompany[id] || node.name;
-          return { id, cells: [formatScopeName(companyName, node.name), companyName, getDeptDisplayCount(node)], raw: node };
+          return { id, cells: [node.name, companyName, getDeptDisplayCount(node)], raw: node };
         }).filter(Boolean).filter(item => {
           return (!f.company || item.cells[1] === f.company) &&
                  (!f.dept || item.raw.name === f.dept);
