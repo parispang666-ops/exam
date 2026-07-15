@@ -425,9 +425,9 @@
     <div class="content-toolbar">
       <button class="sidebar-toggle-btn" id="sidebarToggle" type="button" onclick="toggleSidebar()" title="收起左侧导航" aria-label="收起左侧导航">←</button>
       <div class="breadcrumb">
-        环慧慧EHS+ <span class="sep">›</span>
+        环慧慧EHS+ <span class="sep" id="breadcrumb-sep1">›</span>
         <span id="breadcrumb-platform" class="current">请选择</span>
-        <span class="sep">›</span>
+        <span class="sep" id="breadcrumb-sep2">›</span>
         <span id="breadcrumb-page" class="current">页面</span>
       </div>
     </div>
@@ -450,12 +450,12 @@
   // 配置数据（由 Index Generator Skill 自动生成）
   // =================================================================
   const menuConfig = [
+    { type: 'page', label: '规则说明', file: '规则说明.html' },
     {
       type: 'group',
       id: 'pc',
       label: '电脑端',
       children: [
-        { type: 'page', label: '规则说明', file: '规则说明.html' },
         {
           type: 'group',
           id: 'pc-group',
@@ -569,7 +569,7 @@
     frame.src = fileName;
 
     // 查找父级分组标签
-    let parentGroupLabel = '电脑端';
+    let parentGroupLabel = '';
     const parentGroup = el.closest('.nav-children');
     if (parentGroup) {
       const groupHeader = parentGroup.previousElementSibling;
@@ -578,9 +578,22 @@
         if (labelEl) parentGroupLabel = labelEl.textContent;
       }
     }
+    // 如果不在任何子分组中，检查是否在顶层分组中
+    if (!parentGroupLabel) {
+      const topGroupHeader = el.parentElement?.previousElementSibling;
+      if (topGroupHeader && topGroupHeader.classList.contains('nav-subgroup-header')) {
+        const labelEl = topGroupHeader.querySelector('.label');
+        if (labelEl) parentGroupLabel = labelEl.textContent;
+      }
+    }
 
     document.getElementById('breadcrumb-platform').textContent = parentGroupLabel;
     document.getElementById('breadcrumb-page').textContent = pageName;
+    // 顶层页面（无父分组）隐藏平台面包屑和分隔符
+    const showPlatform = !!parentGroupLabel;
+    document.getElementById('breadcrumb-sep1').style.display = showPlatform ? '' : 'none';
+    document.getElementById('breadcrumb-platform').style.display = showPlatform ? '' : 'none';
+    document.getElementById('breadcrumb-sep2').style.display = showPlatform ? '' : 'none';
 
     // 持久化
     localStorage.setItem('nav-active-page', fileName);
@@ -609,7 +622,13 @@
         frame.style.display = 'block';
         frame.src = savedFile;
         document.getElementById('breadcrumb-page').textContent = savedName;
-        if (savedPlatform) document.getElementById('breadcrumb-platform').textContent = savedPlatform;
+        if (savedPlatform) {
+          document.getElementById('breadcrumb-platform').textContent = savedPlatform;
+        } else {
+          document.getElementById('breadcrumb-sep1').style.display = 'none';
+          document.getElementById('breadcrumb-platform').style.display = 'none';
+          document.getElementById('breadcrumb-sep2').style.display = 'none';
+        }
       }
     }
   }
