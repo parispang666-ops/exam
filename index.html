@@ -470,10 +470,10 @@
           id: 'pc-group',
           label: '集团（上级单位）',
           children: [
-            { type: 'page', label: '考试列表-集团', file: '考试列表-集团.html' },
-            { type: 'page', label: '新增考试-集团', file: '新增考试-集团.html' },
-            { type: 'page', label: '编辑考试-集团', file: '编辑考试-集团.html' },
-            { type: 'page', label: '考试统计-集团', file: '考试统计-集团.html' }
+            { type: 'page', label: '考试列表', file: '考试列表-集团.html' },
+            { type: 'page', label: '新增考试', file: '新增考试-集团.html' },
+            { type: 'page', label: '编辑考试', file: '编辑考试-集团.html' },
+            { type: 'page', label: '考试统计', file: '考试统计-集团.html' }
           ]
         },
         {
@@ -481,10 +481,8 @@
           id: 'pc-subordinate',
           label: '下级单位',
           children: [
-            { type: 'page', label: '考试列表-下级单位', file: '考试列表-下级单位.html' },
-            { type: 'page', label: '新增考试-下级单位', file: '新增考试-下级单位.html' },
-            { type: 'page', label: '编辑考试-下级单位', file: '编辑考试-下级单位:独立租户.html' },
-            { type: 'page', label: '考试统计-下级单位', file: '考试统计-下级单位:独立租户.html' }
+            { type: 'page', label: '考试列表', file: '考试列表-下级单位.html' },
+            { type: 'page', label: '考试统计-上级分发', file: '考试统计-下级单位:独立租户.html' }
           ]
         },
         {
@@ -492,10 +490,18 @@
           id: 'pc-normal',
           label: '普通租户（非集团）',
           children: [
-            { type: 'page', label: '考试列表', file: '考试列表-普通租户.html' },
+            { type: 'page', label: '考试列表', file: '考试列表-普通租户.html' }
+          ]
+        },
+        {
+          type: 'group',
+          id: 'pc-shared',
+          label: '普通租户/下级单位',
+          children: [
+            { type: 'page', label: '新增考试', file: '新增考试-下级单位.html' },
             { type: 'page', label: '新增考试', file: '新增考试-普通租户.html' },
             { type: 'page', label: '编辑考试', file: '编辑考试-下级单位:独立租户.html' },
-            { type: 'page', label: '考试统计', file: '考试统计-下级单位:独立租户.html' }
+            { type: 'page', label: '考试统计-本单位', file: '考试统计-普通租户.html' }
           ]
         }
       ]
@@ -520,10 +526,10 @@
           id: 'prd-group',
           label: '集团（上级单位）',
           children: [
-            { type: 'page', label: '考试列表-集团', file: 'prd/考试列表-集团.md' },
-            { type: 'page', label: '新增考试-集团', file: 'prd/新增考试-集团.md' },
-            { type: 'page', label: '编辑考试-集团', file: 'prd/编辑考试-集团.md' },
-            { type: 'page', label: '考试统计-集团', file: 'prd/考试统计-集团.md' }
+            { type: 'page', label: '考试列表', file: 'prd/考试列表-集团.md' },
+            { type: 'page', label: '新增考试', file: 'prd/新增考试-集团.md' },
+            { type: 'page', label: '编辑考试', file: 'prd/编辑考试-集团.md' },
+            { type: 'page', label: '考试统计', file: 'prd/考试统计-集团.md' }
           ]
         },
         {
@@ -531,10 +537,8 @@
           id: 'prd-subordinate',
           label: '下级单位',
           children: [
-            { type: 'page', label: '考试列表-下级单位', file: 'prd/考试列表-下级单位.md' },
-            { type: 'page', label: '新增考试-下级单位', file: 'prd/新增考试-下级单位.md' },
-            { type: 'page', label: '编辑考试-下级单位', file: 'prd/编辑考试-下级单位.md' },
-            { type: 'page', label: '考试统计-下级单位', file: 'prd/考试统计-下级单位.md' }
+            { type: 'page', label: '考试列表', file: 'prd/考试列表-下级单位.md' },
+            { type: 'page', label: '考试统计-上级分发', file: 'prd/考试统计-上级下发.md' }
           ]
         },
         {
@@ -543,6 +547,16 @@
           label: '普通租户（非集团）',
           children: [
             { type: 'page', label: '考试列表', file: 'prd/考试列表-普通租户.md' }
+          ]
+        },
+        {
+          type: 'group',
+          id: 'prd-shared',
+          label: '普通租户/下级单位',
+          children: [
+            { type: 'page', label: '新增考试', file: 'prd/新增考试-下级单位.md' },
+            { type: 'page', label: '编辑考试', file: 'prd/编辑考试-下级单位.md' },
+            { type: 'page', label: '考试统计-本单位', file: 'prd/考试统计-本单位.md' }
           ]
         },
         {
@@ -558,7 +572,7 @@
   ];
 
   // 默认展开的分组ID
-  const defaultExpandedGroups = ['proto', 'pc', 'pc-group', 'pc-subordinate', 'pc-normal', 'mini', 'prd', 'prd-group', 'prd-subordinate', 'prd-normal', 'prd-mini'];
+  const defaultExpandedGroups = ['proto', 'pc', 'pc-group', 'pc-subordinate', 'pc-normal', 'pc-shared', 'mini', 'prd', 'prd-group', 'prd-subordinate', 'prd-normal', 'prd-shared', 'prd-mini'];
 
   // =================================================================
   // 渲染逻辑（保持不变）
