@@ -455,10 +455,11 @@
       height: 32px;
       padding: 0 12px;
       background: #fff;
-      border: 1px solid var(--color-border);
-      border-radius: 16px;
+      border: 1px solid #E5E7EB;
+      border-radius: 4px;
       font-size: 13px;
       color: var(--color-text-primary);
+      font-weight: 500;
     }
     .person-tag-remove {
       width: 16px;
@@ -542,7 +543,7 @@
     .scope-card-body {
       min-height: 80px;
       padding: 24px;
-      background: #F6F7F9;
+      background: #FAFBFC;
     }
     .scope-tags {
       display: flex;
@@ -552,6 +553,76 @@
       overflow: hidden;
       position: relative;
     }
+    .scope-tags.is-grouped {
+      display: block;
+    }
+    .selected-company-groups {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .selected-company-group {
+      padding: 16px 18px 18px;
+      border: 1px solid #E8EDF5;
+      border-radius: 8px;
+      background: #F8FAFC;
+    }
+    .company-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .company-title-left {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--color-text-primary);
+      font-size: 15px;
+      line-height: 22px;
+      font-weight: 500;
+    }
+    .selected-company-count {
+      color: var(--color-text-secondary);
+      font-weight: 400;
+    }
+    .company-more-btn-slot {
+      flex-shrink: 0;
+    }
+    .selected-company-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      max-height: 74px;
+      overflow: hidden;
+      position: relative;
+    }
+    .selected-company-tags .person-tag,
+    .selected-company-tags .scope-tag {
+      height: 32px;
+      border: 1px solid #E5E7EB;
+      border-radius: 4px;
+      color: var(--color-text-primary);
+      background: #fff;
+    }
+    .selected-more-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: fit-content;
+      height: 28px;
+      padding: 0 12px;
+      border: 1px solid #B7D7FF;
+      border-radius: 4px;
+      background: #F2F8FF;
+      color: var(--color-brand);
+      font-size: 12px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .selected-more-btn:hover {
+      background: #E6F2FF;
+    }
     .scope-tag {
       display: inline-flex;
       align-items: center;
@@ -560,6 +631,7 @@
       max-width: 100%;
       padding: 0 10px;
       background: #fff;
+      border: 1px solid #E5E7EB;
       border-radius: 4px;
       color: var(--color-text-primary);
       font-size: 13px;
@@ -1135,6 +1207,74 @@
     return name || company || '';
   }
 
+  function formatDeptRangeInCompany(dept) {
+    if (dept.company && dept.name === dept.company) return '全公司';
+    return dept.name;
+  }
+
+  function getCompanyGroupName(item) {
+    return item?.company || '未设置公司';
+  }
+
+  function groupByCompany(items) {
+    const groups = [];
+    const groupMap = new Map();
+    (items || []).forEach(item => {
+      const company = getCompanyGroupName(item);
+      if (!groupMap.has(company)) {
+        const group = { company, items: [] };
+        groupMap.set(company, group);
+        groups.push(group);
+      }
+      groupMap.get(company).items.push(item);
+    });
+    return groups;
+  }
+
+  function companyGroupTemplate(group, renderTag, clickMoreHandler = '', companyId = '') {
+    const totalCount = group.totalCount ?? group.items.length;
+    const cid = companyId || escapeHTML(group.company).replace(/\s/g, '_');
+    return `
+      <div class="selected-company-group" data-company-id="${cid}">
+        <div class="company-title-row">
+          <div class="company-title-left">
+            <span>${escapeHTML(group.company)}</span>
+            <span class="selected-company-count">（${totalCount}）</span>
+          </div>
+          <span class="company-more-btn-slot" data-handler="${escapeHTML(clickMoreHandler)}"></span>
+        </div>
+        <div class="selected-company-tags" data-total="${totalCount}">
+          ${group.items.map(renderTag).join('')}
+        </div>
+      </div>
+    `;
+  }
+
+  function selectedMoreButton(clickHandler, totalCount) {
+    return `<button type="button" class="selected-more-btn" onclick="${escapeHTML(clickHandler)}">查看全部（${totalCount}项）</button>`;
+  }
+
+  function escapeJSString(str) {
+    return String(str ?? '').replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/\r/g, '\\r').replace(/\n/g, '\\n');
+  }
+
+  function renderCompanyGroups(items, renderTag, emptyText, clickMoreHandler = '') {
+    if (!items || items.length === 0) return `<div class="person-box-empty">${escapeHTML(emptyText)}</div>`;
+    const groups = groupByCompany(items);
+    return `
+      <div class="selected-company-groups">
+        ${groups.map(group => {
+          return companyGroupTemplate(
+            { company: group.company, items: group.items, totalCount: group.items.length },
+            renderTag,
+            typeof clickMoreHandler === 'function' ? clickMoreHandler(group.company) : clickMoreHandler,
+            escapeHTML(group.company).replace(/\s/g, '_')
+          );
+        }).join('')}
+      </div>
+    `;
+  }
+
   function setRange(value) {
     currentRange = value;
     rangeCards.forEach(card => {
@@ -1166,12 +1306,12 @@
     if (specifiedUsers.length === 0) {
       box.innerHTML = '<div class="person-box-empty">暂无已选人员</div>';
     } else {
-      box.innerHTML = `
-        <div class="person-tags tags-collapsible" id="specifiedTags" data-total="${specifiedUsers.length}">
-          ${specifiedUsers.map(u => userTagTemplate(u, 'removeSpecified')).join('')}
-          <span class="tags-more-btn-slot" data-handler="viewScopeSelected('person')"></span>
-        </div>
-      `;
+      box.innerHTML = renderCompanyGroups(
+        specifiedUsers,
+        user => userTagTemplate(user, 'removeSpecified'),
+        '暂无已选人员',
+        company => `viewScopeSelected('person', '${escapeJSString(company)}')`
+      );
     }
 
     const hasSpecified = hasSpecifiedSelection();
@@ -1193,11 +1333,13 @@
     document.getElementById('deptRangeCount').textContent = specifiedDeptRanges.length + '个部门';
 
     const deptRangeTagsEl = document.getElementById('deptRangeTags');
-    deptRangeTagsEl.classList.add('tags-collapsible');
-    deptRangeTagsEl.setAttribute('data-total', specifiedDeptRanges.length);
-    deptRangeTagsEl.innerHTML = specifiedDeptRanges
-      .map(dept => scopeTagTemplate(dept, 'removeDeptRange', formatScopeName(dept.company, dept.name)))
-      .join('') + `<span class="tags-more-btn-slot" data-handler="viewScopeSelected('dept')"></span>`;
+    deptRangeTagsEl.classList.add('is-grouped');
+    deptRangeTagsEl.innerHTML = renderCompanyGroups(
+      specifiedDeptRanges,
+      dept => scopeTagTemplate(dept, 'removeDeptRange', formatDeptRangeInCompany(dept)),
+      '暂无已选部门',
+      company => `viewScopeSelected('dept', '${escapeJSString(company)}')`
+    );
     checkTagOverflow();
   }
 
@@ -1217,14 +1359,14 @@
     const userBlock = exemptUsers.length > 0 ? renderExemptBlock(
       '已选人员',
       exemptUsers.length + '人',
-      renderTags(exemptUsers, 'person-tags', user => userTagTemplate(user, 'removeExempt'), '暂无已选人员', "viewExemptSelected('person')"),
+      renderCompanyGroups(exemptUsers, user => userTagTemplate(user, 'removeExempt'), '暂无已选人员', company => `viewExemptSelected('person', '${escapeJSString(company)}')`),
       "viewExemptSelected('person')",
       'removeAllExemptUsers()'
     ) : '';
     const deptBlock = exemptDeptRanges.length > 0 ? renderExemptBlock(
       '已选部门',
       exemptDeptRanges.length + '个部门',
-      renderTags(exemptDeptRanges, 'scope-tags', dept => scopeTagTemplate(dept, 'removeExemptDept', formatScopeName(dept.company, dept.name)), '暂无已选部门', "viewExemptSelected('dept')"),
+      renderCompanyGroups(exemptDeptRanges, dept => scopeTagTemplate(dept, 'removeExemptDept', formatDeptRangeInCompany(dept)), '暂无已选部门', company => `viewExemptSelected('dept', '${escapeJSString(company)}')`),
       "viewExemptSelected('dept')",
       'removeAllExemptDepts()'
     ) : '';
@@ -1280,18 +1422,18 @@
 
   function checkTagOverflow() {
     requestAnimationFrame(() => {
-      document.querySelectorAll('.person-tags.tags-collapsible, .scope-tags.tags-collapsible').forEach(tagsEl => {
-        const slot = tagsEl.querySelector('.tags-more-btn-slot');
+      document.querySelectorAll('.selected-company-tags, .person-tags').forEach(tagsEl => {
+        const container = tagsEl.closest('.selected-company-group, #specifiedUserBox');
+        if (!container) return;
+        const slot = container.querySelector('.company-more-btn-slot');
         if (!slot) return;
         const total = parseInt(tagsEl.dataset.total) || 0;
         const overflow = tagsEl.scrollHeight > tagsEl.clientHeight + 1;
         if (overflow && total > 0) {
           const handler = slot.dataset.handler || '';
           slot.innerHTML = selectedMoreButton(handler, total);
-          slot.style.display = 'block';
         } else {
           slot.innerHTML = '';
-          slot.style.display = 'none';
         }
       });
     });
@@ -1317,17 +1459,18 @@
     renderScopeRanges();
   }
 
-  function viewScopeSelected(type) {
-    openPersonPicker(type, type);
+  function viewScopeSelected(type, companyFilter = '') {
+    openPersonPicker(type, type, companyFilter);
   }
 
-  function viewExemptSelected(type) {
+  function viewExemptSelected(type, companyFilter = '') {
     currentPicker = 'exempt';
     openPickerModal({
       users: exemptUsers,
       depts: exemptDeptRanges,
       activeTab: type,
-      viewSelectedType: type
+      viewSelectedType: type,
+      companyFilter
     });
   }
 
@@ -1335,13 +1478,14 @@
     return exemptUsers.length > 0 ? 'person' : 'dept';
   }
 
-  function openPersonPicker(activeTab = 'person', viewSelectedType = '') {
+  function openPersonPicker(activeTab = 'person', viewSelectedType = '', companyFilter = '') {
     currentPicker = 'specified';
     openPickerModal({
       users: specifiedUsers,
       depts: specifiedDeptRanges,
       activeTab,
-      viewSelectedType
+      viewSelectedType,
+      companyFilter
     });
   }
 
@@ -1373,7 +1517,8 @@
           personIds: selectedIds,
           deptIds: selectedDeptIds,
           activeTab: selection.activeTab || 'person',
-          viewSelectedType: selection.viewSelectedType || ''
+          viewSelectedType: selection.viewSelectedType || '',
+          companyFilter: selection.companyFilter || ''
         }
       }, '*');
     };

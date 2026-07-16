@@ -535,7 +535,7 @@
     .scope-card-body {
       min-height: 80px;
       padding: 24px;
-      background: #F6F7F9;
+      background: #FAFBFC;
     }
     .scope-tags {
       display: flex;
@@ -744,13 +744,19 @@
       padding: 16px 18px 18px;
       border: 1px solid #E8EDF5;
       border-radius: 8px;
-      background: #fff;
+      background: #F8FAFC;
     }
     .selected-company-title {
       display: flex;
       align-items: center;
-      gap: 6px;
+      justify-content: space-between;
+      gap: 12px;
       margin-bottom: 12px;
+    }
+    .company-title-left {
+      display: flex;
+      align-items: center;
+      gap: 6px;
       color: var(--color-text-primary);
       font-size: 15px;
       line-height: 22px;
@@ -759,6 +765,9 @@
     .selected-company-count {
       color: var(--color-text-secondary);
       font-weight: 400;
+    }
+    .company-more-btn-slot {
+      flex-shrink: 0;
     }
     .selected-company-tags {
       display: flex;
@@ -771,7 +780,7 @@
     .selected-company-tags .person-tag,
     .selected-company-tags .scope-tag {
       height: 32px;
-      border: 1px solid #B7D7FF;
+      border: 1px solid #E5E7EB;
       border-radius: 4px;
       color: var(--color-text-primary);
       background: #fff;

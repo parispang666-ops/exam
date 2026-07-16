@@ -357,18 +357,21 @@
       flex-shrink: 0;
     }
     .btn-clear-resigned {
-      height: 32px;
-      margin-left: 12px;
-      padding: 0 16px;
-      border-radius: 4px;
-      color: #fff;
-      background: var(--color-brand);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-height: 32px;
+      padding: 0;
+      border: none;
+      background: transparent;
+      color: var(--color-brand);
       font-size: 13px;
-      font-weight: 500;
+      cursor: pointer;
     }
-    .btn-clear-resigned:hover { background: var(--color-brand-hover); }
+    .btn-clear-resigned:hover { opacity: 0.8; }
+    .btn-clear-resigned svg { width: 14px; height: 14px; }
     .btn-clear-resigned.disabled {
-      background: #D0D5DD;
+      color: var(--color-text-disabled);
       cursor: not-allowed;
       pointer-events: none;
     }
@@ -558,7 +561,7 @@
     .scope-card-body {
       min-height: 80px;
       padding: 24px;
-      background: #F6F7F9;
+      background: #FAFBFC;
     }
     .scope-tags {
       display: flex;
@@ -608,13 +611,19 @@
       padding: 16px 18px 18px;
       border: 1px solid #E8EDF5;
       border-radius: 8px;
-      background: #fff;
+      background: #F8FAFC;
     }
     .selected-company-title {
       display: flex;
       align-items: center;
-      gap: 6px;
+      justify-content: space-between;
+      gap: 12px;
       margin-bottom: 12px;
+    }
+    .company-title-left {
+      display: flex;
+      align-items: center;
+      gap: 6px;
       color: var(--color-text-primary);
       font-size: 15px;
       line-height: 22px;
@@ -623,6 +632,9 @@
     .selected-company-count {
       color: var(--color-text-secondary);
       font-weight: 400;
+    }
+    .company-more-btn-slot {
+      flex-shrink: 0;
     }
     .selected-company-tags {
       display: flex;
@@ -635,7 +647,7 @@
     .selected-company-tags .person-tag,
     .selected-company-tags .scope-tag {
       height: 32px;
-      border: 1px solid #B7D7FF;
+      border: 1px solid #E5E7EB;
       border-radius: 4px;
       color: var(--color-text-primary);
       background: #fff;
@@ -974,7 +986,10 @@
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
                     全部移除
                   </button>
-                  <button class="btn-clear-resigned" id="btnClearResigned" type="button" onclick="removeResignedSpecified()">一键清理离职人员</button>
+                  <button class="scope-card-action btn-clear-resigned" id="btnClearResigned" type="button" onclick="removeResignedSpecified()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+                    一键清理离职人员
+                  </button>
                   <button class="section-collapse-btn" id="btnCollapseUser" onclick="toggleSectionCollapse(this)" data-target="specifiedUserBox" data-text-true="收起" data-text-false="展开" title="收起">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
                     收起
