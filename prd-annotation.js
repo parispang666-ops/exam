@@ -86,7 +86,7 @@
     drawerBackdrop.classList.add('open');
   }
 
-  var showPrdActions = config.showPrdActions !== false;
+  var showPrdActions = false;
 
   /* ---- 右上角 PRD 抽屉按钮 ---- */
   if (showPrdActions) {
