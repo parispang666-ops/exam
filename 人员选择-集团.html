@@ -719,280 +719,592 @@
 
     // ================= 数据模型 =================
     const group = {
-      id: 'root', name: '集团',
-      children: [
-        {
-          id: 'c1', name: '福建华电可门发电有限公司',
-          children: [
-            {
-              id: 'd1a', name: '基建部',
-              children: [
-                {
-                  id: 'd1a1', name: '土建项目组',
-                  children: [
-                    { id: 'd1a1a', name: '桩基班' },
-                    { id: 'd1a1b', name: '结构班' }
-                  ]
-                },
-                {
-                  id: 'd1a2', name: '电气施工组',
-                  children: [
-                    { id: 'd1a2a', name: '高压试验班' },
-                    { id: 'd1a2b', name: '继保调试班' }
-                  ]
-                }
-              ]
-            },
-            {
-              id: 'd1b', name: '生产管理部',
-              children: [
-                {
-                  id: 'd1b1', name: '运行管理中心',
-                  children: [
-                    { id: 'd1b1a', name: '运行一值' },
-                    { id: 'd1b1b', name: '运行二值' }
-                  ]
-                },
-                {
-                  id: 'd1b2', name: '检修管理中心',
-                  children: [
-                    { id: 'd1b2a', name: '汽机检修班' },
-                    { id: 'd1b2b', name: '锅炉检修班' }
-                  ]
-                }
-              ]
-            },
-            {
-              id: 'd1c', name: '安全管理部',
-              children: [
-                {
-                  id: 'd1c1', name: '应急管理室',
-                  children: [
-                    { id: 'd1c1a', name: '消防班' },
-                    { id: 'd1c1b', name: '应急值守班' }
-                  ]
-                },
-                { id: 'd1c2', name: '环保监督室' }
-              ]
-            },
-            {
-              id: 'd1d', name: '综合办公室',
-              children: [
-                { id: 'd1d1', name: '行政后勤组' },
-                { id: 'd1d2', name: '档案信息组' }
-              ]
-            }
-          ]
-        },
-        {
-          id: 'c2', name: '华电集团新能源有限公司',
-          children: [
-            {
-              id: 'd2a', name: '技术研发部',
-              children: [
-                {
-                  id: 'd2a1', name: '风机技术中心',
-                  children: [
-                    { id: 'd2a1a', name: '叶片技术组' },
-                    { id: 'd2a1b', name: '控制算法组' }
-                  ]
-                },
-                {
-                  id: 'd2a2', name: '储能技术中心',
-                  children: [
-                    { id: 'd2a2a', name: '电池系统组' },
-                    { id: 'd2a2b', name: 'PCS调试组' }
-                  ]
-                }
-              ]
-            },
-            {
-              id: 'd2b', name: '运维管理部',
-              children: [
-                {
-                  id: 'd2b1', name: '区域运维一部',
-                  children: [
-                    { id: 'd2b1a', name: '闽东风场' },
-                    { id: 'd2b1b', name: '闽南光伏站' }
-                  ]
-                },
-                {
-                  id: 'd2b2', name: '区域运维二部',
-                  children: [
-                    { id: 'd2b2a', name: '海上风电班' },
-                    { id: 'd2b2b', name: '巡检无人机班' }
-                  ]
-                }
-              ]
-            },
-            {
-              id: 'd2c', name: '质量检测部',
-              children: [
-                {
-                  id: 'd2c1', name: '设备检测室',
-                  children: [
-                    { id: 'd2c1a', name: '例行试验班' },
-                    { id: 'd2c1b', name: '故障诊断班' }
-                  ]
-                },
-                { id: 'd2c2', name: '安全质量组' }
-              ]
-            },
-            {
-              id: 'd2d', name: '计划经营部',
-              children: [
-                { id: 'd2d1', name: '合同管理组' },
-                { id: 'd2d2', name: '成本测算组' }
-              ]
-            }
-          ]
-        },
-        {
-          id: 'c3', name: '国电燃料集团有限公司',
-          children: [
-            {
-              id: 'd3a', name: '采购部',
-              children: [
-                {
-                  id: 'd3a1', name: '燃煤采购中心',
-                  children: [
-                    { id: 'd3a1a', name: '长协煤组' },
-                    { id: 'd3a1b', name: '市场煤组' }
-                  ]
-                },
-                {
-                  id: 'd3a2', name: '设备采购中心',
-                  children: [
-                    { id: 'd3a2a', name: '备件采购组' },
-                    { id: 'd3a2b', name: '招标管理组' }
-                  ]
-                }
-              ]
-            },
-            {
-              id: 'd3b', name: '储运管理部',
-              children: [
-                {
-                  id: 'd3b1', name: '港口调运中心',
-                  children: [
-                    { id: 'd3b1a', name: '船运调度班' },
-                    { id: 'd3b1b', name: '铁路调度班' }
-                  ]
-                },
-                {
-                  id: 'd3b2', name: '仓储中心',
-                  children: [
-                    { id: 'd3b2a', name: '入库质检班' },
-                    { id: 'd3b2b', name: '库存盘点班' }
-                  ]
-                }
-              ]
-            },
-            {
-              id: 'd3c', name: '财务部',
-              children: [
-                { id: 'd3c1', name: '预算管理组' },
-                { id: 'd3c2', name: '结算管理组' }
-              ]
-            },
-            {
-              id: 'd3d', name: '行政人事部',
-              children: [
-                { id: 'd3d1', name: '招聘培训组' },
-                { id: 'd3d2', name: '绩效薪酬组' }
-              ]
-            }
-          ]
-        },
-        {
-          id: 'c4', name: '华电福建分公司',
-          children: [
-            {
-              id: 'd4a', name: '工程建设部',
-              children: [
-                {
-                  id: 'd4a1', name: '项目一部',
-                  children: [
-                    { id: 'd4a1a', name: '土建组' },
-                    { id: 'd4a1b', name: '安装组' }
-                  ]
-                },
-                {
-                  id: 'd4a2', name: '项目二部',
-                  children: [
-                    { id: 'd4a2a', name: '调试组' },
-                    { id: 'd4a2b', name: '资料组' }
-                  ]
-                }
-              ]
-            },
-            {
-              id: 'd4b', name: '运行检修部',
-              children: [
-                {
-                  id: 'd4b1', name: '值班中心',
-                  children: [
-                    { id: 'd4b1a', name: '运行三值' },
-                    { id: 'd4b1b', name: '运行四值' }
-                  ]
-                },
-                {
-                  id: 'd4b2', name: '检修中心',
-                  children: [
-                    { id: 'd4b2a', name: '电气检修班' },
-                    { id: 'd4b2b', name: '热控检修班' }
-                  ]
-                }
-              ]
-            },
-            {
-              id: 'd4c', name: '安环监察部',
-              children: [
-                { id: 'd4c1', name: '安全监察室' },
-                { id: 'd4c2', name: '环保管理室' }
-              ]
-            }
-          ]
-        },
-        {
-          id: 'c5', name: '华电浙江分公司',
-          children: [
-            {
-              id: 'd5a', name: '运行部',
-              children: [
-                {
-                  id: 'd5a1', name: '集控中心',
-                  children: [
-                    { id: 'd5a1a', name: '运行一班' },
-                    { id: 'd5a1b', name: '运行二班' }
-                  ]
-                },
-                {
-                  id: 'd5a2', name: '巡操中心',
-                  children: [
-                    { id: 'd5a2a', name: '现场巡检组' },
-                    { id: 'd5a2b', name: '缺陷处理组' }
-                  ]
-                }
-              ]
-            },
-            {
-              id: 'd5b', name: '技术部',
-              children: [
-                { id: 'd5b1', name: '技改项目组' },
-                { id: 'd5b2', name: '可靠性管理组' }
-              ]
-            },
-            {
-              id: 'd5c', name: '综合管理部',
-              children: [
-                { id: 'd5c1', name: '行政组' },
-                { id: 'd5c2', name: '信息化组' }
-              ]
-            }
-          ]
-        }
-      ]
+        sortOrder: 0,
+        id: 'root',
+        name: '集团',
+        children: [
+{
+            sortOrder: 1,
+            id: 'c1',
+            name: '福建华电可门发电有限公司',
+            children: [
+{
+                sortOrder: 1,
+                id: 'd1a',
+                name: '基建部',
+                children: [
+{
+                    sortOrder: 1,
+                    id: 'd1a1',
+                    name: '土建项目组',
+                    children: [
+{
+                        sortOrder: 1,
+                        id: 'd1a1a',
+                        name: '桩基班'
+                      },
+{
+                        sortOrder: 2,
+                        id: 'd1a1b',
+                        name: '结构班'
+                      }
+                    ]
+                  },
+{
+                    sortOrder: 2,
+                    id: 'd1a2',
+                    name: '电气施工组',
+                    children: [
+{
+                        sortOrder: 1,
+                        id: 'd1a2a',
+                        name: '高压试验班'
+                      },
+{
+                        sortOrder: 2,
+                        id: 'd1a2b',
+                        name: '继保调试班'
+                      }
+                    ]
+                  }
+                ]
+              },
+{
+                sortOrder: 2,
+                id: 'd1b',
+                name: '生产管理部',
+                children: [
+{
+                    sortOrder: 1,
+                    id: 'd1b1',
+                    name: '运行管理中心',
+                    children: [
+{
+                        sortOrder: 1,
+                        id: 'd1b1a',
+                        name: '运行一值'
+                      },
+{
+                        sortOrder: 2,
+                        id: 'd1b1b',
+                        name: '运行二值'
+                      }
+                    ]
+                  },
+{
+                    sortOrder: 2,
+                    id: 'd1b2',
+                    name: '检修管理中心',
+                    children: [
+{
+                        sortOrder: 1,
+                        id: 'd1b2a',
+                        name: '汽机检修班'
+                      },
+{
+                        sortOrder: 2,
+                        id: 'd1b2b',
+                        name: '锅炉检修班'
+                      }
+                    ]
+                  }
+                ]
+              },
+{
+                sortOrder: 3,
+                id: 'd1c',
+                name: '安全管理部',
+                children: [
+{
+                    sortOrder: 1,
+                    id: 'd1c1',
+                    name: '应急管理室',
+                    children: [
+{
+                        sortOrder: 1,
+                        id: 'd1c1a',
+                        name: '消防班'
+                      },
+{
+                        sortOrder: 2,
+                        id: 'd1c1b',
+                        name: '应急值守班'
+                      }
+                    ]
+                  },
+{
+                    sortOrder: 2,
+                    id: 'd1c2',
+                    name: '环保监督室'
+                  }
+                ]
+              },
+{
+                sortOrder: 4,
+                id: 'd1d',
+                name: '综合办公室',
+                children: [
+{
+                    sortOrder: 1,
+                    id: 'd1d1',
+                    name: '行政后勤组'
+                  },
+{
+                    sortOrder: 2,
+                    id: 'd1d2',
+                    name: '档案信息组'
+                  }
+                ]
+              }
+            ]
+          },
+{
+            sortOrder: 2,
+            id: 'c2',
+            name: '华电集团新能源有限公司',
+            children: [
+{
+                sortOrder: 1,
+                id: 'd2a',
+                name: '技术研发部',
+                children: [
+{
+                    sortOrder: 1,
+                    id: 'd2a1',
+                    name: '风机技术中心',
+                    children: [
+{
+                        sortOrder: 1,
+                        id: 'd2a1a',
+                        name: '叶片技术组'
+                      },
+{
+                        sortOrder: 2,
+                        id: 'd2a1b',
+                        name: '控制算法组'
+                      }
+                    ]
+                  },
+{
+                    sortOrder: 2,
+                    id: 'd2a2',
+                    name: '储能技术中心',
+                    children: [
+{
+                        sortOrder: 1,
+                        id: 'd2a2a',
+                        name: '电池系统组'
+                      },
+{
+                        sortOrder: 2,
+                        id: 'd2a2b',
+                        name: 'PCS调试组'
+                      }
+                    ]
+                  }
+                ]
+              },
+{
+                sortOrder: 2,
+                id: 'd2b',
+                name: '运维管理部',
+                children: [
+{
+                    sortOrder: 1,
+                    id: 'd2b1',
+                    name: '区域运维一部',
+                    children: [
+{
+                        sortOrder: 1,
+                        id: 'd2b1a',
+                        name: '闽东风场'
+                      },
+{
+                        sortOrder: 2,
+                        id: 'd2b1b',
+                        name: '闽南光伏站'
+                      }
+                    ]
+                  },
+{
+                    sortOrder: 2,
+                    id: 'd2b2',
+                    name: '区域运维二部',
+                    children: [
+{
+                        sortOrder: 1,
+                        id: 'd2b2a',
+                        name: '海上风电班'
+                      },
+{
+                        sortOrder: 2,
+                        id: 'd2b2b',
+                        name: '巡检无人机班'
+                      }
+                    ]
+                  }
+                ]
+              },
+{
+                sortOrder: 3,
+                id: 'd2c',
+                name: '质量检测部',
+                children: [
+{
+                    sortOrder: 1,
+                    id: 'd2c1',
+                    name: '设备检测室',
+                    children: [
+{
+                        sortOrder: 1,
+                        id: 'd2c1a',
+                        name: '例行试验班'
+                      },
+{
+                        sortOrder: 2,
+                        id: 'd2c1b',
+                        name: '故障诊断班'
+                      }
+                    ]
+                  },
+{
+                    sortOrder: 2,
+                    id: 'd2c2',
+                    name: '安全质量组'
+                  }
+                ]
+              },
+{
+                sortOrder: 4,
+                id: 'd2d',
+                name: '计划经营部',
+                children: [
+{
+                    sortOrder: 1,
+                    id: 'd2d1',
+                    name: '合同管理组'
+                  },
+{
+                    sortOrder: 2,
+                    id: 'd2d2',
+                    name: '成本测算组'
+                  }
+                ]
+              }
+            ]
+          },
+{
+            sortOrder: 3,
+            id: 'c3',
+            name: '国电燃料集团有限公司',
+            children: [
+{
+                sortOrder: 1,
+                id: 'd3a',
+                name: '采购部',
+                children: [
+{
+                    sortOrder: 1,
+                    id: 'd3a1',
+                    name: '燃煤采购中心',
+                    children: [
+{
+                        sortOrder: 1,
+                        id: 'd3a1a',
+                        name: '长协煤组'
+                      },
+{
+                        sortOrder: 2,
+                        id: 'd3a1b',
+                        name: '市场煤组'
+                      }
+                    ]
+                  },
+{
+                    sortOrder: 2,
+                    id: 'd3a2',
+                    name: '设备采购中心',
+                    children: [
+{
+                        sortOrder: 1,
+                        id: 'd3a2a',
+                        name: '备件采购组'
+                      },
+{
+                        sortOrder: 2,
+                        id: 'd3a2b',
+                        name: '招标管理组'
+                      }
+                    ]
+                  }
+                ]
+              },
+{
+                sortOrder: 2,
+                id: 'd3b',
+                name: '储运管理部',
+                children: [
+{
+                    sortOrder: 1,
+                    id: 'd3b1',
+                    name: '港口调运中心',
+                    children: [
+{
+                        sortOrder: 1,
+                        id: 'd3b1a',
+                        name: '船运调度班'
+                      },
+{
+                        sortOrder: 2,
+                        id: 'd3b1b',
+                        name: '铁路调度班'
+                      }
+                    ]
+                  },
+{
+                    sortOrder: 2,
+                    id: 'd3b2',
+                    name: '仓储中心',
+                    children: [
+{
+                        sortOrder: 1,
+                        id: 'd3b2a',
+                        name: '入库质检班'
+                      },
+{
+                        sortOrder: 2,
+                        id: 'd3b2b',
+                        name: '库存盘点班'
+                      }
+                    ]
+                  }
+                ]
+              },
+{
+                sortOrder: 3,
+                id: 'd3c',
+                name: '财务部',
+                children: [
+{
+                    sortOrder: 1,
+                    id: 'd3c1',
+                    name: '预算管理组'
+                  },
+{
+                    sortOrder: 2,
+                    id: 'd3c2',
+                    name: '结算管理组'
+                  }
+                ]
+              },
+{
+                sortOrder: 4,
+                id: 'd3d',
+                name: '行政人事部',
+                children: [
+{
+                    sortOrder: 1,
+                    id: 'd3d1',
+                    name: '招聘培训组'
+                  },
+{
+                    sortOrder: 2,
+                    id: 'd3d2',
+                    name: '绩效薪酬组'
+                  }
+                ]
+              }
+            ]
+          },
+{
+            sortOrder: 4,
+            id: 'c4',
+            name: '华电福建分公司',
+            children: [
+{
+                sortOrder: 1,
+                id: 'd4a',
+                name: '工程建设部',
+                children: [
+{
+                    sortOrder: 1,
+                    id: 'd4a1',
+                    name: '项目一部',
+                    children: [
+{
+                        sortOrder: 1,
+                        id: 'd4a1a',
+                        name: '土建组'
+                      },
+{
+                        sortOrder: 2,
+                        id: 'd4a1b',
+                        name: '安装组'
+                      }
+                    ]
+                  },
+{
+                    sortOrder: 2,
+                    id: 'd4a2',
+                    name: '项目二部',
+                    children: [
+{
+                        sortOrder: 1,
+                        id: 'd4a2a',
+                        name: '调试组'
+                      },
+{
+                        sortOrder: 2,
+                        id: 'd4a2b',
+                        name: '资料组'
+                      }
+                    ]
+                  }
+                ]
+              },
+{
+                sortOrder: 2,
+                id: 'd4b',
+                name: '运行检修部',
+                children: [
+{
+                    sortOrder: 1,
+                    id: 'd4b1',
+                    name: '值班中心',
+                    children: [
+{
+                        sortOrder: 1,
+                        id: 'd4b1a',
+                        name: '运行三值'
+                      },
+{
+                        sortOrder: 2,
+                        id: 'd4b1b',
+                        name: '运行四值'
+                      }
+                    ]
+                  },
+{
+                    sortOrder: 2,
+                    id: 'd4b2',
+                    name: '检修中心',
+                    children: [
+{
+                        sortOrder: 1,
+                        id: 'd4b2a',
+                        name: '电气检修班'
+                      },
+{
+                        sortOrder: 2,
+                        id: 'd4b2b',
+                        name: '热控检修班'
+                      }
+                    ]
+                  }
+                ]
+              },
+{
+                sortOrder: 3,
+                id: 'd4c',
+                name: '安环监察部',
+                children: [
+{
+                    sortOrder: 1,
+                    id: 'd4c1',
+                    name: '安全监察室'
+                  },
+{
+                    sortOrder: 2,
+                    id: 'd4c2',
+                    name: '环保管理室'
+                  }
+                ]
+              }
+            ]
+          },
+{
+            sortOrder: 5,
+            id: 'c5',
+            name: '华电浙江分公司',
+            children: [
+{
+                sortOrder: 1,
+                id: 'd5a',
+                name: '运行部',
+                children: [
+{
+                    sortOrder: 1,
+                    id: 'd5a1',
+                    name: '集控中心',
+                    children: [
+{
+                        sortOrder: 1,
+                        id: 'd5a1a',
+                        name: '运行一班'
+                      },
+{
+                        sortOrder: 2,
+                        id: 'd5a1b',
+                        name: '运行二班'
+                      }
+                    ]
+                  },
+{
+                    sortOrder: 2,
+                    id: 'd5a2',
+                    name: '巡操中心',
+                    children: [
+{
+                        sortOrder: 1,
+                        id: 'd5a2a',
+                        name: '现场巡检组'
+                      },
+{
+                        sortOrder: 2,
+                        id: 'd5a2b',
+                        name: '缺陷处理组'
+                      }
+                    ]
+                  }
+                ]
+              },
+{
+                sortOrder: 2,
+                id: 'd5b',
+                name: '技术部',
+                children: [
+{
+                    sortOrder: 1,
+                    id: 'd5b1',
+                    name: '技改项目组'
+                  },
+{
+                    sortOrder: 2,
+                    id: 'd5b2',
+                    name: '可靠性管理组'
+                  }
+                ]
+              },
+{
+                sortOrder: 3,
+                id: 'd5c',
+                name: '综合管理部',
+                children: [
+{
+                    sortOrder: 1,
+                    id: 'd5c1',
+                    name: '行政组'
+                  },
+{
+                    sortOrder: 2,
+                    id: 'd5c2',
+                    name: '信息化组'
+                  }
+                ]
+              }
+            ]
+          }
+        ]
     };
 
     const personMap = {
@@ -1307,10 +1619,19 @@
       });
     }
 
+    function sortDeptNodes(nodes) {
+      return [...nodes].sort((a, b) => {
+        const oa = a.sortOrder ?? 99;
+        const ob = b.sortOrder ?? 99;
+        if (oa !== ob) return oa - ob;
+        return (a.name || '').localeCompare(b.name || '', 'zh');
+      });
+    }
+
     function flattenDepts() {
       const res = [];
       function walk(nodes, path) {
-        for (const n of nodes) {
+        for (const n of sortDeptNodes(nodes)) {
           res.push({ ...n, path });
           if (n.children) walk(n.children, [...path, n.name]);
         }
@@ -1660,7 +1981,7 @@
     }
 
     function getFilteredDeptChildren(nodes = []) {
-      return nodes.filter(node => !filters.dept.name || node.name.includes(filters.dept.name) || hasChildMatch(node, filters.dept.name));
+      return sortDeptNodes(nodes.filter(node => !filters.dept.name || node.name.includes(filters.dept.name) || hasChildMatch(node, filters.dept.name)));
     }
 
     function normalizeDeptCascadePath() {
@@ -2381,7 +2702,7 @@
   "scope": "with_global",
   "showPrdActions": true,
   "pagePrd": "",
-  "globalPrd": "# 考试功能 — 整体 PRD\n\n## 1. 引言\n\n### 1.1 背景与目标\n\n\"考试功能\"是 EHS+ 企业版中对员工进行安全生产知识评测的核心模块。该模块需要支持三种不同的租户形态：\n\n- **集团（上级单位）**：跨多家子公司的人员管理形态，需要跨公司选择考试对象、查看跨公司统计数据。\n- **下级单位**：处于集团层级下的成员单位，承接上级派发的考试，同时可创建本单位内部考试。\n- **独立租户（普通租户/非集团）**：无上下级层级关系的独立组织，仅管理本租户范围内的考试。\n\n本 PRD 从全局视角定义考试功能在上述三种租户形态下的统一业务规则、数据模型、角色权限和核心流程。各页面的详细交互规格请参见对应的页面 PRD。\n\n### 1.2 用户价值\n\n| 租户类型 | 核心价值 |\n|----------|----------|\n| 集团管理员 | 跨公司统一下发安全知识考试，掌握全集团各子公司的考试进展与成绩分布。 |\n| 下级单位管理员 | 承接集团下发的考试任务，同时自主创建本单位专属考试来满足内部学习需求。 |\n| 普通租户管理员 | 自主管理本组织的考试全生命周期，从创建、发布到统计分析形成完整闭环。 |\n\n### 1.3 功能范围\n\n**包含**：\n\n| 模块 | 说明 |\n|------|------|\n| 考试列表 | 按租户类型展示对应的考试清单，支持新增、编辑、删除、复制、发布（草稿）、管理（统计入口） |\n| 新增考试 | 三步创建考试：基本信息 → 考生范围（人员/部门选择 + 免考） → 考试设置 |\n| 编辑考试 | 修改草稿考试的考生范围，覆盖人员快照 |\n| 考试统计 | 考试成绩、考试记录、部门统计三个维度，含人员状态筛选和部门统计在职过滤 |\n| 人员选择 | 按租户数据范围选择考试对象（人员 + 部门） |\n| 发布校验 | 草稿发布前对人员快照与当前人员主数据的差异进行校验与确认 |\n\n**不包含**：\n\n- 试题配置与管理（考试设置步骤中的具体试题选择不属于本次范围）\n- 考生端的考试作答/提交/成绩查看\n- 移动端管理能力\n\n---\n\n## 2. 三种租户形态概览\n\n```\n┌──────────────────────────────────────────────────────────────────┐\n│                        EHS+ 考试功能                              │\n│                                                                   │\n│  ┌──────────────┐    ┌──────────────────┐    ┌───────────────┐   │\n│  │ 集团         │    │  下级单位         │    │ 独立租户      │   │\n│  │ (上级单位)    │───▶│  (子公司/分公司)   │    │ (非集团组织)   │   │\n│  │              │    │                  │    │               │   │\n│  │ • 跨公司选人  │    │ • 承接上级考试    │    │ • 自建考试    │   │\n│  │ • 自建考试    │    │ • 自建本单位考试  │    │ • 本单位数据  │   │\n│  │ • 跨公司统计  │    │ • 本单位统计     │    │ • 本单位统计  │   │\n│  └──────────────┘    └──────────────────┘    └───────────────┘   │\n│                                                                   │\n│  数据范围: 集团全部公司     数据范围: 本单位+下属部门                  │\n│  人员列: 含\"所属公司\"      人员列: 无\"所属公司\"                   无公司概念 │\n│  统计视图: 部门明细/公司汇总 统计视图: 部门明细                     同下级单位 │\n└──────────────────────────────────────────────────────────────────┘\n```\n\n### 2.1 核心差异对照表\n\n| 差异维度 | 集团 | 下级单位 | 独立租户/普通租户 |\n|----------|------|----------|-------------------|\n| 人员数据范围 | 集团内全部公司 | 本单位 + 下属部门 | 本租户内全部人员 |\n| 跨公司选人 | ✅ 支持 | ❌ 不支持 | ❌ 不涉及（无公司概念） |\n| 上级下发考试 | ❌ 不涉及 | ✅ 考试列表展示上级下发 | ❌ 不涉及 |\n| 上级下发考试操作 | — | 仅\"管理\" | — |\n| 人员列表分组 | 按公司分组 | 不分组、平铺展示 | 不分组、平铺展示 |\n| 考试成绩/考试记录列表 | 含\"所属公司\"列 | 无\"所属公司\"列 | 无\"所属公司\"列 |\n| 部门筛选方式 | 公司+部门级联 | 部门下拉树 | 部门下拉树 |\n| 统计部门视图 | 部门明细 + 公司汇总 | 部门明细 | 部门明细 |\n| 人员选择器页面 | 人员选择-集团 | 人员选择-下级单位 | 人员选择-下级单位 |\n\n---\n\n## 3. 角色与权限\n\n| 角色 | 租户端 | 可创建考试 | 可选择的考试对象范围 | 可编辑考试 | 可查看统计 | 说明 |\n|------|--------|-----------|---------------------|-----------|-----------|------|\n| 集团管理员 | 集团 | ✅ | 集团全部公司的人员和部门 | ✅ 仅草稿 | ✅ 全集团 | 可跨公司管理考试全生命周期 |\n| 下级单位管理员 | 下级单位 | ✅ 本单位考试 | 本单位 + 下属部门 | ✅ 仅自建草稿 | ✅ 本单位 | 可承接上级下发考试，对其进行管理操作 |\n| 普通租户管理员 | 独立租户 | ✅ | 本租户全量人员 | ✅ 仅草稿 | ✅ 本租户 | 与下级单位类似，但无上下级关系 |\n\n### 3.1 下级单位对上级下发考试的操作权限\n\n| 操作 | 本单位自建考试 | 上级下发考试 |\n|------|:---:|:---:|\n| 查看详情（名称链接） | ✅ | ✅（查看集团版详情） |\n| 管理（进入统计） | ✅ | ✅ |\n| 预览 | ✅ | ❌ |\n| 发布 | ✅ 草稿 | ❌ |\n| 编辑 | ✅ 草稿 | ❌ |\n| 复制 | ✅ | ❌ |\n| 删除 | ✅ | ❌ |\n| 批量删除 | ✅ | ❌ |\n\n---\n\n## 4. 名词解释\n\n| 术语 | 定义 |\n|------|------|\n| **考试** | 一次完整的考试活动，包含基本信息、考生范围、考试设置、题目配置等。 |\n| **考生范围** | 考试的目标对象集合，可通过选择人员（指定用户）或部门范围来定义。 |\n| **指定用户** | 以单个人员为维度选定的考试对象。 |\n| **部门范围** | 以部门为维度选定的考试对象，选择某部门即包含该部门下（可选含下级部门）的全体人员。 |\n| **组织内全部人员** | 考试对象覆盖当前租户范围内的全部人员，无需单独选择。 |\n| **仅部分人员** | 考试对象仅为管理员选择的具体人员或部门范围内的人员。 |\n| **免考人员** | 被排除在考试要求之外的人员或部门，不计入应考人数，不影响参与率和及格率计算。 |\n| **人员快照** | 创建考试或编辑保存时对当时考试对象范围内所有人员的完整记录（含 ID、姓名、所属公司、部门、人员状态），用于发布前人员变更校验。 |\n| **人员状态** | 枚举值：在职（启用）、离职、停用（禁用）。 |\n| **草稿** | 考试创建后尚未发布的初始状态，支持编辑和发布。 |\n| **未开始** | 考试发布后但尚未到达考试开始时间的状态。 |\n| **进行中** | 考试正处于考试时间段内的状态。 |\n| **已结束** | 考试时间已过的状态。 |\n| **上级下发考试** | 由集团或上级单位创建并推送给下级单位的考试，下级单位不可编辑、删除、发布。 |\n| **自建考试** | 当前租户管理员自行创建的考试。 |\n| **公司汇总** | 集团独有的统计视图，以公司为粒度对部门数据进行扁平汇总展示。 |\n| **部门明细** | 以部门树结构展示统计数据的视图。 |\n\n---\n\n## 5. 核心业务流程图\n\n### 5.1 考试全生命周期（通用）\n\n```mermaid\nflowchart TD\n    A[创建考试] --> B[填写基本信息]\n    B --> C[选择考生范围]\n    C --> C1{考试对象模式?}\n    C1 -->|仅部分人员| C2[选择人员/部门 + 配置免考]\n    C1 -->|组织内全部人员| C3[跳过选人]\n    C2 --> D[设置考试参数]\n    C3 --> D\n    D --> E[生成人员快照]\n    E --> F{保存为草稿}\n    F --> G[草稿状态]\n    G --> H{管理员操作?}\n    H -->|编辑| I[编辑考生范围 → 覆盖快照]\n    I --> G\n    H -->|发布| J[执行发布前人员变更校验]\n    J --> K{有人员变更?}\n    K -->|否| L[直接发布]\n    K -->|是| M[展示发布弹窗]\n    M --> N{管理员确认?}\n    N -->|取消| G\n    N -->|确认发布| L\n    L --> O[未开始]\n    O --> P[进行中]\n    P --> Q[已结束]\n    G -->|删除| R[考试删除]\n```\n\n### 5.2 下级单位特殊流程：上级下发考试\n\n```mermaid\nflowchart TD\n    G[集团管理员] -->|创建并下发| S[上级下发考试]\n    S -->|出现在| SU[下级单位考试列表]\n    SU --> SU1{下级单位操作}\n    SU1 -->|点击名称| SU2[查看集团版考试详情]\n    SU1 -->|管理| SU3[进入本单位统计页]\n    SU1 -->|编辑/删除/发布/复制| SU4[❌ 不可操作]\n```\n\n### 5.3 发布前人员变更校验流程\n\n```mermaid\nflowchart TD\n    A[管理员点击发布] --> B[系统获取人员快照]\n    B --> C[获取当前人员主数据]\n    C --> D{比对快照与主数据}\n    D --> E1[已选人员离职/停用 → 移除]\n    D --> E2[部门内人员离职/停用/转出 → 移除]\n    D --> E3[部门内人员转入/启用 → 新增]\n    E1 --> F{总计变更 > 0 ?}\n    E2 --> F\n    E3 --> F\n    F -->|否| G[直接发布，状态变更为未开始]\n    F -->|是| H[展示发布弹窗]\n    H --> I[按分类查看：全部 / 移除 / 新增]\n    I --> J{管理员操作?}\n    J -->|点击发布| G\n    J -->|点击取消 / 关闭 / 遮罩| K[保持草稿，不发布]\n```\n\n---\n\n## 6. 用例图\n\n```mermaid\nflowchart LR\n    subgraph Actors\n        GA[集团管理员]\n        SA[下级单位管理员]\n        NA[普通租户管理员]\n        SYS[系统]\n    end\n\n    subgraph UC[考试功能用例]\n        direction TB\n        UC1((创建考试))\n        UC2((编辑考试))\n        UC3((发布考试))\n        UC4((查看考试列表))\n        UC5((考试统计))\n        UC6((人员选择))\n        UC7((免考配置))\n        UC8((接收上级考试))\n        UC9((发布前校验))\n        UC10((快照管理))\n    end\n\n    GA --> UC1\n    GA --> UC2\n    GA --> UC3\n    GA --> UC4\n    GA --> UC5\n    GA --> UC6\n    GA --> UC7\n    SA --> UC1\n    SA --> UC2\n    SA --> UC3\n    SA --> UC4\n    SA --> UC5\n    SA --> UC6\n    SA --> UC7\n    SA --> UC8\n    NA --> UC1\n    NA --> UC2\n    NA --> UC3\n    NA --> UC4\n    NA --> UC5\n    NA --> UC6\n    NA --> UC7\n    SYS --> UC9\n    SYS --> UC10\n```\n\n---\n\n## 7. 数据模型\n\n### 7.1 核心实体关系图\n\n```mermaid\nerDiagram\n    租户 ||--o{ 考试 : \"拥有\"\n    考试 ||--o{ 人员快照 : \"生成\"\n    考试 ||--o{ 考试记录 : \"产生\"\n    考试 ||--o{ 免考配置 : \"配置\"\n    考试 }o--|| 租户 : \"归属\"\n    考试 }o--|| 考试分类 : \"分类\"\n\n    租户 {\n        string 租户ID PK\n        string 租户名称\n        string 租户类型 \"集团 / 下级单位 / 普通租户\"\n        string 上级租户ID FK \"下级单位时有值\"\n        string 所属公司名称 \"集团/下级单位\"\n    }\n\n    考试 {\n        string 考试ID PK\n        string 所属租户ID FK\n        string 考试名称\n        string 分类ID FK\n        string 来源 \"自建 / 上级下发\"\n        string 状态 \"草稿 / 未开始 / 进行中 / 已结束\"\n        string 范围模式 \"仅部分人员 / 组织内全部人员\"\n        datetime 考试开始时间\n        datetime 考试结束时间\n        datetime 快照生成时间\n        datetime 创建时间\n        datetime 更新时间\n    }\n\n    人员快照 {\n        string 快照ID PK\n        string 考试ID FK\n        string 人员ID\n        string 姓名\n        string 所属公司 \"集团有值，下级单位/普通租户无\"\n        string 部门名称\n        string 部门全路径\n        string 人员状态 \"在职 / 离职 / 停用\"\n        datetime 快照时间\n        string 快照版本 \"创建 / 编辑\"\n    }\n\n    免考配置 {\n        string 免考配置ID PK\n        string 考试ID FK\n        string 免考类型 \"人员 / 部门\"\n        string 免考目标ID\n        string 免考目标名称\n    }\n\n    考试记录 {\n        string 考试记录ID PK\n        string 考试ID FK\n        string 考生ID\n        string 考生姓名\n        string 所属公司\n        string 部门名称\n        string 完成状态 \"已完成 / 未完成\"\n        int 分数\n        bool 是否及格\n        datetime 交卷时间\n    }\n\n    考试分类 {\n        string 分类ID PK\n        string 租户ID FK\n        string 分类名称\n        string 上级分类ID\n        string 来源 \"自建 / 上级下发（下级单位有上级下发分类节点）\"\n    }\n```\n\n### 7.2 关键字段说明\n\n#### 考试来源\n\n| 值 | 含义 | 适用租户 |\n|----|------|---------|\n| 自建 | 当前租户自建考试 | 全部 |\n| 上级下发 | 上级下发考试 | 下级单位 |\n\n#### 考试状态流转\n\n```\n草稿 → 未开始 → 进行中 → 已结束\n  │\n  └── (删除)\n```\n\n#### 人员快照版本\n\n| 值 | 生成时机 | 说明 |\n|----|---------|------|\n| 创建 | 创建考试保存时 | 考试首次创建时生成 |\n| 编辑 | 编辑考试保存时 | 覆盖旧快照，作为发布校验的最新基准 |\n\n---\n\n## 8. 非功能性需求\n\n### 8.1 性能要求\n\n| 指标 | 要求 |\n|------|------|\n| 考试列表查询响应 | ≤ 2s（1000 条以内） |\n| 人员选择器加载 | ≤ 3s（10,000 以内人员数据） |\n| 部门人数重新计算 | ≤ 3s |\n| 发布前人员变更校验 | ≤ 5s（包含三分类校验） |\n| 考试统计查询 | ≤ 3s |\n| 并发支持 | 支持 100+ 管理员同时操作 |\n\n### 8.2 安全性\n\n| 要求 | 说明 |\n|------|------|\n| 数据隔离 | 不同租户数据严格隔离，下级单位不可访问集团或平级单位数据 |\n| 操作权限 | 上级下发考试在下级单位侧仅开放\"管理\"操作，编辑/删除/发布等操作需校验考试来源为自建 |\n| 人员选择范围限制 | 下级单位人员选择器限定本单位及下属部门，不可越权访问平级或上级单位人员 |\n| 快照安全 | 人员快照为只读历史数据，持久化后不可篡改 |\n\n### 8.3 兼容性\n\n| 要求 | 说明 |\n|------|------|\n| 浏览器 | Chrome 90+、Edge 90+、Safari 14+ |\n| 分辨率 | 1366×768 及以上 |\n\n### 8.4 可维护性\n\n| 要求 | 说明 |\n|------|------|\n| 操作日志 | 考试创建、编辑、发布、删除需记录操作日志 |\n| 快照审计 | 快照生成和覆盖保留历史记录，发布校验时可回溯 |\n\n---\n\n## 9. 页面清单与关联 PRD\n\n### 9.1 集团（上级单位）\n\n| 序号 | 页面名称 | 页面 PRD 路径 | 原型文件 |\n|------|---------|--------------|---------|\n| 1 | 考试列表-集团 | `prd/考试列表-集团.md` | `考试列表-集团.html` |\n| 2 | 新增考试-集团 | `prd/新增考试-集团.md` | `新增考试-集团.html` |\n| 3 | 编辑考试-集团 | `prd/编辑考试-集团.md` | `编辑考试-集团.html` |\n| 4 | 考试统计-集团 | `prd/考试统计-集团.md` | `考试统计-集团.html` |\n| 5 | 人员选择-集团 | — | `人员选择-集团.html` |\n\n### 9.2 下级单位\n\n| 序号 | 页面名称 | 页面 PRD 路径 | 原型文件 |\n|------|---------|--------------|---------|\n| 1 | 考试列表-下级单位 | `prd/考试列表-下级单位.md` | `考试列表-下级单位.html` |\n| 2 | 新增考试-下级单位 | `prd/新增考试-下级单位.md` | `新增考试-下级单位.html` |\n| 3 | 编辑考试-下级单位 | `prd/编辑考试-下级单位.md` | `编辑考试-下级单位:独立租户.html` |\n| 4 | 考试统计-下级单位 | `prd/考试统计-下级单位.md` | `考试统计-下级单位:独立租户.html` |\n| 5 | 人员选择-下级单位：本单位 | — | `人员选择-下级单位:本单位.html` |\n| 6 | 人员选择-下级单位 | — | `人员选择-下级单位.html` |\n\n### 9.3 独立租户/普通租户\n\n| 序号 | 页面名称 | 页面 PRD 路径 | 原型文件 |\n|------|---------|--------------|---------|\n| 1 | 考试列表 | `prd/考试列表-普通租户.md` | `考试列表-普通租户.html` |\n| 2 | 新增考试 | —（参考集团/下级新增） | `新增考试-普通租户.html` |\n| 3 | 编辑考试 | —（参考下级编辑，同数据范围） | `编辑考试-下级单位:独立租户.html` |\n| 4 | 考试统计 | —（参考下级统计） | `考试统计-普通租户.html` |\n\n### 9.4 通用页面\n\n| 序号 | 页面名称 | 说明 | 原型文件 |\n|------|---------|------|---------|\n| 1 | 规则说明 | 考试功能入口的规则说明页 | `规则说明.html` |\n\n### 9.5 小程序\n\n| 序号 | 页面名称 | 说明 | 原型文件 |\n|------|---------|------|---------|\n| 1 | 考试列表 | 小程序端考试列表 | `小程序考试列表.html` |\n\n---\n\n## 10. 附录\n\n### 10.1 租户数据范围矩阵\n\n```\n┌────────────────┬──────────────────────┬──────────────────────┬──────────────────┐\n│   能力 \\ 租户   │        集团           │       下级单位         │    独立租户        │\n├────────────────┼──────────────────────┼──────────────────────┼──────────────────┤\n│ 创建考试        │ 集团跨公司            │ 本单位+下属部门        │ 本租户            │\n│ 上级下发考试     │ 不涉及（集团不下发自己） │ ✅ 列表展示+接收       │ ❌ 不涉及          │\n│ 跨公司选人       │ ✅                    │ ❌                    │ ❌ 无公司概念       │\n│ 人员按公司分组    │ ✅                    │ ❌ 平铺标签            │ ❌ 平铺标签        │\n│ 列表含所属公司列  │ ✅ 考试成绩/考试记录    │ ❌                    │ ❌                │\n│ 部门筛选          │ 公司+部门级联          │ 部门下拉树            │ 部门下拉树         │\n│ 统计视图          │ 部门明细 + 公司汇总     │ 部门明细              │ 部门明细           │\n│ 人员选择器        │ 人员选择-集团          │ 人员选择-下级单位       │ 人员选择-下级单位    │\n│ 快照含公司字段    │ ✅                    │ ❌                    │ ❌                │\n│ 分类树上级下发节点 │ ❌                    │ ✅                    │ ❌                │\n└────────────────┴──────────────────────┴──────────────────────┴──────────────────┘\n```\n\n### 10.2 页面状态流转\n\n| 当前状态 | 触发操作 | 目标状态 | 前置条件 |\n|----------|---------|---------|----------|\n| — | 创建考试（保存草稿） | 草稿 | 基本信息填写完成 + 考生范围选择（部分人员模式下至少 1 人或 1 部门） |\n| 草稿 | 编辑保存 | 草稿 | 编辑后覆盖人员快照 |\n| 草稿 | 发布（无变更） | 未开始 | 无人员变更 |\n| 草稿 | 发布（有变更→确认） | 未开始 | 管理员在发布弹窗确认 |\n| 草稿 | 删除 | — | — |\n| 未开始 | 到达开始时间 | 进行中 | 系统自动 |\n| 进行中 | 到达结束时间 | 已结束 | 系统自动 |\n\n### 10.3 版本变更记录\n\n| 版本 | 日期 | 变更内容 | 作者 |\n|------|------|----------|------|\n| V1.0 | 2026-07-13 | 初版。统一定义集团/下级单位/独立租户三种形态下考试功能的全局业务规则、数据模型、角色权限、核心流程和页面清单。 | — |\n\n### 10.4 引用标准\n\n- 本 PRD 作为\"总分结构\"中的总纲，各页面详细交互/UI 规格参见对应的页面 PRD。\n- 所有页面 PRD 的编号均以本 PRD 中第 9 节的页面清单为索引。\n- 三种租户的独特规则已在各差异对照表和矩阵中明确标注。\n",
+  "globalPrd": "# \u8003\u8bd5\u529f\u80fd \u2014 \u6574\u4f53 PRD\n\n## 1. \u5f15\u8a00\n\n### 1.1 \u80cc\u666f\u4e0e\u76ee\u6807\n\n\"\u8003\u8bd5\u529f\u80fd\"\u662f EHS+ \u4f01\u4e1a\u7248\u4e2d\u5bf9\u5458\u5de5\u8fdb\u884c\u5b89\u5168\u751f\u4ea7\u77e5\u8bc6\u8bc4\u6d4b\u7684\u6838\u5fc3\u6a21\u5757\u3002\u8be5\u6a21\u5757\u9700\u8981\u652f\u6301\u4e09\u79cd\u4e0d\u540c\u7684\u79df\u6237\u5f62\u6001\uff1a\n\n- **\u96c6\u56e2\uff08\u4e0a\u7ea7\u5355\u4f4d\uff09**\uff1a\u8de8\u591a\u5bb6\u5b50\u516c\u53f8\u7684\u4eba\u5458\u7ba1\u7406\u5f62\u6001\uff0c\u9700\u8981\u8de8\u516c\u53f8\u9009\u62e9\u8003\u8bd5\u5bf9\u8c61\u3001\u67e5\u770b\u8de8\u516c\u53f8\u7edf\u8ba1\u6570\u636e\u3002\n- **\u4e0b\u7ea7\u5355\u4f4d**\uff1a\u5904\u4e8e\u96c6\u56e2\u5c42\u7ea7\u4e0b\u7684\u6210\u5458\u5355\u4f4d\uff0c\u627f\u63a5\u4e0a\u7ea7\u6d3e\u53d1\u7684\u8003\u8bd5\uff0c\u540c\u65f6\u53ef\u521b\u5efa\u672c\u5355\u4f4d\u5185\u90e8\u8003\u8bd5\u3002\n- **\u72ec\u7acb\u79df\u6237\uff08\u666e\u901a\u79df\u6237/\u975e\u96c6\u56e2\uff09**\uff1a\u65e0\u4e0a\u4e0b\u7ea7\u5c42\u7ea7\u5173\u7cfb\u7684\u72ec\u7acb\u7ec4\u7ec7\uff0c\u4ec5\u7ba1\u7406\u672c\u79df\u6237\u8303\u56f4\u5185\u7684\u8003\u8bd5\u3002\n\n\u672c PRD \u4ece\u5168\u5c40\u89c6\u89d2\u5b9a\u4e49\u8003\u8bd5\u529f\u80fd\u5728\u4e0a\u8ff0\u4e09\u79cd\u79df\u6237\u5f62\u6001\u4e0b\u7684\u7edf\u4e00\u4e1a\u52a1\u89c4\u5219\u3001\u6570\u636e\u6a21\u578b\u3001\u89d2\u8272\u6743\u9650\u548c\u6838\u5fc3\u6d41\u7a0b\u3002\u5404\u9875\u9762\u7684\u8be6\u7ec6\u4ea4\u4e92\u89c4\u683c\u8bf7\u53c2\u89c1\u5bf9\u5e94\u7684\u9875\u9762 PRD\u3002\n\n### 1.2 \u7528\u6237\u4ef7\u503c\n\n| \u79df\u6237\u7c7b\u578b | \u6838\u5fc3\u4ef7\u503c |\n|----------|----------|\n| \u96c6\u56e2\u7ba1\u7406\u5458 | \u8de8\u516c\u53f8\u7edf\u4e00\u4e0b\u53d1\u5b89\u5168\u77e5\u8bc6\u8003\u8bd5\uff0c\u638c\u63e1\u5168\u96c6\u56e2\u5404\u5b50\u516c\u53f8\u7684\u8003\u8bd5\u8fdb\u5c55\u4e0e\u6210\u7ee9\u5206\u5e03\u3002 |\n| \u4e0b\u7ea7\u5355\u4f4d\u7ba1\u7406\u5458 | \u627f\u63a5\u96c6\u56e2\u4e0b\u53d1\u7684\u8003\u8bd5\u4efb\u52a1\uff0c\u540c\u65f6\u81ea\u4e3b\u521b\u5efa\u672c\u5355\u4f4d\u4e13\u5c5e\u8003\u8bd5\u6765\u6ee1\u8db3\u5185\u90e8\u5b66\u4e60\u9700\u6c42\u3002 |\n| \u666e\u901a\u79df\u6237\u7ba1\u7406\u5458 | \u81ea\u4e3b\u7ba1\u7406\u672c\u7ec4\u7ec7\u7684\u8003\u8bd5\u5168\u751f\u547d\u5468\u671f\uff0c\u4ece\u521b\u5efa\u3001\u53d1\u5e03\u5230\u7edf\u8ba1\u5206\u6790\u5f62\u6210\u5b8c\u6574\u95ed\u73af\u3002 |\n\n### 1.3 \u529f\u80fd\u8303\u56f4\n\n**\u5305\u542b**\uff1a\n\n| \u6a21\u5757 | \u8bf4\u660e |\n|------|------|\n| \u8003\u8bd5\u5217\u8868 | \u6309\u79df\u6237\u7c7b\u578b\u5c55\u793a\u5bf9\u5e94\u7684\u8003\u8bd5\u6e05\u5355\uff0c\u652f\u6301\u65b0\u589e\u3001\u7f16\u8f91\u3001\u5220\u9664\u3001\u590d\u5236\u3001\u53d1\u5e03\uff08\u8349\u7a3f\uff09\u3001\u7edf\u8ba1 |\n| \u65b0\u589e\u8003\u8bd5 | \u4e09\u6b65\u521b\u5efa\u8003\u8bd5\uff1a\u57fa\u672c\u4fe1\u606f \u2192 \u8003\u751f\u8303\u56f4\uff08\u4eba\u5458/\u90e8\u95e8\u9009\u62e9 + \u514d\u8003\uff09 \u2192 \u8003\u8bd5\u8bbe\u7f6e |\n| \u7f16\u8f91\u8003\u8bd5 | \u4fee\u6539\u8349\u7a3f\u8003\u8bd5\u7684\u8003\u751f\u8303\u56f4\uff0c\u8986\u76d6\u4eba\u5458\u5feb\u7167 |\n| \u8003\u8bd5\u7edf\u8ba1 | \u8003\u8bd5\u6210\u7ee9\u3001\u8003\u8bd5\u8bb0\u5f55\u3001\u90e8\u95e8\u7edf\u8ba1\u4e09\u4e2a\u9875\u7b7e\uff0c\u542b\u4eba\u5458\u72b6\u6001\u7b5b\u9009\u548c\u90e8\u95e8\u7edf\u8ba1\u5728\u804c\u8fc7\u6ee4\uff1b\u5217\u8868\u652f\u6301\u590d\u9009\u6846\u884c\u9009\u62e9\uff08\u5168\u9009/\u5355\u9009\uff09\uff0c\u5bfc\u51fa\u4e0b\u62c9\u83dc\u5355\u63d0\u4f9b\"\u5bfc\u51fa\u5168\u90e8\"\u548c\"\u6279\u91cf\u5bfc\u51fa\"\u4e24\u79cd\u6a21\u5f0f\uff0c\u6279\u91cf\u5bfc\u51fa\u6821\u9a8c\u81f3\u5c11\u9009\u4e2d\u4e00\u6761\u6570\u636e\uff0c\u5bfc\u51fa\u6587\u4ef6\u540d\u4e3a\u300c\u8003\u8bd5\u540d\u79f0-\u9875\u7b7e\u540d\u79f0.xlsx\u300d |\n| \u4eba\u5458\u9009\u62e9 | \u6309\u79df\u6237\u6570\u636e\u8303\u56f4\u9009\u62e9\u8003\u8bd5\u5bf9\u8c61\uff08\u4eba\u5458 + \u90e8\u95e8\uff09\uff1b\u90e8\u95e8\u6811\u6309\u7ec4\u7ec7\u67b6\u6784\u914d\u7f6e\u7684\"\u6392\u5e8f\"\u5b57\u6bb5\u5347\u5e8f\u6392\u5217\uff0c\u591a\u7ea7\u90e8\u95e8\u540c\u4e00\u7236\u7ea7\u4e0b\u6309\u6392\u5e8f\u5b57\u6bb5\u6392\u5217\uff0c\u7ec4\u7ec7\u67b6\u6784\u8c03\u6574\u6392\u5e8f\u540e\u540c\u6b65\u66f4\u65b0 | \n| \u53d1\u5e03\u6821\u9a8c | \u8349\u7a3f\u53d1\u5e03\u524d\u5bf9\u4eba\u5458\u5feb\u7167\u4e0e\u5f53\u524d\u4eba\u5458\u4e3b\u6570\u636e\u7684\u5dee\u5f02\u8fdb\u884c\u6821\u9a8c\u4e0e\u786e\u8ba4 |\n\n**\u4e0d\u5305\u542b**\uff1a\n\n- \u8bd5\u9898\u914d\u7f6e\u4e0e\u7ba1\u7406\uff08\u8003\u8bd5\u8bbe\u7f6e\u6b65\u9aa4\u4e2d\u7684\u5177\u4f53\u8bd5\u9898\u9009\u62e9\u4e0d\u5c5e\u4e8e\u672c\u6b21\u8303\u56f4\uff09\n- \u8003\u751f\u7aef\u7684\u8003\u8bd5\u4f5c\u7b54/\u63d0\u4ea4/\u6210\u7ee9\u67e5\u770b\n- \u79fb\u52a8\u7aef\u7ba1\u7406\u80fd\u529b\n\n---\n\n## 2. \u4e09\u79cd\u79df\u6237\u5f62\u6001\u6982\u89c8\n\n```\n\u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510\n\u2502                        EHS+ \u8003\u8bd5\u529f\u80fd                              \u2502\n\u2502                                                                   \u2502\n\u2502  \u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510    \u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510    \u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510   \u2502\n\u2502  \u2502 \u96c6\u56e2         \u2502    \u2502  \u4e0b\u7ea7\u5355\u4f4d         \u2502    \u2502 \u72ec\u7acb\u79df\u6237      \u2502   \u2502\n\u2502  \u2502 (\u4e0a\u7ea7\u5355\u4f4d)    \u2502\u2500\u2500\u2500\u25b6\u2502  (\u5b50\u516c\u53f8/\u5206\u516c\u53f8)   \u2502    \u2502 (\u975e\u96c6\u56e2\u7ec4\u7ec7)   \u2502   \u2502\n\u2502  \u2502              \u2502    \u2502                  \u2502    \u2502               \u2502   \u2502\n\u2502  \u2502 \u2022 \u8de8\u516c\u53f8\u9009\u4eba  \u2502    \u2502 \u2022 \u627f\u63a5\u4e0a\u7ea7\u8003\u8bd5    \u2502    \u2502 \u2022 \u81ea\u5efa\u8003\u8bd5    \u2502   \u2502\n\u2502  \u2502 \u2022 \u81ea\u5efa\u8003\u8bd5    \u2502    \u2502 \u2022 \u81ea\u5efa\u672c\u5355\u4f4d\u8003\u8bd5  \u2502    \u2502 \u2022 \u672c\u5355\u4f4d\u6570\u636e  \u2502   \u2502\n\u2502  \u2502 \u2022 \u8de8\u516c\u53f8\u7edf\u8ba1  \u2502    \u2502 \u2022 \u672c\u5355\u4f4d\u7edf\u8ba1     \u2502    \u2502 \u2022 \u672c\u5355\u4f4d\u7edf\u8ba1  \u2502   \u2502\n\u2502  \u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518    \u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518    \u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518   \u2502\n\u2502                                                                   \u2502\n\u2502  \u6570\u636e\u8303\u56f4: \u96c6\u56e2\u5168\u90e8\u516c\u53f8     \u6570\u636e\u8303\u56f4: \u672c\u5355\u4f4d+\u4e0b\u5c5e\u90e8\u95e8                  \u2502\n\u2502  \u4eba\u5458\u5217: \u542b\"\u6240\u5c5e\u516c\u53f8\"      \u4eba\u5458\u5217: \u65e0\"\u6240\u5c5e\u516c\u53f8\"                   \u65e0\u516c\u53f8\u6982\u5ff5 \u2502\n\u2502  \u7edf\u8ba1\u89c6\u56fe: \u90e8\u95e8\u660e\u7ec6/\u516c\u53f8\u6c47\u603b \u7edf\u8ba1\u89c6\u56fe: \u90e8\u95e8\u660e\u7ec6                     \u540c\u4e0b\u7ea7\u5355\u4f4d \u2502\n\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518\n```\n\n### 2.1 \u6838\u5fc3\u5dee\u5f02\u5bf9\u7167\u8868\n\n| \u5dee\u5f02\u7ef4\u5ea6 | \u96c6\u56e2 | \u4e0b\u7ea7\u5355\u4f4d | \u72ec\u7acb\u79df\u6237/\u666e\u901a\u79df\u6237 |\n|----------|------|----------|-------------------|\n| \u4eba\u5458\u6570\u636e\u8303\u56f4 | \u96c6\u56e2\u5185\u5168\u90e8\u516c\u53f8 | \u672c\u5355\u4f4d + \u4e0b\u5c5e\u90e8\u95e8 | \u672c\u79df\u6237\u5185\u5168\u90e8\u4eba\u5458 |\n| \u8de8\u516c\u53f8\u9009\u4eba | \u2705 \u652f\u6301 | \u274c \u4e0d\u652f\u6301 | \u274c \u4e0d\u6d89\u53ca\uff08\u65e0\u516c\u53f8\u6982\u5ff5\uff09 |\n| \u4e0a\u7ea7\u4e0b\u53d1\u8003\u8bd5 | \u274c \u4e0d\u6d89\u53ca | \u2705 \u8003\u8bd5\u5217\u8868\u5c55\u793a\u4e0a\u7ea7\u4e0b\u53d1 | \u274c \u4e0d\u6d89\u53ca |\n| \u4e0a\u7ea7\u4e0b\u53d1\u8003\u8bd5\u64cd\u4f5c | \u2014 | \u4ec5\"\u7edf\u8ba1\" | \u2014 |\n| \u4eba\u5458\u5217\u8868\u5206\u7ec4 | \u6309\u516c\u53f8\u5206\u7ec4 | \u4e0d\u5206\u7ec4\u3001\u5e73\u94fa\u5c55\u793a | \u4e0d\u5206\u7ec4\u3001\u5e73\u94fa\u5c55\u793a |\n| \u8003\u8bd5\u6210\u7ee9/\u8003\u8bd5\u8bb0\u5f55\u5217\u8868 | \u542b\"\u6240\u5c5e\u516c\u53f8\"\u5217 | \u65e0\"\u6240\u5c5e\u516c\u53f8\"\u5217 | \u65e0\"\u6240\u5c5e\u516c\u53f8\"\u5217 |\n| \u90e8\u95e8\u7b5b\u9009\u65b9\u5f0f | \u516c\u53f8+\u90e8\u95e8\u7ea7\u8054 | \u90e8\u95e8\u4e0b\u62c9\u6811 | \u90e8\u95e8\u4e0b\u62c9\u6811 |\n| \u7edf\u8ba1\u90e8\u95e8\u89c6\u56fe | \u90e8\u95e8\u660e\u7ec6 + \u516c\u53f8\u6c47\u603b | \u90e8\u95e8\u660e\u7ec6 | \u90e8\u95e8\u660e\u7ec6 |\n| \u4eba\u5458\u9009\u62e9\u5668\u9875\u9762 | \u4eba\u5458\u9009\u62e9-\u96c6\u56e2 | \u4eba\u5458\u9009\u62e9-\u4e0b\u7ea7\u5355\u4f4d | \u4eba\u5458\u9009\u62e9-\u4e0b\u7ea7\u5355\u4f4d |\n\n---\n\n## 3. \u89d2\u8272\u4e0e\u6743\u9650\n\n| \u89d2\u8272 | \u79df\u6237\u7aef | \u53ef\u521b\u5efa\u8003\u8bd5 | \u53ef\u9009\u62e9\u7684\u8003\u8bd5\u5bf9\u8c61\u8303\u56f4 | \u53ef\u7f16\u8f91\u8003\u8bd5 | \u53ef\u67e5\u770b\u7edf\u8ba1 | \u8bf4\u660e |\n|------|--------|-----------|---------------------|-----------|-----------|------|\n| \u96c6\u56e2\u7ba1\u7406\u5458 | \u96c6\u56e2 | \u2705 | \u96c6\u56e2\u5168\u90e8\u516c\u53f8\u7684\u4eba\u5458\u548c\u90e8\u95e8 | \u2705 \u4ec5\u8349\u7a3f | \u2705 \u5168\u96c6\u56e2 | \u53ef\u8de8\u516c\u53f8\u7ba1\u7406\u8003\u8bd5\u5168\u751f\u547d\u5468\u671f |\n| \u4e0b\u7ea7\u5355\u4f4d\u7ba1\u7406\u5458 | \u4e0b\u7ea7\u5355\u4f4d | \u2705 \u672c\u5355\u4f4d\u8003\u8bd5 | \u672c\u5355\u4f4d + \u4e0b\u5c5e\u90e8\u95e8 | \u2705 \u4ec5\u81ea\u5efa\u8349\u7a3f | \u2705 \u672c\u5355\u4f4d | \u53ef\u627f\u63a5\u4e0a\u7ea7\u4e0b\u53d1\u8003\u8bd5\uff0c\u5bf9\u5176\u8fdb\u884c\u7edf\u8ba1\u67e5\u770b |\n| \u666e\u901a\u79df\u6237\u7ba1\u7406\u5458 | \u72ec\u7acb\u79df\u6237 | \u2705 | \u672c\u79df\u6237\u5168\u91cf\u4eba\u5458 | \u2705 \u4ec5\u8349\u7a3f | \u2705 \u672c\u79df\u6237 | \u4e0e\u4e0b\u7ea7\u5355\u4f4d\u7c7b\u4f3c\uff0c\u4f46\u65e0\u4e0a\u4e0b\u7ea7\u5173\u7cfb |\n\n### 3.1 \u4e0b\u7ea7\u5355\u4f4d\u5bf9\u4e0a\u7ea7\u4e0b\u53d1\u8003\u8bd5\u7684\u64cd\u4f5c\u6743\u9650\n\n| \u64cd\u4f5c | \u672c\u5355\u4f4d\u81ea\u5efa\u8003\u8bd5 | \u4e0a\u7ea7\u4e0b\u53d1\u8003\u8bd5 |\n|------|:---:|:---:|\n| \u67e5\u770b\u8be6\u60c5\uff08\u540d\u79f0\u94fe\u63a5\uff09 | \u2705 | \u2705\uff08\u67e5\u770b\u96c6\u56e2\u7248\u8be6\u60c5\uff09 |\n| \u7edf\u8ba1 | \u2705 | \u2705 |\n| \u9884\u89c8 | \u2705 | \u274c |\n| \u53d1\u5e03 | \u2705 \u8349\u7a3f | \u274c |\n| \u7f16\u8f91 | \u2705 \u8349\u7a3f | \u274c |\n| \u590d\u5236 | \u2705 | \u274c |\n| \u5220\u9664 | \u2705 | \u274c |\n| \u6279\u91cf\u5220\u9664 | \u2705 | \u274c |\n\n---\n\n## 4. \u540d\u8bcd\u89e3\u91ca\n\n| \u672f\u8bed | \u5b9a\u4e49 |\n|------|------|\n| **\u8003\u8bd5** | \u4e00\u6b21\u5b8c\u6574\u7684\u8003\u8bd5\u6d3b\u52a8\uff0c\u5305\u542b\u57fa\u672c\u4fe1\u606f\u3001\u8003\u751f\u8303\u56f4\u3001\u8003\u8bd5\u8bbe\u7f6e\u3001\u9898\u76ee\u914d\u7f6e\u7b49\u3002 |\n| **\u8003\u751f\u8303\u56f4** | \u8003\u8bd5\u7684\u76ee\u6807\u5bf9\u8c61\u96c6\u5408\uff0c\u53ef\u901a\u8fc7\u9009\u62e9\u4eba\u5458\uff08\u5df2\u9009\u4eba\u5458\uff09\u6216\u90e8\u95e8\u8303\u56f4\u6765\u5b9a\u4e49\u3002 |\n| **\u5df2\u9009\u4eba\u5458** | \u4ee5\u5355\u4e2a\u4eba\u5458\u4e3a\u7ef4\u5ea6\u9009\u5b9a\u7684\u8003\u8bd5\u5bf9\u8c61\u3002 |\n| **\u5df2\u9009\u90e8\u95e8** | \u4ee5\u90e8\u95e8\u4e3a\u7ef4\u5ea6\u9009\u5b9a\u7684\u8003\u8bd5\u5bf9\u8c61\uff0c\u9009\u62e9\u67d0\u90e8\u95e8\u5373\u5305\u542b\u8be5\u90e8\u95e8\u4e0b\uff08\u53ef\u9009\u542b\u4e0b\u7ea7\u90e8\u95e8\uff09\u7684\u5168\u4f53\u4eba\u5458\u3002 |\n| **\u7ec4\u7ec7\u5185\u5168\u90e8\u4eba\u5458** | \u8003\u8bd5\u5bf9\u8c61\u8986\u76d6\u5f53\u524d\u79df\u6237\u8303\u56f4\u5185\u7684\u5168\u90e8\u4eba\u5458\uff0c\u65e0\u9700\u5355\u72ec\u9009\u62e9\u3002 |\n| **\u4ec5\u90e8\u5206\u4eba\u5458** | \u8003\u8bd5\u5bf9\u8c61\u4ec5\u4e3a\u7ba1\u7406\u5458\u9009\u62e9\u7684\u5177\u4f53\u4eba\u5458\u6216\u90e8\u95e8\u8303\u56f4\u5185\u7684\u4eba\u5458\u3002 |\n| **\u514d\u8003\u4eba\u5458** | \u88ab\u6392\u9664\u5728\u8003\u8bd5\u8981\u6c42\u4e4b\u5916\u7684\u4eba\u5458\u6216\u90e8\u95e8\uff0c\u4e0d\u8ba1\u5165\u5e94\u8003\u4eba\u6570\uff0c\u4e0d\u5f71\u54cd\u53c2\u4e0e\u7387\u548c\u53ca\u683c\u7387\u8ba1\u7b97\u3002 |\n| **\u4eba\u5458\u5feb\u7167** | \u521b\u5efa\u8003\u8bd5\u6216\u7f16\u8f91\u4fdd\u5b58\u65f6\u5bf9\u5f53\u65f6\u8003\u8bd5\u5bf9\u8c61\u8303\u56f4\u5185\u6240\u6709\u4eba\u5458\u7684\u5b8c\u6574\u8bb0\u5f55\uff08\u542b ID\u3001\u59d3\u540d\u3001\u6240\u5c5e\u516c\u53f8\u3001\u90e8\u95e8\u3001\u4eba\u5458\u72b6\u6001\uff09\uff0c\u7528\u4e8e\u53d1\u5e03\u524d\u4eba\u5458\u53d8\u66f4\u6821\u9a8c\u3002 |\n| **\u4eba\u5458\u72b6\u6001** | \u679a\u4e3e\u503c\uff1a\u5728\u804c\uff08\u542f\u7528\uff09\u3001\u79bb\u804c\u3001\u505c\u7528\uff08\u7981\u7528\uff09\u3002 |\n| **\u8349\u7a3f** | \u8003\u8bd5\u521b\u5efa\u540e\u5c1a\u672a\u53d1\u5e03\u7684\u521d\u59cb\u72b6\u6001\uff0c\u652f\u6301\u7f16\u8f91\u548c\u53d1\u5e03\u3002 |\n| **\u672a\u5f00\u59cb** | \u8003\u8bd5\u53d1\u5e03\u540e\u4f46\u5c1a\u672a\u5230\u8fbe\u8003\u8bd5\u5f00\u59cb\u65f6\u95f4\u7684\u72b6\u6001\u3002 |\n| **\u8fdb\u884c\u4e2d** | \u8003\u8bd5\u6b63\u5904\u4e8e\u8003\u8bd5\u65f6\u95f4\u6bb5\u5185\u7684\u72b6\u6001\u3002 |\n| **\u5df2\u7ed3\u675f** | \u8003\u8bd5\u65f6\u95f4\u5df2\u8fc7\u7684\u72b6\u6001\u3002 |\n| **\u4e0a\u7ea7\u4e0b\u53d1\u8003\u8bd5** | \u7531\u96c6\u56e2\u6216\u4e0a\u7ea7\u5355\u4f4d\u521b\u5efa\u5e76\u63a8\u9001\u7ed9\u4e0b\u7ea7\u5355\u4f4d\u7684\u8003\u8bd5\uff0c\u4e0b\u7ea7\u5355\u4f4d\u4e0d\u53ef\u7f16\u8f91\u3001\u5220\u9664\u3001\u53d1\u5e03\u3002 |\n| **\u81ea\u5efa\u8003\u8bd5** | \u5f53\u524d\u79df\u6237\u7ba1\u7406\u5458\u81ea\u884c\u521b\u5efa\u7684\u8003\u8bd5\u3002 |\n| **\u516c\u53f8\u6c47\u603b** | \u96c6\u56e2\u72ec\u6709\u7684\u7edf\u8ba1\u89c6\u56fe\uff0c\u4ee5\u516c\u53f8\u4e3a\u7c92\u5ea6\u5bf9\u90e8\u95e8\u6570\u636e\u8fdb\u884c\u6241\u5e73\u6c47\u603b\u5c55\u793a\u3002 |\n| **\u90e8\u95e8\u660e\u7ec6** | \u4ee5\u90e8\u95e8\u6811\u7ed3\u6784\u5c55\u793a\u7edf\u8ba1\u6570\u636e\u7684\u89c6\u56fe\u3002 |\n| **\u90e8\u95e8\u6392\u5e8f** | \u4eba\u5458\u9009\u62e9\u5668\u7684\u90e8\u95e8\u6811\u6309\u7ec4\u7ec7\u67b6\u6784\u914d\u7f6e\u7684\"\u6392\u5e8f\"\uff08sortOrder\uff09\u5b57\u6bb5\u5347\u5e8f\u6392\u5217\u3002\u591a\u7ea7\u90e8\u95e8\u6309\u5c42\u7ea7\u5206\u522b\u6392\u5e8f\uff0c\u540c\u4e00\u7236\u7ea7\u4e0b\u7684\u5144\u5f1f\u8282\u70b9\u6309\u6392\u5e8f\u5b57\u6bb5\u5347\u5e8f\u6392\u5217\uff0c\u6392\u5e8f\u5b57\u6bb5\u503c\u76f8\u540c\u5219\u6309\u90e8\u95e8\u540d\u79f0\u62fc\u97f3\u6392\u5e8f\u3002\u7ec4\u7ec7\u67b6\u6784\u7ba1\u7406\u5458\u8c03\u6574\u90e8\u95e8\u6392\u5e8f\u540e\uff0c\u4eba\u5458\u9009\u62e9\u5f39\u7a97\u7684\u90e8\u95e8\u6811\u540c\u6b65\u66f4\u65b0\u3002 |\n\n---\n\n## 5. \u6838\u5fc3\u4e1a\u52a1\u6d41\u7a0b\u56fe\n\n### 5.1 \u8003\u8bd5\u5168\u751f\u547d\u5468\u671f\uff08\u901a\u7528\uff09\n\n```mermaid\nflowchart TD\n    A[\u521b\u5efa\u8003\u8bd5] --> B[\u586b\u5199\u57fa\u672c\u4fe1\u606f]\n    B --> C[\u9009\u62e9\u8003\u751f\u8303\u56f4]\n    C --> C1{\u8003\u8bd5\u5bf9\u8c61\u6a21\u5f0f?}\n    C1 -->|\u4ec5\u90e8\u5206\u4eba\u5458| C2[\u9009\u62e9\u4eba\u5458/\u90e8\u95e8 + \u914d\u7f6e\u514d\u8003]\n    C1 -->|\u7ec4\u7ec7\u5185\u5168\u90e8\u4eba\u5458| C3[\u8df3\u8fc7\u9009\u4eba]\n    C2 --> D[\u8bbe\u7f6e\u8003\u8bd5\u53c2\u6570]\n    C3 --> D\n    D --> E[\u751f\u6210\u4eba\u5458\u5feb\u7167]\n    E --> F{\u4fdd\u5b58\u4e3a\u8349\u7a3f}\n    F --> G[\u8349\u7a3f\u72b6\u6001]\n    G --> H{\u7ba1\u7406\u5458\u64cd\u4f5c?}\n    H -->|\u7f16\u8f91| I[\u7f16\u8f91\u8003\u751f\u8303\u56f4 \u2192 \u8986\u76d6\u5feb\u7167]\n    I --> G\n    H -->|\u53d1\u5e03| J[\u6267\u884c\u53d1\u5e03\u524d\u4eba\u5458\u53d8\u66f4\u6821\u9a8c]\n    J --> K{\u6709\u4eba\u5458\u53d8\u66f4?}\n    K -->|\u5426| L[\u76f4\u63a5\u53d1\u5e03]\n    K -->|\u662f| M[\u5c55\u793a\u53d1\u5e03\u5f39\u7a97]\n    M --> N{\u7ba1\u7406\u5458\u786e\u8ba4?}\n    N -->|\u53d6\u6d88| G\n    N -->|\u786e\u8ba4\u53d1\u5e03| L\n    L --> O[\u672a\u5f00\u59cb]\n    O --> P[\u8fdb\u884c\u4e2d]\n    P --> Q[\u5df2\u7ed3\u675f]\n    G -->|\u5220\u9664| R[\u8003\u8bd5\u5220\u9664]\n```\n\n### 5.2 \u4e0b\u7ea7\u5355\u4f4d\u7279\u6b8a\u6d41\u7a0b\uff1a\u4e0a\u7ea7\u4e0b\u53d1\u8003\u8bd5\n\n```mermaid\nflowchart TD\n    G[\u96c6\u56e2\u7ba1\u7406\u5458] -->|\u521b\u5efa\u5e76\u4e0b\u53d1| S[\u4e0a\u7ea7\u4e0b\u53d1\u8003\u8bd5]\n    S -->|\u51fa\u73b0\u5728| SU[\u4e0b\u7ea7\u5355\u4f4d\u8003\u8bd5\u5217\u8868]\n    SU --> SU1{\u4e0b\u7ea7\u5355\u4f4d\u64cd\u4f5c}\n    SU1 -->|\u70b9\u51fb\u540d\u79f0| SU2[\u67e5\u770b\u96c6\u56e2\u7248\u8003\u8bd5\u8be6\u60c5]\n    SU1 -->|\u7edf\u8ba1| SU3[\u8fdb\u5165\u672c\u5355\u4f4d\u7edf\u8ba1\u9875]\n    SU1 -->|\u7f16\u8f91/\u5220\u9664/\u53d1\u5e03/\u590d\u5236| SU4[\u274c \u4e0d\u53ef\u64cd\u4f5c]\n```\n\n### 5.3 \u53d1\u5e03\u524d\u4eba\u5458\u53d8\u66f4\u6821\u9a8c\u6d41\u7a0b\n\n```mermaid\nflowchart TD\n    A[\u7ba1\u7406\u5458\u70b9\u51fb\u53d1\u5e03] --> B[\u7cfb\u7edf\u83b7\u53d6\u4eba\u5458\u5feb\u7167]\n    B --> C[\u83b7\u53d6\u5f53\u524d\u4eba\u5458\u4e3b\u6570\u636e]\n    C --> D{\u6bd4\u5bf9\u5feb\u7167\u4e0e\u4e3b\u6570\u636e}\n    D --> E1[\u5df2\u9009\u4eba\u5458\u79bb\u804c/\u505c\u7528 \u2192 \u79fb\u9664]\n    D --> E2[\u90e8\u95e8\u5185\u4eba\u5458\u79bb\u804c/\u505c\u7528/\u8f6c\u51fa \u2192 \u79fb\u9664]\n    D --> E3[\u90e8\u95e8\u5185\u4eba\u5458\u8f6c\u5165/\u542f\u7528 \u2192 \u65b0\u589e]\n    E1 --> F{\u603b\u8ba1\u53d8\u66f4 > 0 ?}\n    E2 --> F\n    E3 --> F\n    F -->|\u5426| G[\u76f4\u63a5\u53d1\u5e03\uff0c\u72b6\u6001\u53d8\u66f4\u4e3a\u672a\u5f00\u59cb]\n    F -->|\u662f| H[\u5c55\u793a\u53d1\u5e03\u5f39\u7a97]\n    H --> I[\u6309\u5206\u7c7b\u67e5\u770b\uff1a\u5168\u90e8 / \u5df2\u79fb\u9664 / \u5df2\u65b0\u589e]\n    I --> J{\u7ba1\u7406\u5458\u64cd\u4f5c?}\n    J -->|\u70b9\u51fb\u53d1\u5e03| G\n    J -->|\u70b9\u51fb\u53d6\u6d88 / \u5173\u95ed / \u906e\u7f69| K[\u4fdd\u6301\u8349\u7a3f\uff0c\u4e0d\u53d1\u5e03]\n```\n\n---\n\n## 6. \u7528\u4f8b\u56fe\n\n```mermaid\nflowchart LR\n    subgraph Actors\n        GA[\u96c6\u56e2\u7ba1\u7406\u5458]\n        SA[\u4e0b\u7ea7\u5355\u4f4d\u7ba1\u7406\u5458]\n        NA[\u666e\u901a\u79df\u6237\u7ba1\u7406\u5458]\n        SYS[\u7cfb\u7edf]\n    end\n\n    subgraph UC[\u8003\u8bd5\u529f\u80fd\u7528\u4f8b]\n        direction TB\n        UC1((\u521b\u5efa\u8003\u8bd5))\n        UC2((\u7f16\u8f91\u8003\u8bd5))\n        UC3((\u53d1\u5e03\u8003\u8bd5))\n        UC4((\u67e5\u770b\u8003\u8bd5\u5217\u8868))\n        UC5((\u8003\u8bd5\u7edf\u8ba1))\n        UC6((\u4eba\u5458\u9009\u62e9))\n        UC7((\u514d\u8003\u914d\u7f6e))\n        UC8((\u63a5\u6536\u4e0a\u7ea7\u8003\u8bd5))\n        UC9((\u53d1\u5e03\u524d\u6821\u9a8c))\n        UC10((\u5feb\u7167\u7ba1\u7406))\n    end\n\n    GA --> UC1\n    GA --> UC2\n    GA --> UC3\n    GA --> UC4\n    GA --> UC5\n    GA --> UC6\n    GA --> UC7\n    SA --> UC1\n    SA --> UC2\n    SA --> UC3\n    SA --> UC4\n    SA --> UC5\n    SA --> UC6\n    SA --> UC7\n    SA --> UC8\n    NA --> UC1\n    NA --> UC2\n    NA --> UC3\n    NA --> UC4\n    NA --> UC5\n    NA --> UC6\n    NA --> UC7\n    SYS --> UC9\n    SYS --> UC10\n```\n\n---\n\n## 7. \u975e\u529f\u80fd\u6027\u9700\u6c42\n\n### 7.1 \u6027\u80fd\u8981\u6c42\n\n| \u6307\u6807 | \u8981\u6c42 |\n|------|------|\n| \u8003\u8bd5\u5217\u8868\u67e5\u8be2\u54cd\u5e94 | \u2264 2s\uff081000 \u6761\u4ee5\u5185\uff09 |\n| \u4eba\u5458\u9009\u62e9\u5668\u52a0\u8f7d | \u2264 3s\uff0810,000 \u4ee5\u5185\u4eba\u5458\u6570\u636e\uff09 |\n| \u90e8\u95e8\u4eba\u6570\u91cd\u65b0\u8ba1\u7b97 | \u2264 3s |\n| \u53d1\u5e03\u524d\u4eba\u5458\u53d8\u66f4\u6821\u9a8c | \u2264 5s\uff08\u5305\u542b\u4e09\u5206\u7c7b\u6821\u9a8c\uff09 |\n| \u8003\u8bd5\u7edf\u8ba1\u67e5\u8be2 | \u2264 3s |\n| \u5e76\u53d1\u652f\u6301 | \u652f\u6301 100+ \u7ba1\u7406\u5458\u540c\u65f6\u64cd\u4f5c |\n\n### 7.2 \u5b89\u5168\u6027\n\n| \u8981\u6c42 | \u8bf4\u660e |\n|------|------|\n| \u6570\u636e\u9694\u79bb | \u4e0d\u540c\u79df\u6237\u6570\u636e\u4e25\u683c\u9694\u79bb\uff0c\u4e0b\u7ea7\u5355\u4f4d\u4e0d\u53ef\u8bbf\u95ee\u96c6\u56e2\u6216\u5e73\u7ea7\u5355\u4f4d\u6570\u636e |\n| \u64cd\u4f5c\u6743\u9650 | \u4e0a\u7ea7\u4e0b\u53d1\u8003\u8bd5\u5728\u4e0b\u7ea7\u5355\u4f4d\u4fa7\u4ec5\u5f00\u653e\"\u7edf\u8ba1\"\u64cd\u4f5c\uff0c\u7f16\u8f91/\u5220\u9664/\u53d1\u5e03\u7b49\u64cd\u4f5c\u9700\u6821\u9a8c\u8003\u8bd5\u6765\u6e90\u4e3a\u81ea\u5efa |\n| \u4eba\u5458\u9009\u62e9\u8303\u56f4\u9650\u5236 | \u4e0b\u7ea7\u5355\u4f4d\u4eba\u5458\u9009\u62e9\u5668\u9650\u5b9a\u672c\u5355\u4f4d\u53ca\u4e0b\u5c5e\u90e8\u95e8\uff0c\u4e0d\u53ef\u8d8a\u6743\u8bbf\u95ee\u5e73\u7ea7\u6216\u4e0a\u7ea7\u5355\u4f4d\u4eba\u5458 |\n| \u5feb\u7167\u5b89\u5168 | \u4eba\u5458\u5feb\u7167\u4e3a\u53ea\u8bfb\u5386\u53f2\u6570\u636e\uff0c\u6301\u4e45\u5316\u540e\u4e0d\u53ef\u7be1\u6539 |\n\n### 7.3 \u517c\u5bb9\u6027\n\n| \u8981\u6c42 | \u8bf4\u660e |\n|------|------|\n| \u6d4f\u89c8\u5668 | Chrome 90+\u3001Edge 90+\u3001Safari 14+ |\n| \u5206\u8fa8\u7387 | 1366\u00d7768 \u53ca\u4ee5\u4e0a |\n\n### 7.4 \u53ef\u7ef4\u62a4\u6027\n\n| \u8981\u6c42 | \u8bf4\u660e |\n|------|------|\n| \u64cd\u4f5c\u65e5\u5fd7 | \u8003\u8bd5\u521b\u5efa\u3001\u7f16\u8f91\u3001\u53d1\u5e03\u3001\u5220\u9664\u9700\u8bb0\u5f55\u64cd\u4f5c\u65e5\u5fd7 |\n| \u5feb\u7167\u5ba1\u8ba1 | \u5feb\u7167\u751f\u6210\u548c\u8986\u76d6\u4fdd\u7559\u5386\u53f2\u8bb0\u5f55\uff0c\u53d1\u5e03\u6821\u9a8c\u65f6\u53ef\u56de\u6eaf |\n\n---\n\n## 8. \u9875\u9762\u6e05\u5355\u4e0e\u5173\u8054 PRD\n\n### 8.1 \u96c6\u56e2\uff08\u4e0a\u7ea7\u5355\u4f4d\uff09\n\n| \u5e8f\u53f7 | \u9875\u9762\u540d\u79f0 | \u9875\u9762 PRD \u8def\u5f84 | \u539f\u578b\u6587\u4ef6 |\n|------|---------|--------------|---------|\n| 1 | \u8003\u8bd5\u5217\u8868-\u96c6\u56e2 | `prd/\u8003\u8bd5\u5217\u8868-\u96c6\u56e2.md` | `\u8003\u8bd5\u5217\u8868-\u96c6\u56e2.html` |\n| 2 | \u65b0\u589e\u8003\u8bd5-\u96c6\u56e2 | `prd/\u65b0\u589e\u8003\u8bd5-\u96c6\u56e2.md` | `\u65b0\u589e\u8003\u8bd5-\u96c6\u56e2.html` |\n| 3 | \u7f16\u8f91\u8003\u8bd5-\u96c6\u56e2 | `prd/\u7f16\u8f91\u8003\u8bd5-\u96c6\u56e2.md` | `\u7f16\u8f91\u8003\u8bd5-\u96c6\u56e2.html` |\n| 4 | \u8003\u8bd5\u7edf\u8ba1-\u96c6\u56e2 | `prd/\u8003\u8bd5\u7edf\u8ba1-\u96c6\u56e2.md` | `\u8003\u8bd5\u7edf\u8ba1-\u96c6\u56e2.html` |\n| 5 | \u4eba\u5458\u9009\u62e9-\u96c6\u56e2 | \u2014 | `\u4eba\u5458\u9009\u62e9-\u96c6\u56e2.html` |\n\n### 8.2 \u4e0b\u7ea7\u5355\u4f4d\n\n| \u5e8f\u53f7 | \u9875\u9762\u540d\u79f0 | \u9875\u9762 PRD \u8def\u5f84 | \u539f\u578b\u6587\u4ef6 |\n|------|---------|--------------|---------|\n| 1 | \u8003\u8bd5\u5217\u8868-\u4e0b\u7ea7\u5355\u4f4d | `prd/\u8003\u8bd5\u5217\u8868-\u4e0b\u7ea7\u5355\u4f4d.md` | `\u8003\u8bd5\u5217\u8868-\u4e0b\u7ea7\u5355\u4f4d.html` |\n| 2 | \u65b0\u589e\u8003\u8bd5-\u4e0b\u7ea7\u5355\u4f4d | `prd/\u65b0\u589e\u8003\u8bd5-\u4e0b\u7ea7\u5355\u4f4d.md` | `\u65b0\u589e\u8003\u8bd5-\u4e0b\u7ea7\u5355\u4f4d.html` |\n| 3 | \u7f16\u8f91\u8003\u8bd5-\u4e0b\u7ea7\u5355\u4f4d | `prd/\u7f16\u8f91\u8003\u8bd5-\u4e0b\u7ea7\u5355\u4f4d.md` | `\u7f16\u8f91\u8003\u8bd5-\u4e0b\u7ea7\u5355\u4f4d:\u72ec\u7acb\u79df\u6237.html` |\n| 4 | \u8003\u8bd5\u7edf\u8ba1-\u672c\u5355\u4f4d | `prd/\u8003\u8bd5\u7edf\u8ba1-\u672c\u5355\u4f4d.md` | `\u8003\u8bd5\u7edf\u8ba1-\u4e0b\u7ea7\u5355\u4f4d:\u72ec\u7acb\u79df\u6237.html` |\n| 5 | \u8003\u8bd5\u7edf\u8ba1-\u4e0a\u7ea7\u4e0b\u53d1 | `prd/\u8003\u8bd5\u7edf\u8ba1-\u4e0a\u7ea7\u4e0b\u53d1.md` | `\u8003\u8bd5\u7edf\u8ba1-\u4e0b\u7ea7\u5355\u4f4d:\u72ec\u7acb\u79df\u6237.html` |\n| 6 | \u4eba\u5458\u9009\u62e9-\u4e0b\u7ea7\u5355\u4f4d\uff1a\u672c\u5355\u4f4d | \u2014 | `\u4eba\u5458\u9009\u62e9-\u4e0b\u7ea7\u5355\u4f4d:\u672c\u5355\u4f4d.html` |\n| 7 | \u4eba\u5458\u9009\u62e9-\u4e0b\u7ea7\u5355\u4f4d | \u2014 | `\u4eba\u5458\u9009\u62e9-\u4e0b\u7ea7\u5355\u4f4d.html` |\n\n### 8.3 \u72ec\u7acb\u79df\u6237/\u666e\u901a\u79df\u6237\n\n| \u5e8f\u53f7 | \u9875\u9762\u540d\u79f0 | \u9875\u9762 PRD \u8def\u5f84 | \u539f\u578b\u6587\u4ef6 |\n|------|---------|--------------|---------|\n| 1 | \u8003\u8bd5\u5217\u8868 | `prd/\u8003\u8bd5\u5217\u8868-\u666e\u901a\u79df\u6237.md` | `\u8003\u8bd5\u5217\u8868-\u666e\u901a\u79df\u6237.html` |\n| 2 | \u65b0\u589e\u8003\u8bd5 | \u2014\uff08\u53c2\u8003\u96c6\u56e2/\u4e0b\u7ea7\u65b0\u589e\uff09 | `\u65b0\u589e\u8003\u8bd5-\u666e\u901a\u79df\u6237.html` |\n| 3 | \u7f16\u8f91\u8003\u8bd5 | \u2014\uff08\u53c2\u8003\u4e0b\u7ea7\u7f16\u8f91\uff0c\u540c\u6570\u636e\u8303\u56f4\uff09 | `\u7f16\u8f91\u8003\u8bd5-\u4e0b\u7ea7\u5355\u4f4d:\u72ec\u7acb\u79df\u6237.html` |\n| 4 | \u8003\u8bd5\u7edf\u8ba1-\u672c\u5355\u4f4d | `prd/\u8003\u8bd5\u7edf\u8ba1-\u672c\u5355\u4f4d.md` | `\u8003\u8bd5\u7edf\u8ba1-\u666e\u901a\u79df\u6237.html` |\n\n### 8.4 \u901a\u7528\u9875\u9762\n\n| \u5e8f\u53f7 | \u9875\u9762\u540d\u79f0 | \u8bf4\u660e | \u539f\u578b\u6587\u4ef6 |\n|------|---------|------|---------|\n| 1 | \u89c4\u5219\u8bf4\u660e | \u8003\u8bd5\u529f\u80fd\u5165\u53e3\u7684\u89c4\u5219\u8bf4\u660e\u9875 | `\u89c4\u5219\u8bf4\u660e.html` |\n\n### 8.5 \u5c0f\u7a0b\u5e8f\n\n| \u5e8f\u53f7 | \u9875\u9762\u540d\u79f0 | \u8bf4\u660e | PRD \u8def\u5f84 | \u539f\u578b\u6587\u4ef6 |\n|------|---------|------|---------|---------|\n| 1 | \u8003\u8bd5\u5217\u8868 | \u5c0f\u7a0b\u5e8f\u7aef\u8003\u8bd5\u5217\u8868 | `prd/\u5c0f\u7a0b\u5e8f\u8003\u8bd5\u5217\u8868.md` | `\u5c0f\u7a0b\u5e8f\u8003\u8bd5\u5217\u8868.html` |\n\n---\n\n## 9. \u9644\u5f55\n\n### 9.1 \u79df\u6237\u6570\u636e\u8303\u56f4\u77e9\u9635\n\n```\n\u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510\n\u2502   \u80fd\u529b \\ \u79df\u6237   \u2502        \u96c6\u56e2           \u2502       \u4e0b\u7ea7\u5355\u4f4d         \u2502    \u72ec\u7acb\u79df\u6237        \u2502\n\u251c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u253c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u253c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u253c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2524\n\u2502 \u521b\u5efa\u8003\u8bd5        \u2502 \u96c6\u56e2\u8de8\u516c\u53f8            \u2502 \u672c\u5355\u4f4d+\u4e0b\u5c5e\u90e8\u95e8        \u2502 \u672c\u79df\u6237            \u2502\n\u2502 \u4e0a\u7ea7\u4e0b\u53d1\u8003\u8bd5     \u2502 \u4e0d\u6d89\u53ca\uff08\u96c6\u56e2\u4e0d\u4e0b\u53d1\u81ea\u5df1\uff09 \u2502 \u2705 \u5217\u8868\u5c55\u793a+\u63a5\u6536       \u2502 \u274c \u4e0d\u6d89\u53ca          \u2502\n\u2502 \u8de8\u516c\u53f8\u9009\u4eba       \u2502 \u2705                    \u2502 \u274c                    \u2502 \u274c \u65e0\u516c\u53f8\u6982\u5ff5       \u2502\n\u2502 \u4eba\u5458\u6309\u516c\u53f8\u5206\u7ec4    \u2502 \u2705                    \u2502 \u274c \u5e73\u94fa\u6807\u7b7e            \u2502 \u274c \u5e73\u94fa\u6807\u7b7e        \u2502\n\u2502 \u5217\u8868\u542b\u6240\u5c5e\u516c\u53f8\u5217  \u2502 \u2705 \u8003\u8bd5\u6210\u7ee9/\u8003\u8bd5\u8bb0\u5f55    \u2502 \u274c                    \u2502 \u274c                \u2502\n\u2502 \u90e8\u95e8\u7b5b\u9009          \u2502 \u516c\u53f8+\u90e8\u95e8\u7ea7\u8054          \u2502 \u90e8\u95e8\u4e0b\u62c9\u6811            \u2502 \u90e8\u95e8\u4e0b\u62c9\u6811         \u2502\n\u2502 \u7edf\u8ba1\u89c6\u56fe          \u2502 \u90e8\u95e8\u660e\u7ec6 + \u516c\u53f8\u6c47\u603b     \u2502 \u90e8\u95e8\u660e\u7ec6              \u2502 \u90e8\u95e8\u660e\u7ec6           \u2502\n\u2502 \u4eba\u5458\u9009\u62e9\u5668        \u2502 \u4eba\u5458\u9009\u62e9-\u96c6\u56e2          \u2502 \u4eba\u5458\u9009\u62e9-\u4e0b\u7ea7\u5355\u4f4d       \u2502 \u4eba\u5458\u9009\u62e9-\u4e0b\u7ea7\u5355\u4f4d    \u2502\n\u2502 \u5feb\u7167\u542b\u516c\u53f8\u5b57\u6bb5    \u2502 \u2705                    \u2502 \u274c                    \u2502 \u274c                \u2502\n\u2502 \u5206\u7c7b\u6811\u4e0a\u7ea7\u4e0b\u53d1\u8282\u70b9 \u2502 \u274c                    \u2502 \u2705                    \u2502 \u274c                \u2502\n\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2534\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518\n```\n\n### 9.2 \u9875\u9762\u72b6\u6001\u6d41\u8f6c\n\n| \u5f53\u524d\u72b6\u6001 | \u89e6\u53d1\u64cd\u4f5c | \u76ee\u6807\u72b6\u6001 | \u524d\u7f6e\u6761\u4ef6 |\n|----------|---------|---------|----------|\n| \u2014 | \u521b\u5efa\u8003\u8bd5\uff08\u4fdd\u5b58\u8349\u7a3f\uff09 | \u8349\u7a3f | \u57fa\u672c\u4fe1\u606f\u586b\u5199\u5b8c\u6210 + \u8003\u751f\u8303\u56f4\u9009\u62e9\uff08\u90e8\u5206\u4eba\u5458\u6a21\u5f0f\u4e0b\u81f3\u5c11 1 \u4eba\u6216 1 \u90e8\u95e8\uff09 |\n| \u8349\u7a3f | \u7f16\u8f91\u4fdd\u5b58 | \u8349\u7a3f | \u7f16\u8f91\u540e\u8986\u76d6\u4eba\u5458\u5feb\u7167 |\n| \u8349\u7a3f | \u53d1\u5e03\uff08\u65e0\u53d8\u66f4\uff09 | \u672a\u5f00\u59cb | \u65e0\u4eba\u5458\u53d8\u66f4 |\n| \u8349\u7a3f | \u53d1\u5e03\uff08\u6709\u53d8\u66f4\u2192\u786e\u8ba4\uff09 | \u672a\u5f00\u59cb | \u7ba1\u7406\u5458\u5728\u53d1\u5e03\u5f39\u7a97\u786e\u8ba4 |\n| \u8349\u7a3f | \u5220\u9664 | \u2014 | \u2014 |\n| \u672a\u5f00\u59cb | \u5230\u8fbe\u5f00\u59cb\u65f6\u95f4 | \u8fdb\u884c\u4e2d | \u7cfb\u7edf\u81ea\u52a8 |\n| \u8fdb\u884c\u4e2d | \u5230\u8fbe\u7ed3\u675f\u65f6\u95f4 | \u5df2\u7ed3\u675f | \u7cfb\u7edf\u81ea\u52a8 |\n\n### 9.3 \u7248\u672c\u53d8\u66f4\u8bb0\u5f55\n\n| \u7248\u672c | \u65e5\u671f | \u53d8\u66f4\u5185\u5bb9 | \u4f5c\u8005 |\n|------|------|----------|------|\n| V1.0 | 2026-07-13 | \u521d\u7248\u3002\u7edf\u4e00\u5b9a\u4e49\u96c6\u56e2/\u4e0b\u7ea7\u5355\u4f4d/\u72ec\u7acb\u79df\u6237\u4e09\u79cd\u5f62\u6001\u4e0b\u8003\u8bd5\u529f\u80fd\u7684\u5168\u5c40\u4e1a\u52a1\u89c4\u5219\u3001\u6570\u636e\u6a21\u578b\u3001\u89d2\u8272\u6743\u9650\u3001\u6838\u5fc3\u6d41\u7a0b\u548c\u9875\u9762\u6e05\u5355\u3002 | \u2014 |\n| V1.1 | 2026-07-16 | \u65b0\u589e\u90e8\u95e8\u6811\u6392\u5e8f\u89c4\u5219\uff1a\u4eba\u5458\u9009\u62e9\u5f39\u7a97\u4e2d\u90e8\u95e8\u6811\u6309\u7ec4\u7ec7\u67b6\u6784\u914d\u7f6e\u7684\"\u6392\u5e8f\"\uff08sortOrder\uff09\u5b57\u6bb5\u5347\u5e8f\u6392\u5217\uff0c\u591a\u7ea7\u90e8\u95e8\u540c\u4e00\u7236\u7ea7\u4e0b\u6309\u6392\u5e8f\u5b57\u6bb5\u6392\u5217\uff0c\u7ec4\u7ec7\u67b6\u6784\u8c03\u6574\u6392\u5e8f\u540e\u540c\u6b65\u66f4\u65b0\u3002 | \u2014 |\n\n### 9.4 \u5f15\u7528\u6807\u51c6\n\n- \u672c PRD \u4f5c\u4e3a\"\u603b\u5206\u7ed3\u6784\"\u4e2d\u7684\u603b\u7eb2\uff0c\u5404\u9875\u9762\u8be6\u7ec6\u4ea4\u4e92/UI \u89c4\u683c\u53c2\u89c1\u5bf9\u5e94\u7684\u9875\u9762 PRD\u3002\n- \u6240\u6709\u9875\u9762 PRD \u7684\u7f16\u53f7\u5747\u4ee5\u672c PRD \u4e2d\u7b2c 8 \u8282\u7684\u9875\u9762\u6e05\u5355\u4e3a\u7d22\u5f15\u3002\n- \u4e09\u79cd\u79df\u6237\u7684\u72ec\u7279\u89c4\u5219\u5df2\u5728\u5404\u5dee\u5f02\u5bf9\u7167\u8868\u548c\u77e9\u9635\u4e2d\u660e\u786e\u6807\u6ce8\u3002\n",
   "annotations": [],
   "badges": [
     {
@@ -2414,7 +2735,7 @@
       "anchor": {
         "selector": "#tableContainer"
       },
-      "content": "<div class=\"prd-content-wide\"><p><strong>功能说明：</strong>展示可选人员列表（表格）或部门级联树，支持勾选、全选、分页。</p><table class=\"prd-readable-table\"><thead><tr><th>列表区域</th><th>展示项</th><th>展示规则</th></tr></thead><tbody><tr><td>选人员列表</td><td>勾选框、姓名、所属公司、所属部门、岗位</td><td>支持单个勾选、本页全选、分页展示；已选人员在列表中保持选中状态</td></tr><tr><td>选部门列表</td><td>勾选框、部门名称、部门人数、部门层级</td><td>以部门层级方式展示（公司→部门级联树）；勾选部门时联动右侧已选部门数量</td></tr><tr><td>包含下级部门</td><td>勾选项</td><td>选部门时展示，勾选后选择部门时一并选择下级部门</td></tr><tr><td>空状态</td><td>暂无数据提示</td><td>当前查询或已选范围无数据时，列表展示空状态提示</td></tr></tbody></table></div>"
+      "content": "<div class=\"prd-content-wide\"><p><strong>功能说明：</strong>展示可选人员列表（表格）或部门级联树，支持勾选、全选、分页。</p><table class=\"prd-readable-table\"><thead><tr><th>列表区域</th><th>展示项</th><th>展示规则</th></tr></thead><tbody><tr><td>选人员列表</td><td>勾选框、姓名、所属公司、所属部门、岗位</td><td>支持单个勾选、本页全选、分页展示；已选人员在列表中保持选中状态</td></tr><tr><td>选部门列表</td><td>勾选框、部门名称、部门人数、部门层级</td><td>以部门层级方式展示（公司→部门级联树）；部门树按组织架构配置的"排序"字段升序排列，同一父级下按排序字段排列，组织架构调整排序后同步更新；勾选部门时联动右侧已选部门数量</td></tr><tr><td>包含下级部门</td><td>勾选项</td><td>选部门时展示，勾选后选择部门时一并选择下级部门</td></tr><tr><td>空状态</td><td>暂无数据提示</td><td>当前查询或已选范围无数据时，列表展示空状态提示</td></tr></tbody></table></div>"
     },
     {
       "id": "⑦-e",
